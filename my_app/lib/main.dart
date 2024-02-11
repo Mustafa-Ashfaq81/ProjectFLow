@@ -4,6 +4,7 @@ import 'package:my_app/auth/pages/start.dart';
 import 'package:my_app/auth/pages/login.dart';
 import 'package:my_app/auth/pages/register.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/gestures.dart';
 
 
 Future main() async {
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
     return MaterialApp(
       title: 'Flutter Hello World',
 
-       theme: ThemeData(
+      theme: ThemeData(
       // useMaterial3: true, // Uncomment if you want to use Material 3 features
       primaryColor: Color(0xFFFFE6C9),
       scaffoldBackgroundColor: Color(0xFFFFE6C9),
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
 
       initialRoute: '/',
       routes: {
+        // ignore: prefer_const_constructors
         '/': (context) => StartPage(),
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
@@ -57,6 +59,15 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
     );
   }
 }
+
+// // {-theme: ThemeData(
+//   // useMaterial3: true, // Uncomment if you want to use Material 3 features
+//   primaryColor: Color(0xFFFFE6C9),
+//   scaffoldBackgroundColor: Color(0xFFFFE6C9),
+//   buttonTheme: ButtonThemeData(
+//     buttonColor: Color(0xFFFFE6C9), //  Use this for buttons or specify in button style
+//   ),
+// ),}
 
 void testingfunc() {
   int x = 4;
