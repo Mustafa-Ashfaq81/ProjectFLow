@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12273615091",
+    "project_id": "ideaenhancerapp",
+    "storage_bucket": "ideaenhancerapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12273615091:android:708e599cc2f80bb4d37786",
+        "android_client_info": {
+          "package_name": "com.example.my_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUDBxQA4HLd2QMFFCRkCqEJJjAQOX_Qms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

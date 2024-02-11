@@ -1,6 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:my_app/auth/pages/start.dart';
+import 'package:my_app/auth/pages/login.dart';
+import 'package:my_app/auth/pages/register.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() => runApp(MyApp());
+
+Future main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(); // Load the environment variables
+  String apiKey = dotenv.env['API_KEY']!;
+  String messagingSenderId = dotenv.env['MSG_SENDER_ID']!;
+  String projectId = dotenv.env['PROJECT_ID']!;
+  String appId = dotenv.env['APP_ID']!;
+
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+        apiKey:apiKey ,
+        appId: appId ,
+        messagingSenderId: messagingSenderId ,
+        projectId:projectId, 
+      ),
+  );
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {  // This widget is the root of your application.
   const MyApp({super.key});
@@ -9,10 +35,18 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
     testingfunc();
     return MaterialApp(
       title: 'Flutter Hello World',
-      theme: ThemeData(
-        // useMaterial3: true,
-        primarySwatch: Colors.blue,
+
+       theme: ThemeData(
+      // useMaterial3: true, // Uncomment if you want to use Material 3 features
+      primaryColor: Color(0xFFFFE6C9),
+      scaffoldBackgroundColor: Color(0xFFFFE6C9),
+      buttonTheme: ButtonThemeData(
+        buttonColor: Color(0x1E232C), // Use this for buttons or specify in button style
       ),
+      fontFamily: 'Urbanist', // Apply Urbanist as the default font for your app
+    ),
+
+
       initialRoute: '/',
       routes: {
         '/': (context) => StartPage(),
@@ -30,264 +64,6 @@ void testingfunc() {
   print("my func called.....");
 }
 
-class StartPage extends StatelessWidget {
-  const StartPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text('Home')),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: 150, // Increase the width of the buttons
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: Text('Login'),
-              ),
-            ),
-            SizedBox(height: 20), // Adding some spacing
-            SizedBox(
-              width: 150,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/register');
-                },
-                child: Text('Register'),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text('Login')),
-        automaticallyImplyLeading: false, // Remove the default back button
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(height: 5),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: 40,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Icon(Icons.arrow_back, color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-            // SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Welcome back! Glad to \n see you. Again!',
-                  // textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(width: 20),
-              ],
-            ),
-            SizedBox(height: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/home');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    child: Text('Login'),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Don't have an account? ",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/register');
-                  },
-                  child: Text(
-                    'Register now',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class RegisterPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text('Register')),
-        automaticallyImplyLeading: false, // Remove the default back button
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(height: 5),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: 40,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Icon(Icons.arrow_back, color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-            // SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Welcome back! Glad to \n see you. Again!',
-                  // textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(width: 20),
-              ],
-            ),
-            SizedBox(height: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/home');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    child: Text('Register'),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Already have an account? ",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: Text(
-                    'Login now',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class HomePage extends StatelessWidget {
   @override
@@ -295,7 +71,8 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('My Notes')),
-        automaticallyImplyLeading: false, // Remove the default back button
+        // automaticallyImplyLeading: false, // Remove the default back button
+         backgroundColor: Colors.black,
       ),
       body: Center(
         child: Text('My ideas will be here...'),
