@@ -172,22 +172,17 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
- void _login() async {
-  String email = _emailController.text;
-  String password = _passwordController.text;
+void _login() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
 
-  User? user = await _auth.loginacc(email, password);
+    User? user = await _auth.loginacc(email, password);
 
-  if (user != null) {
-    print("User is successfully logging in");
-
-      Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(username: email)),
-    );
-  } else {
-
-    print("some error occured ... has been TOASTED");
+    if (user != null) {
+      print("User is successfully logging in");
+      Navigator.pushNamed(context, "/home");
+    } else {
+      print("some error occured ... has been TOASTED");
+    }
   }
-}
 }
