@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/auth/pages/login.dart';
 import 'package:my_app/auth/services/authservice.dart';
+import '../../common/toast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -176,17 +177,17 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _register() async {
-    setState(() {
-      isSigningUp = true;
-    });
-
     String email = _emailController.text;
     String password = _passwordController.text;
     String pass = _confirmPasswordController.text;
 
-    if (password == pass) {
-      User? user = await _auth.signUpWithEmailAndPassword(email, password);
-
+    if (password != pass) {
+      showmsg(message : "passwords not matching");
+    } else {
+      setState(() {
+        isSigningUp = true;
+      });
+      User? user = await _auth.registeracc(email, password);
       setState(() {
         isSigningUp = false;
       });
@@ -195,13 +196,8 @@ class _RegisterPageState extends State<RegisterPage> {
         print("User is successfully created");
         Navigator.pushNamed(context, "/home");
       } else {
-        print("error occurred...");
+        print(" some error occurred ... has been TOASTED");
       }
-    } else {
-      setState(() {
-        isSigningUp = false;
-      });
-      print("passwords not matching..");
     }
   }
 }

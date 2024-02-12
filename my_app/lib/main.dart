@@ -4,7 +4,7 @@ import 'package:my_app/auth/pages/start.dart';
 import 'package:my_app/auth/pages/login.dart';
 import 'package:my_app/auth/pages/register.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/gestures.dart';
+// import 'package:flutter/gestures.dart';
 
 
 Future main() async {
