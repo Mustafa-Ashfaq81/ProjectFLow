@@ -34,3 +34,25 @@ flutter:
       fonts:
         - asset: fonts/Urbanist-VariableFont_wght.ttf
           weight: 700
+    - family: PilatExtended  
+      fonts:
+        - asset: fonts/PilatExtended-Regular.ttf
+        - asset: fonts/PilatExtended-Bold.ttf
+          weight: 600
+
+
+    - family: Inter
+      fonts:
+      - asset: fonts/Inter-VariableFont_slnt,wght.ttf
+
+
+
+  assets:
+    - .env  
+    - pictures/profile.png
+
+
+
+
+
+ 
