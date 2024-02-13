@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/auth/pages/login.dart';
 import 'package:my_app/auth/services/authservice.dart';
-import '../../common/toast.dart';
+import 'package:my_app/pages/home.dart';
+import 'package:my_app/models/usermodel.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -15,6 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
 
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
 
@@ -25,6 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
@@ -82,13 +85,13 @@ class _RegisterPageState extends State<RegisterPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: _usernameController),
                 SizedBox(height: 20),
                 TextFormField(
                     decoration: InputDecoration(
@@ -180,24 +183,34 @@ class _RegisterPageState extends State<RegisterPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
     String pass = _confirmPasswordController.text;
+    String name = _usernameController.text;
 
     if (password != pass) {
-      showmsg(message : "passwords not matching");
+      //showmsg(message : "passwords not matching");
+      print("passwords not matching..");
     } else {
       setState(() {
         isSigningUp = true;
       });
       User? user = await _auth.registeracc(email, password);
-      setState(() {
-        isSigningUp = false;
-      });
 
       if (user != null) {
         print("User is successfully created");
-        Navigator.pushNamed(context, "/home");
+        createUser(UserModel(username: name, email: email, tasks: []));
+        // Navigator.pushNamed(context, "/home");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                email: email,
+              ),
+            ));
       } else {
         print(" some error occurred ... has been TOASTED");
       }
+      setState(() {
+        isSigningUp = false;
+      });
     }
   }
 }

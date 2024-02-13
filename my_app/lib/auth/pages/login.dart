@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/auth/pages/register.dart';
+import 'package:my_app/pages/home.dart';
 import 'package:my_app/auth/services/authservice.dart';
-import '../../common/toast.dart';
-
-import 'package:my_app/main.dart';
+// import '../../common/toast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -172,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-void _login() async {
+  void _login() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
@@ -180,7 +179,13 @@ void _login() async {
 
     if (user != null) {
       print("User is successfully logging in");
-      Navigator.pushNamed(context, "/home");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(
+              email: email,
+            ),
+          ));
     } else {
       print("some error occured ... has been TOASTED");
     }

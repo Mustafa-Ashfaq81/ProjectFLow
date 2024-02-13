@@ -27,4 +27,14 @@ class FirebaseAuthService {
     }
     return null;
   }
+  
+  Future<User?> logout() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseAuth.instance.signOut();
+    } else {
+      showmsg(message: " user is not logged in ");
+    }
+    return null;
+  }
 }
