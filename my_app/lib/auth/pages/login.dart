@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/auth/pages/register.dart';
 import 'package:my_app/pages/home.dart';
 import 'package:my_app/auth/services/authservice.dart';
@@ -171,23 +172,35 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login() async {
+    void _login() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.loginacc(email, password);
+    User? useracc = await _auth.loginacc(email, password);
 
-    if (user != null) {
+    if (useracc != null) {
+      String user = "";
       print("User is successfully logging in");
+      await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          //only one doc with that username
+          user = doc['username'];
+        });
+      });
       Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(
-              email: email,
+              username: user,
             ),
           ));
     } else {
       print("some error occured ... has been TOASTED");
     }
   }
+
 }

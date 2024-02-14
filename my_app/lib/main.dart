@@ -4,6 +4,10 @@ import 'package:my_app/auth/pages/start.dart';
 import 'package:my_app/auth/pages/login.dart';
 import 'package:my_app/auth/pages/register.dart';
 import 'package:my_app/pages/home.dart';
+import 'package:my_app/pages/task.dart';
+import 'package:my_app/pages/settings.dart';
+import 'package:my_app/pages/chat.dart';
+import 'package:my_app/pages/calendar.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter/gestures.dart';
 
@@ -58,10 +62,23 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
         '/': (context) => StartPage(),
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
-        '/home': (context) => HomePage()
+        '/home': (context) => HomePage(
+              username: "routedfrommainpage",
+            ),
+        '/tasks': (context) => TaskPage(
+              username: "routedfrommainpage",
+            ),
+        '/settings': (context) => SettingsPage(
+              username: "routedfrommainpage",
+            ),
+        '/calendar': (context) => CalendarPage(
+              username: "routedfrommainpage",
+            ),
+        '/chat': (context) => ChatPage(
+              username: "routedfrommainpage",
+            ),
       },
     );
-    
   }
 }
 

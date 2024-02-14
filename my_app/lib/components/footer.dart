@@ -7,14 +7,17 @@ import 'package:my_app/pages/home.dart';
 
 class FooterMenu extends StatefulWidget {
   final int index;
-  FooterMenu({required this.index});
+  final String username;
+  FooterMenu({required this.index, required this.username});
   @override
-  _FooterMenuState createState() => _FooterMenuState(selectedIndex: index);
+  _FooterMenuState createState() =>
+      _FooterMenuState(selectedIndex: index, username: username);
 }
 
 class _FooterMenuState extends State<FooterMenu> {
   int selectedIndex; // Track the selected index
-  _FooterMenuState({required this.selectedIndex});
+  String username; // Track the username
+  _FooterMenuState({required this.selectedIndex, required this.username});
 
   void _onItemTapped(int index) {
     setState(() {
@@ -27,35 +30,35 @@ class _FooterMenuState extends State<FooterMenu> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChatPage(),
+            builder: (context) => ChatPage(username: username),
           ));
     } else if (index == 2) {
       print("CRUD - tasks");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskPage(),
+            builder: (context) => TaskPage(username: username),
           ));
     } else if (index == 3) {
       print("check calendar");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CalendarPage(),
+            builder: (context) => CalendarPage(username: username),
           ));
     } else if (index == 4) {
       print("update settings");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SettingsPage(),
+            builder: (context) => SettingsPage(username: username),
           ));
     } else {
       print("go to home");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(),
+            builder: (context) => HomePage(username: username),
           ));
     }
   }
@@ -93,7 +96,7 @@ class _FooterMenuState extends State<FooterMenu> {
   }
 }
 
-Theme Footer(BuildContext context, int index) {
+Theme Footer(BuildContext context, int index, String username) {
   return Theme(
     data: Theme.of(context).copyWith(
       // This custom theme only applies to the BottomNavigationBar.
@@ -105,6 +108,9 @@ Theme Footer(BuildContext context, int index) {
                     0.6)), // This will affect the unselected item color.
           ),
     ),
-    child: FooterMenu(index: index),
+    child: FooterMenu(
+      index: index,
+      username: username,
+    ),
   );
 }

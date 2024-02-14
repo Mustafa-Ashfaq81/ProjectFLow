@@ -1,14 +1,35 @@
-// import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:my_app/models/taskmodel.dart';
+// import 'package:my_app/models/taskmodel.dart';
 
 class UserModel {
   final String? username;
   final String? id;
   final String? email;
-  List<Task>? tasks;
+  List<Map<String, dynamic>>? tasks;
 
   UserModel({this.id, this.username, this.email, this.tasks});
+
+  factory UserModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final data = snapshot.data()!;
+    final tasksMap = data['tasks'] as List<Map<String, dynamic>>?;
+
+    if (tasksMap != null) {
+      return UserModel(
+        id: snapshot.id,
+        email: data['email'],
+        username: data['username'],
+        tasks: tasksMap,
+      );
+    } else {
+      return UserModel(
+        id: snapshot.id,
+        email: data['email'],
+        username: data['username'],
+        tasks: [],
+      );
+    }
+  }
 
   static UserModel fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
@@ -27,11 +48,17 @@ class UserModel {
 
 Stream<List<UserModel>> readUser() {
   final userCollection = FirebaseFirestore.instance.collection("users");
-  return userCollection.snapshots().map((qureySnapshot) => qureySnapshot.docs
+  return userCollection.snapshots().map((querySnapshot) => querySnapshot.docs
       .map(
         (e) => UserModel.fromSnapshot(e),
       )
       .toList());
+}
+
+Future<List<String>> getallUsers() async {
+  final QuerySnapshot<Map<String, dynamic>> snapshot =
+      await FirebaseFirestore.instance.collection("users").get();
+  return snapshot.docs.map((doc) => doc['username'] as String).toList();
 }
 
 void createUser(UserModel userModel) {

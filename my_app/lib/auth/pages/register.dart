@@ -4,6 +4,8 @@ import 'package:my_app/auth/pages/login.dart';
 import 'package:my_app/auth/services/authservice.dart';
 import 'package:my_app/pages/home.dart';
 import 'package:my_app/models/usermodel.dart';
+import 'package:my_app/models/taskmodel.dart';
+import '../../common/toast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -186,27 +188,38 @@ class _RegisterPageState extends State<RegisterPage> {
     String name = _usernameController.text;
 
     if (password != pass) {
-      //showmsg(message : "passwords not matching");
-      print("passwords not matching..");
+      showmsg(message: "passwords not matching");
     } else {
       setState(() {
         isSigningUp = true;
       });
-      User? user = await _auth.registeracc(email, password);
-
-      if (user != null) {
-        print("User is successfully created");
-        createUser(UserModel(username: name, email: email, tasks: []));
-        // Navigator.pushNamed(context, "/home");
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(
-                email: email,
-              ),
-            ));
+      var allusernames = await getallUsers();
+      if (allusernames.contains(name) == true) {
+        showmsg(message: "username already taken");
       } else {
-        print(" some error occurred ... has been TOASTED");
+        User? user = await _auth.registeracc(email, password);
+
+        if (user != null) {
+          print("User is successfully created");
+          List<Map<String, dynamic>>? mappedtasks = maptasks(get_rand_task());
+          try {
+            createUser(
+                UserModel(username: name, email: email, tasks: mappedtasks));
+            print("user model created");
+          } catch (e) {
+            print("got-some-err ---> $e");
+          }
+          // Navigator.pushNamed(context, "/home");
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(
+                  username: name,
+                ),
+              ));
+        } else {
+          print(" some error occurred ... has been TOASTED");
+        }
       }
       setState(() {
         isSigningUp = false;
