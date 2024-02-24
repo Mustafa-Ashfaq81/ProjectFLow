@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-
 Widget fetchTasks(String status, String username) {
   return FutureBuilder<QuerySnapshot>(
     future: FirebaseFirestore.instance.collection('users').get(),
@@ -54,7 +52,11 @@ Widget fetchTasks(String status, String username) {
 
 Widget completedIdeasView(List<Map<String, dynamic>> headings) {
   return headings.isEmpty
-      ? Text("No completed task yet")
+      ? Padding(
+          padding: const EdgeInsets.only(
+            top: 10.0,
+          ),
+          child: Center(child: Text("No completed task yet")))
       : SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
@@ -110,16 +112,21 @@ Widget completedIdeasView(List<Map<String, dynamic>> headings) {
           ));
 }
 
-
 Widget inprogressIdeasView(List<Map<String, dynamic>> headings) {
   return headings.isEmpty
-      ? Text("No task in progress")
+      ? Padding(
+          padding: const EdgeInsets.only(
+            top: 10.0,
+          ),
+          child: Center(child: Text("No task in progress")))
       : Padding(
           padding:
               const EdgeInsets.only(right: 20.0), // Adjust the margin as needed
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: headings.map((task) => headings.indexOf(task) % 2 == 0
+            children: headings
+                .map(
+                  (task) => headings.indexOf(task) % 2 == 0
                       ? Container(
                           margin: const EdgeInsets.only(left: 30.0, top: 10.0),
                           height: 90.0,
@@ -157,9 +164,9 @@ Widget inprogressIdeasView(List<Map<String, dynamic>> headings) {
                               ),
                             ),
                           ),
-                      ),
+                        ),
                 )
                 .toList(),
-        ),
-    );
+          ),
+        );
 }

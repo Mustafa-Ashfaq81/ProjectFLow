@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum MenuAction { logout }
+
 Future<bool> showLogOutDialog(BuildContext context) {
   return showDialog<bool>(
     context: context,

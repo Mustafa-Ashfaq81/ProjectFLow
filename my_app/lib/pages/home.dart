@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/services/authservice.dart';
 import 'package:my_app/common/logoutdialog.dart';
-import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/taskstatus.dart';
+import 'package:my_app/components/footer.dart';
+import 'package:my_app/components/image.dart';
+import 'package:my_app/components/search.dart';
+import 'package:my_app/models/taskmodel.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
-  HomePage({
+  const HomePage({
     Key? key,
     required this.username,
   }) : super(key: key);
@@ -15,17 +18,44 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-enum MenuAction { logout }
-
 class _HomePageState extends State<HomePage> {
+  // _HomePageState() { //constructor(init) for async functions
+  //   print("init-state-async");
+  //   atload(); //async func
+  // }
+
   final FirebaseAuthService _auth = FirebaseAuthService();
-  String username = "";
+  TextEditingController querycontroller = TextEditingController();
+
+  Widget completedtasks = Text("loading-at-init-state");
+  Widget inprogresstasks = Text("loading-at-init-state");
+  Widget profilepic = Text("loading-at-init-state");
+
   final int idx = 0;
+  String username = "";
+  String currquery = "";
+  List<String> headings = [];
 
   @override
   void initState() {
     super.initState();
+    print("init-state-sync");
     username = widget.username;
+    //instantiate this data only once (at page load)
+    completedtasks = fetchTasks("completed", username);
+    inprogresstasks = fetchTasks("progress", username);
+    profilepic = ImageSetter(username: username);
+    atload();
+  }
+
+  Future<void> atload() async {
+    headings = await getTaskHeadings(username);
+  }
+
+  @override
+  void dispose() {
+    querycontroller.dispose();
+    super.dispose();
   }
 
   @override
@@ -44,12 +74,11 @@ class _HomePageState extends State<HomePage> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil("/", (_) => false);
                   }
-                  ;
               }
             },
             itemBuilder: (context) {
               return [
-                PopupMenuItem<MenuAction>(
+                const PopupMenuItem<MenuAction>(
                   value: MenuAction.logout,
                   child: Text('Log out'),
                 ),
@@ -69,18 +98,14 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Welcome back!',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  CircleAvatar(
-                    backgroundImage: AssetImage(
-                        'pictures/profile.png'), // Your profile image
-                    radius: 24, // Adjust as needed
-                  ),
+                  profilepic,
                 ],
               ),
             ),
@@ -88,7 +113,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(left: 30.0, top: 0.0),
               child: Text(
                 username, // Your name
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'PilotExtended',
                   fontSize: 23,
                   fontWeight: FontWeight.bold,
@@ -101,37 +126,59 @@ class _HomePageState extends State<HomePage> {
                     20), // Adjust this value as needed to control space below your name
             Padding(
               padding: const EdgeInsets.only(
-                  right: 20.0), // Adjust the margin as needed
-              child: Container(
-                width: 410, // Width of the search box
-                height: 85, // Height of the search box
-                padding: EdgeInsets.only(
-                    left: 30), // Padding inside the container for alignment
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search Tasks',
-                    hintStyle: TextStyle(
-                      fontFamily: 'Inter',
-                      color: Color(0xFF000000), // Adjust the hint color
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(8), // Radius of the text field
-                      borderSide: BorderSide.none, // Removes default border
-                    ),
-                    filled: true, // Needed for fillColor to work
-                    fillColor:
-                        Color(0xFFFFFFFF), // Background color of the text field
-                    prefixIcon: Icon(
-                      Icons.search, // Use the search icon
-                      color: Color(0xFF000000), // Adjust the icon color
+                right: 10.0,
+                top: 20.0,
+                left: 10.0,
+                bottom: 20.0,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: querycontroller,
+                      decoration: InputDecoration(
+                          hintText: 'Search Task',
+                          hintStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            color: Color(0xFF000000), // Adjust the hint color
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                                8), // Radius of the text field
+                            borderSide:
+                                BorderSide.none, // Removes default border
+                          ),
+                          filled: true, // Needed for fillColor to work
+                          fillColor: Color(0xFFFFFFFF)),
+                      onChanged: (text) {
+                        setState(() {
+                          currquery = text;
+                        });
+                        if (currquery != "") {
+                          showSearch(
+                              context: context,
+                              delegate: SearchTasks(
+                                  username: username, headings: headings));
+                          querycontroller.clear();
+                        }
+                      },
+                      // onSubmitted:  showSearch(context: context, delegate: SearchTasks());,
                     ),
                   ),
-                ),
+                  IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        showSearch(
+                            context: context,
+                            delegate: SearchTasks(
+                                username: username, headings: headings));
+                      } // Simulate search button press
+                      ),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30.0, top: 0.0),
+            ), // Padding inside the container for alignment
+            const Padding(
+              padding: EdgeInsets.only(left: 30.0, top: 0.0),
               child: Text(
                 'Completed Tasks', // Your name
                 style: TextStyle(
@@ -141,9 +188,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            fetchTasks("completed", username),
-            Padding(
-              padding: const EdgeInsets.only(left: 30.0, top: 20.0),
+            completedtasks,
+            const Padding(
+              padding: EdgeInsets.only(left: 30.0, top: 20.0),
               child: Text(
                 'Ongoing Projects', // Your name
                 style: TextStyle(
@@ -153,8 +200,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            fetchTasks("progress", username),
-            SizedBox(height: 20),
+            inprogresstasks,
+            const SizedBox(height: 20),
           ],
         ),
       ),

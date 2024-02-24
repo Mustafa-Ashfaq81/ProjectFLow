@@ -6,7 +6,8 @@ class Task {
   String? status;
   String? duedate;
   String? duehour;
-  List<Subtask> subtasks;
+  //array of usernames of collaborating members of this task (except my username)
+  List<Subtask> subtasks; //subtasks should also have status to show progress?
 
   Task({
     required this.heading,
@@ -83,6 +84,26 @@ void updateTask(UserModel userModel) {
   ).toJson();
 
   userCollection.doc(userModel.id).update(newData);
+}
+
+Future<List<String>> getTaskHeadings(String username) async {
+  print("get-headings");
+  QuerySnapshot<Map<String, dynamic>> users =
+      await FirebaseFirestore.instance.collection('users').get();
+
+  List<String> headings = [];
+
+  for (var doc in users.docs) {
+    if (doc.data()['username'] == username) {
+      List tasks = doc.data()['tasks'];
+      for (var item in tasks) {
+        headings.add(item['heading']);
+      }
+      break; // Exit since we found the user
+    }
+  }
+  print("got-headings");
+  return headings;
 }
 
 List<Task> get_rand_task() {

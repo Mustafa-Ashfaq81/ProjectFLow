@@ -82,6 +82,12 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
   }
 }
 
+void testingfunc() {
+  int x = 5;
+  print("$x my app is being built.....");
+}
+
+
 // // {-theme: ThemeData(
 //   // useMaterial3: true, // Uncomment if you want to use Material 3 features
 //   primaryColor: Color(0xFFFFE6C9),
@@ -90,10 +96,3 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
 //     buttonColor: Color(0xFFFFE6C9), //  Use this for buttons or specify in button style
 //   ),
 // ),}
-
-void testingfunc() {
-  int x = 5;
-  print("$x my app is being built.....");
-}
-
-
