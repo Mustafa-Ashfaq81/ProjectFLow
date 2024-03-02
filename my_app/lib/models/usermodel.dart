@@ -6,6 +6,7 @@ class UserModel {
   final String? id;
   final String? email;
   List<Map<String, dynamic>>? tasks;
+  //settings as a separate class or maybe directly here
 
   UserModel({this.id, this.username, this.email, this.tasks});
 
@@ -15,6 +16,8 @@ class UserModel {
     final tasksMap = data['tasks'] as List<Map<String, dynamic>>?;
 
     if (tasksMap != null) {
+      // final tasks =
+      //     tasksMap.map((taskData) => MapEntry(Task.fromMap(taskData))).toList();
       return UserModel(
         id: snapshot.id,
         email: data['email'],
@@ -58,6 +61,7 @@ Stream<List<UserModel>> readUser() {
 Future<List<String>> getallUsers() async {
   final QuerySnapshot<Map<String, dynamic>> snapshot =
       await FirebaseFirestore.instance.collection("users").get();
+  // Extract names from User objects instead of returning the User objects themselves
   return snapshot.docs.map((doc) => doc['username'] as String).toList();
 }
 
@@ -75,20 +79,14 @@ void createUser(UserModel userModel) {
   userCollection.doc(id).set(newUser);
 }
 
-void updateUserData(UserModel userModel) {
+void deleteUserData(String username) async {
   final userCollection = FirebaseFirestore.instance.collection("users");
-
-  final newData = UserModel(
-    username: userModel.username,
-    email: userModel.email,
-    tasks: userModel.tasks,
-    id: userModel.id,
-  ).toJson();
-
-  userCollection.doc(userModel.id).update(newData);
-}
-
-void deleteUserData(String id) {
-  final userCollection = FirebaseFirestore.instance.collection("users");
-  userCollection.doc(id).delete();
+  final snapshot =
+      await userCollection.where('username', isEqualTo: username).get();
+  final doc = snapshot.docs.first;
+  try {
+    doc.reference.delete();
+  } catch (e) {
+    print("err deleting data  ... $e");
+  }
 }

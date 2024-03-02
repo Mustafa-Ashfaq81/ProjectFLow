@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/colabrequests.dart';
 import 'package:my_app/models/usermodel.dart';
-import 'package:my_app/models/taskmodel.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ColabPage extends StatefulWidget {
   final String username;
@@ -37,9 +35,9 @@ class _ColabPageState extends State<ColabPage> {
           otherusers.add(user);
         }
       }
-      reqtasks = await getreq(username, otherusers);
+      reqtasks = await get_ifany_requests(username, otherusers);
     }
-    requests = fetchRequests(reqtasks, username);
+    requests = showRequests(reqtasks, username);
   }
 
   @override
@@ -59,24 +57,8 @@ class _ColabPageState extends State<ColabPage> {
               appBar: AppBar(
                 title: Text('Colab Page'),
               ),
-              // body: Center(
-              //   child: Text(
-              //       'This is where you get your collaboration requests and your messages.'),
-              // ),
               body: Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      sendColabreq(["dbz"]);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                    ),
-                    child: Text('Send  req'),
-                  ),
-                  SizedBox(height: 20),
-                  requests,
-                ],
+                children: [requests],
               ),
               bottomNavigationBar: Footer(context, idx, username),
             );
@@ -84,23 +66,5 @@ class _ColabPageState extends State<ColabPage> {
         },
       );
     });
-  }
-
-  void sendColabreq(List<String> usernames) async {
-    print('sending req...');
-    try {
-      final colabCollection = FirebaseFirestore.instance.collection('colab');
-      final index = await getTaskindex("t_three", username);
-      Map<String, dynamic> data = {
-        'req_recv': usernames,
-        'req_sender': username,
-        'req_task': index
-      };
-      print(data);
-      await colabCollection.add(data);
-      print('Colab req sent successfully.');
-    } catch (e) {
-      print('Error sending req: $e');
-    }
   }
 }

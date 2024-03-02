@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/models/taskmodel.dart';
 
-Widget fetchRequests(List<Map<String, dynamic>> requests, String username) {
-  // return Text("nope");
-  print("req-fetch..   ");
+Widget showRequests(List<Map<String, dynamic>> requests, String username) {
   return requests.isEmpty
       ? Padding(
           padding: const EdgeInsets.only(
@@ -114,15 +112,18 @@ List<Map<String, dynamic>> getRequests(
   return reqs;
 }
 
-Future<List<Map<String, dynamic>>> getreq(
+Future<List<Map<String, dynamic>>> get_ifany_requests(
     String username, List<String> otherusers) async {
   List<Map<String, dynamic>> reqtasks = [];
   var snapshot = await FirebaseFirestore.instance.collection('colab').get();
   List<Map<String, dynamic>> reqs = getRequests(username, snapshot);
   for (var req in reqs) {
     var tsk = await getSpecificTask(req);
-    reqtasks
-        .add({'sender': req["sender"], 'heading': tsk, "index": req['task']});
+    reqtasks.add({
+      'sender': req["sender"],
+      'heading': tsk['heading'],
+      "index": req['task']
+    });
   }
   print("got other users $otherusers $reqtasks");
   // return fetchRequests(reqtasks);
@@ -131,7 +132,33 @@ Future<List<Map<String, dynamic>>> getreq(
 
 void acceptreq(Map<String, dynamic> task, String username) async {
   //addTask(task['task] of that user to this user)
+  var updatedtask = await getSpecificTask(task);
+  updatedtask['collaborators'].add(username);
+
+  final userCollection = FirebaseFirestore.instance.collection("users");
+  try {
+    //add collaborator(this user who accepted request) to sender's task
+    var snapshot =
+        await userCollection.where('username', isEqualTo: task['sender']).get();
+    var doc = snapshot.docs.first;
+    List<dynamic> tasks = doc.data()['tasks'];
+    tasks[task['index']] = updatedtask;
+    await doc.reference.update({'tasks': tasks});
+
+    //add that task for user who accepted the colab request
+    snapshot =
+        await userCollection.where('username', isEqualTo: username).get();
+    doc = snapshot.docs.first;
+    tasks = doc.data()['tasks'];
+    tasks.add(updatedtask);
+    await doc.reference.update({'tasks': tasks});
+  } catch (e) {
+    print("accepting req err $e");
+  }
+
+  print("accepted-req-successfully");
 }
+
 void rejectreq(Map<String, dynamic> task, String username) async {
   try {
     print("rej---$task");
@@ -157,5 +184,5 @@ void rejectreq(Map<String, dynamic> task, String username) async {
   } catch (error) {
     print("Error rejecting reqst: $error");
   }
-  print("rejected");
+  print("rejected-req-successfully");
 }
