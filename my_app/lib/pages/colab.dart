@@ -5,7 +5,7 @@ import 'package:my_app/models/usermodel.dart';
 
 class ColabPage extends StatefulWidget {
   final String username;
-  ColabPage({required this.username});
+  const ColabPage({super.key, required this.username});
   @override
   _ColabPageState createState() => _ColabPageState(username: username);
 }
@@ -15,7 +15,7 @@ class _ColabPageState extends State<ColabPage> {
   final int idx = 4;
   _ColabPageState({required this.username});
 
-  Widget requests = Text("at-init-state");
+  Widget requests = const Text("at-init-state");
   List<Map<String, dynamic>> reqtasks = [];
   List<String> otherusers = [];
 
@@ -47,7 +47,7 @@ class _ColabPageState extends State<ColabPage> {
         future: atload(), // Call atload() directly here
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
                 child:
                     CircularProgressIndicator()); // Show loading indicator while fetching data
           } else if (snapshot.hasError) {
@@ -55,7 +55,11 @@ class _ColabPageState extends State<ColabPage> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text('Colab Page'),
+                title: const Text('Colab Page',
+                style: TextStyle(color: Colors.white),),
+                centerTitle: true, 
+                backgroundColor: Colors.black,
+                iconTheme: IconThemeData(color: Colors.white),
               ),
               body: Column(
                 children: [requests],

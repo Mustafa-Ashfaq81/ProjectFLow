@@ -6,7 +6,7 @@ Widget fetchTasks(String status, String username) {
     future: FirebaseFirestore.instance.collection('users').get(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator(); // Show loading indicator while fetching data
+        return const CircularProgressIndicator(); // Show loading indicator while fetching data
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
@@ -52,8 +52,8 @@ Widget fetchTasks(String status, String username) {
 
 Widget completedIdeasView(List<Map<String, dynamic>> headings) {
   return headings.isEmpty
-      ? Padding(
-          padding: const EdgeInsets.only(
+      ? const Padding(
+          padding: EdgeInsets.only(
             top: 10.0,
           ),
           child: Center(child: Text("No completed task yet")))
@@ -73,14 +73,14 @@ Widget completedIdeasView(List<Map<String, dynamic>> headings) {
                               height: 200.0,
                               width: 200.0,
                               decoration: BoxDecoration(
-                                color: Color(0xFFE16C00).withOpacity(0.48),
+                                color: const Color(0xFFE16C00).withOpacity(0.48),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Center(
                                 child: Text(
                                   task['heading'],
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                   ),
                                 ),
@@ -93,14 +93,14 @@ Widget completedIdeasView(List<Map<String, dynamic>> headings) {
                             height: 200.0,
                             width: 200.0,
                             decoration: BoxDecoration(
-                              color: Color(0xFF141310),
+                              color: const Color(0xFF141310),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Center(
                               child: Text(
                                 task['heading'],
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
@@ -114,8 +114,8 @@ Widget completedIdeasView(List<Map<String, dynamic>> headings) {
 
 Widget inprogressIdeasView(List<Map<String, dynamic>> headings) {
   return headings.isEmpty
-      ? Padding(
-          padding: const EdgeInsets.only(
+      ? const Padding(
+          padding: EdgeInsets.only(
             top: 10.0,
           ),
           child: Center(child: Text("No task in progress")))
@@ -132,14 +132,14 @@ Widget inprogressIdeasView(List<Map<String, dynamic>> headings) {
                           height: 90.0,
                           width: 450.0,
                           decoration: BoxDecoration(
-                            color: Color(0xFFE16C00).withOpacity(0.48),
+                            color: const Color(0xFFE16C00).withOpacity(0.48),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Center(
                             child: Text(
                               task['heading'],
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
@@ -152,14 +152,14 @@ Widget inprogressIdeasView(List<Map<String, dynamic>> headings) {
                           height: 90.0,
                           width: 450.0,
                           decoration: BoxDecoration(
-                            color: Color(0xFF141310),
+                            color: const Color(0xFF141310),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Center(
                             child: Text(
                               task['heading'],
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),

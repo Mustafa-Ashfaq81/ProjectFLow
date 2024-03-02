@@ -8,7 +8,7 @@ import 'package:my_app/pages/colab.dart';
 class FooterMenu extends StatefulWidget {
   final int index;
   final String username;
-  FooterMenu({required this.index, required this.username});
+  const FooterMenu({super.key, required this.index, required this.username});
   @override
   _FooterMenuState createState() =>
       _FooterMenuState(selectedIndex: index, username: username);
@@ -103,7 +103,7 @@ Theme Footer(BuildContext context, int index, String username) {
       canvasColor: Colors.black, // Forcefully sets the background color
       primaryColor: Colors.white, // This will affect the selected item color.
       textTheme: Theme.of(context).textTheme.copyWith(
-            caption: TextStyle(
+            bodySmall: TextStyle(
                 color: Colors.white.withOpacity(
                     0.6)), // This will affect the unselected item color.
           ),

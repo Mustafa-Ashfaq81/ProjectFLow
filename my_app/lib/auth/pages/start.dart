@@ -9,8 +9,9 @@ class StartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Home')),
-         backgroundColor: Colors.black,
+        title: const Center(child: Text('Home',
+        style: TextStyle(color: Colors.white),)),
+        backgroundColor: Colors.black,
       ),
       body: Center(
         child: Column(
@@ -20,21 +21,21 @@ class StartPage extends StatelessWidget {
               width: 150, // Increase the width of the buttons
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push( context, MaterialPageRoute(builder: (context) => LoginPage()),
+                  Navigator.push( context, MaterialPageRoute(builder: (context) => const LoginPage()),
                     );
                 },
-                child: Text('Login'),
+                child: const Text('Login'),
               ),
             ),
-            SizedBox(height: 20), // Adding some spacing
+            const SizedBox(height: 20), // Adding some spacing
             SizedBox(
               width: 150,
               child: ElevatedButton(
                 onPressed: () {
-                   Navigator.push( context, MaterialPageRoute(builder: (context) => RegisterPage()),
+                   Navigator.push( context, MaterialPageRoute(builder: (context) => const RegisterPage()),
                     );
                 },
-                child: Text('Register'),
+                child: const Text('Register'),
               ),
             )
           ],
