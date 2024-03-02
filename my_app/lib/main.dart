@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
     ),
 
 
-      initialRoute: '/',
+      initialRoute: '/tasks',
       routes: {
         // ignore: prefer_const_constructors
         '/': (context) => StartPage(),
