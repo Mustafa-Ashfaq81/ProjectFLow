@@ -6,6 +6,9 @@ import 'package:my_app/components/footer.dart';
 import 'package:my_app/components/image.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
+import 'package:my_app/pages/settings.dart';
+
+enum MenuAction { logout, settings }
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -41,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     print("init-state-sync");
     username = widget.username;
+    // editTask(username, "t_three"); //for testing
     //instantiate this data only once (at page load)
     completedtasks = fetchTasks("completed", username);
     inprogresstasks = fetchTasks("progress", username);
@@ -74,6 +78,11 @@ class _HomePageState extends State<HomePage> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil("/", (_) => false);
                   }
+                  break;
+                case MenuAction.settings:
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SettingsPage(username: username)));
+                  break;
               }
             },
             itemBuilder: (context) {
@@ -81,6 +90,10 @@ class _HomePageState extends State<HomePage> {
                 const PopupMenuItem<MenuAction>(
                   value: MenuAction.logout,
                   child: Text('Log out'),
+                ),
+                const PopupMenuItem<MenuAction>(
+                  value: MenuAction.settings,
+                  child: Text('Settings'),
                 ),
               ];
             },

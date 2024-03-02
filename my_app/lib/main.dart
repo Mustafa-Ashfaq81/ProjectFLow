@@ -8,6 +8,7 @@ import 'package:my_app/pages/task.dart';
 import 'package:my_app/pages/settings.dart';
 import 'package:my_app/pages/chat.dart';
 import 'package:my_app/pages/calendar.dart';
+import 'package:my_app/pages/colab.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter/gestures.dart';
 
@@ -75,6 +76,9 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
               username: "routedfrommainpage",
             ),
         '/chat': (context) => ChatPage(
+              username: "routedfrommainpage",
+            ),
+          '/colab': (context) => ColabPage(
               username: "routedfrommainpage",
             ),
       },

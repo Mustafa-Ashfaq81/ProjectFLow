@@ -99,7 +99,7 @@ Future<List<String>> getTaskHeadings(String username) async {
       for (var item in tasks) {
         headings.add(item['heading']);
       }
-      break; // Exit since we found the user
+      break; // Exit the loop since we found the user
     }
   }
   print("got-headings");
@@ -151,3 +151,89 @@ List<Task> get_rand_task() {
         subtasks: [])
   ];
 }
+
+void editTask(String username, String heading) async {
+  final userCollection = FirebaseFirestore.instance.collection("users");
+  final snapshot =
+      await userCollection.where('username', isEqualTo: username).get();
+  final doc =
+      snapshot.docs.first; //since only there is one user with that username
+
+  try {
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == heading) {
+        tasks[i]['status'] = "latest-status";
+        for (int j = 0; j < tasks[i]['subtasks'].length; j++) {
+          tasks[i]['subtasks'][j]['content'] = 'lat-3-est-contnet';
+        }
+      }
+    }
+    await doc.reference.update({'tasks': tasks});
+  } catch (e) {
+    print("editing task err $e");
+  }
+
+  print("editing-done");
+}
+
+List<Object> getTasks(String username, QuerySnapshot snapshot) {
+  List<Object> tasks =
+      snapshot.docs.where((doc) => doc['username'] == username).map((doc) {
+    final dynamic tsk = doc['tasks'];
+    if (tsk is List<dynamic>) {
+      return tsk;
+    } else if (tsk is String) {
+      return tsk;
+    }
+    return ''; // Return empty string as fallback
+  }).toList();
+
+  return tasks;
+}
+
+Future<String> getSpecificTask(req) async {
+  final alltasks = await FirebaseFirestore.instance.collection('users').get();
+  List<dynamic> tasks = [];
+  for (var doc in alltasks.docs) {
+    if (doc.data()['username'] == req["sender"]) {
+      tasks = doc.data()['tasks'];
+    }
+  }
+
+  try {
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i] is Map<String, dynamic> && i == req['task']) {
+        // print("ret tsk");
+        return tasks[i]['heading'];
+      }
+    }
+  } catch (e) {
+    print("err --- $e");
+  }
+  return "";
+}
+
+Future<int> getTaskindex(String heading, String username) async {
+  final userCollection = FirebaseFirestore.instance.collection("users");
+  final snapshot =
+      await userCollection.where('username', isEqualTo: username).get();
+  final doc =
+      snapshot.docs.first; //since only there is one user with that username
+
+  try {
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == heading) {
+        return i;
+      }
+    }
+  } catch (e) {
+    print("got er $e");
+  }
+  return -1;
+}
+
+void addTask(String username) async {}
+
+void deleteTask(String username) async {}

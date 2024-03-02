@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_app/pages/task.dart';
 import 'package:my_app/pages/calendar.dart';
 import 'package:my_app/pages/chat.dart';
-import 'package:my_app/pages/settings.dart';
 import 'package:my_app/pages/home.dart';
+import 'package:my_app/pages/colab.dart';
 
 class FooterMenu extends StatefulWidget {
   final int index;
@@ -47,11 +47,11 @@ class _FooterMenuState extends State<FooterMenu> {
             builder: (context) => CalendarPage(username: username),
           ));
     } else if (index == 4) {
-      print("update settings");
+      print("colab requests");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SettingsPage(username: username),
+            builder: (context) => ColabPage(username: username),
           ));
     } else {
       print("go to home");
@@ -72,8 +72,8 @@ class _FooterMenuState extends State<FooterMenu> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.chat),
-          label: 'Chat',
+          icon: Icon(Icons.text_snippet),
+          label: 'Notes',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
@@ -84,8 +84,8 @@ class _FooterMenuState extends State<FooterMenu> {
           label: 'Calendar',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: 'Settings',
+          icon: Icon(Icons.chat),
+          label: 'Collaboration',
         ),
       ],
       currentIndex: selectedIndex,
