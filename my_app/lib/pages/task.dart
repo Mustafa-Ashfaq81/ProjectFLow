@@ -159,31 +159,35 @@ class _TaskPageState extends State<TaskPage> {
         ]));
   }
 
-  Widget _buildTeamMember(String name, Color color) {
-    return Container(
-      height: 40.0,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      margin: const EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: Colors.grey, width: 1.0),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Icon(Icons.person_outline, color: Colors.grey),
-          const SizedBox(width: 8),
-          Text(name),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () {},
-            child: const Icon(Icons.close, color: Colors.red),
-          ),
-        ],
-      ),
-    );
-  }
+ Widget _buildTeamMember(String name, Color color) {
+  return Container(
+    height: 40.0,
+    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    margin: const EdgeInsets.only(right: 10),
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(12.0),
+      border: Border.all(color: Colors.grey, width: 1.0),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Icon(Icons.person_outline, color: Colors.grey),
+        const SizedBox(width: 8),
+        Text(name),
+        const SizedBox(width: 8),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              teamMembers.removeWhere((member) => member["name"] == name); // Remove the member by matching the name
+            });
+          },
+          child: const Icon(Icons.close, color: Colors.red),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildTimeAndDateSection() {
     return Column(
