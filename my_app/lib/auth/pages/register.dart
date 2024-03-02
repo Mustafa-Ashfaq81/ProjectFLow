@@ -201,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         if (user != null) {
           print("User is successfully created");
-          List<Map<String, dynamic>>? mappedtasks = maptasks(get_rand_task());
+          List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
           try {
             createUser(
                 UserModel(username: name, email: email, tasks: mappedtasks));
