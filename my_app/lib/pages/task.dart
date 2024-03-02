@@ -37,11 +37,13 @@ class _TaskPageState extends State<TaskPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: const Color(0xFFFFE6C9),
       title: const Text(
         'Create New Task',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: Colors.white),
       ),
+        centerTitle: true, 
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
     );
   }
 
@@ -131,7 +133,7 @@ class _TaskPageState extends State<TaskPage> {
           ),
           // const Spacer(),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () async {
               final List<String> allusers = await getallUsers();
               final List<String> otherusers = [];
@@ -287,8 +289,7 @@ class _TaskPageState extends State<TaskPage> {
       ),
       child: TextButton(
         style: TextButton.styleFrom(
-          backgroundColor: Colors.green,
-          primary: Colors.white,
+          foregroundColor: Colors.white, backgroundColor: Colors.green,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),

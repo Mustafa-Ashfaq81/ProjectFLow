@@ -4,8 +4,8 @@ import 'package:my_app/models/taskmodel.dart';
 
 Widget showRequests(List<Map<String, dynamic>> requests, String username) {
   return requests.isEmpty
-      ? Padding(
-          padding: const EdgeInsets.only(
+      ? const Padding(
+          padding: EdgeInsets.only(
             top: 10.0,
           ),
           child: Center(child: Text("No requests for collaboration yet")))
@@ -23,7 +23,7 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                           height: 200.0,
                           width: 200.0,
                           decoration: BoxDecoration(
-                            color: Color(0xFFE16C00).withOpacity(0.48),
+                            color: const Color(0xFFE16C00).withOpacity(0.48),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Column(// Use Column for vertical arrangement
@@ -32,7 +32,7 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                               child: Text(
                                 task['heading']!,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
@@ -40,7 +40,7 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                             Text(
                               task['sender']!,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
@@ -48,13 +48,13 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                               onPressed: () {
                                 acceptreq(task, username);
                               },
-                              child: Text("Accept request"),
+                              child: const Text("Accept request"),
                             ),
                             ElevatedButton(
                               onPressed: () {
                                 rejectreq(task, username);
                               },
-                              child: Text("Decline request"),
+                              child: const Text("Decline request"),
                             )
                           ]))
                       : Container(
@@ -62,7 +62,7 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                           height: 200.0,
                           width: 200.0,
                           decoration: BoxDecoration(
-                            color: Color(0xFF141310),
+                            color: const Color(0xFF141310),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Column(children: [
@@ -70,7 +70,7 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                               child: Text(
                                 task['heading']!,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
@@ -78,7 +78,7 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                             Text(
                               task['sender']!,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
@@ -86,13 +86,13 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                               onPressed: () {
                                 acceptreq(task, username);
                               },
-                              child: Text("Accept request"),
+                              child: const Text("Accept request"),
                             ),
                             ElevatedButton(
                               onPressed: () {
                                 rejectreq(task, username);
                               },
-                              child: Text("Decline request"),
+                              child: const Text("Decline request"),
                             )
                           ])))
                   .toList(),

@@ -30,9 +30,9 @@ class _HomePageState extends State<HomePage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
   TextEditingController querycontroller = TextEditingController();
 
-  Widget completedtasks = Text("loading-at-init-state");
-  Widget inprogresstasks = Text("loading-at-init-state");
-  Widget profilepic = Text("loading-at-init-state");
+  Widget completedtasks = const Text("loading-at-init-state");
+  Widget inprogresstasks = const Text("loading-at-init-state");
+  Widget profilepic = const Text("loading-at-init-state");
 
   final int idx = 0;
   String username = "";
@@ -66,7 +66,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('My Notes')),
+        title: const Center(child: Text('My Notes',
+        style: TextStyle(color: Colors.white), ),),
+        centerTitle: true, 
         actions: [
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
@@ -84,6 +86,7 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) => SettingsPage(username: username)));
                   break;
               }
+            
             },
             itemBuilder: (context) {
               return [
@@ -100,6 +103,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
         backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -134,7 +138,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             // Decrease the height here to move the search box up
-            SizedBox(
+            const SizedBox(
                 height:
                     20), // Adjust this value as needed to control space below your name
             Padding(
@@ -162,7 +166,7 @@ class _HomePageState extends State<HomePage> {
                                 BorderSide.none, // Removes default border
                           ),
                           filled: true, // Needed for fillColor to work
-                          fillColor: Color(0xFFFFFFFF)),
+                          fillColor: const Color(0xFFFFFFFF)),
                       onChanged: (text) {
                         setState(() {
                           currquery = text;
@@ -179,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   IconButton(
-                      icon: Icon(Icons.search),
+                      icon: const Icon(Icons.search),
                       onPressed: () {
                         showSearch(
                             context: context,
