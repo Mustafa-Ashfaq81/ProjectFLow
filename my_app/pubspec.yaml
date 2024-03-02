@@ -24,6 +24,7 @@ dependencies:
   firebase_storage: ^11.6.5
   fluttertoast: ^8.2.4 
   image_picker: ^1.0.7
+  logging: ^1.0.0
   #my dependencies ---------------------------------------------------------------------
 
 dev_dependencies:

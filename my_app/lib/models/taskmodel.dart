@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logging/logging.dart';
+
 
 class Task {
   String heading;
@@ -213,7 +215,25 @@ Future<void> addTask(String username, String heading, String description,
   }
 }
 
-void deleteTask(String username, String heading) async {}
+final _logger = Logger('DeleteTask');
+
+void deleteTask(String username, String taskHeading) async {
+  try {
+    final userCollection = FirebaseFirestore.instance.collection("users");
+    final snapshot = await userCollection.where('username', isEqualTo: username).get();
+    final doc = snapshot.docs.first; // Assuming there's only one user with that username
+
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    
+    tasks.removeWhere((task) => task['heading'] == taskHeading);
+    
+    await doc.reference.update({'tasks': tasks});
+    _logger.info("Task '$taskHeading' deleted successfully.");
+  } catch (e, stackTrace) {
+    _logger.severe("Error deleting task: $e", e, stackTrace);
+  }
+}
+
 
 List<Task> get_random_task() {
   //hardcoded random tasks for testing purposes
