@@ -16,8 +16,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
   // final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -31,8 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Login',
-        style: TextStyle(color: Colors.white),)),
+        title: Center(child: Text('Login')),
         automaticallyImplyLeading: false, // Remove the default back button
         backgroundColor: Colors.black,
       ),
@@ -55,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.arrow_back, color: Colors.black),
+                    child: Icon(Icons.arrow_back, color: Colors.black),
                   ),
                 ),
               ],
@@ -78,10 +77,10 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(width: 20),
+                SizedBox(width: 20),
               ],
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
 
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -91,18 +90,18 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: 'Enter your Email',
                     fillColor: Colors.white,
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey.shade400),
                     ),
-                    focusedBorder: const OutlineInputBorder(
+                    focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue),
                     ),
                   ),
                   controller: _emailController,
                 ),
 
-                const SizedBox(height: 10), // Increased height for more spacing
+                SizedBox(height: 10), // Increased height for more spacing
 
                 TextFormField(
                   obscureText: true,
@@ -110,13 +109,13 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: 'Enter your Password',
                     fillColor: Colors.white, // Set the fill color to white
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           color:
                               Colors.grey.shade400), // Change the border color
                     ),
-                    focusedBorder: const OutlineInputBorder(
+                    focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           color: Colors
                               .blue), // Change the border color when the field is selected
@@ -124,32 +123,32 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   controller: _passwordController,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        const Color(0xFF1E232C), // Button background color
+                        Color(0xFF1E232C), // Button background color
                     foregroundColor:
                         Colors.white, // Button text color set to white
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                    minimumSize: const Size(200, 50),
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                    minimumSize: Size(200, 50),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Login',
                     style: TextStyle(fontSize: 18),
                   ),
                 )
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Don't have an account? ",
                   style: TextStyle(color: Colors.grey),
                 ),
@@ -157,10 +156,10 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterPage()),
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     'Register now',
                     style: TextStyle(color: Colors.blue),
                   ),
@@ -187,10 +186,10 @@ class _LoginPageState extends State<LoginPage> {
           .where('email', isEqualTo: email)
           .get()
           .then((QuerySnapshot querySnapshot) {
-        for (var doc in querySnapshot.docs) {
+        querySnapshot.docs.forEach((doc) {
           //only one doc with that username
           user = doc['username'];
-        }
+        });
       });
       Navigator.push(
           context,

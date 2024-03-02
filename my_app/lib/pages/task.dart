@@ -37,13 +37,11 @@ class _TaskPageState extends State<TaskPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
+      backgroundColor: const Color(0xFFFFE6C9),
       title: const Text(
         'Create New Task',
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.black),
       ),
-        centerTitle: true, 
-        backgroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.white),
     );
   }
 
@@ -113,7 +111,14 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTeamMembersRow() {
-
+    // List<Map<String, dynamic>> teamMembers = [
+    //   {"name": "Robert", "color": Colors.lightBlue[100]},
+    //   {"name": "Sophia", "color": Colors.lightGreen[100]},
+    //   {"name": "Ethan", "color": Colors.lightBlue[100]},
+    //   {"name": "Olivia", "color": Colors.lightBlue[100]},
+    //   {"name": "Liam", "color": Colors.orange[100]},
+    //   {"name": "Mia", "color": Colors.yellow[100]},
+    // ];
 
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -126,7 +131,7 @@ class _TaskPageState extends State<TaskPage> {
           ),
           // const Spacer(),
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: Icon(Icons.search),
             onPressed: () async {
               final List<String> allusers = await getallUsers();
               final List<String> otherusers = [];
@@ -286,7 +291,8 @@ class _TaskPageState extends State<TaskPage> {
       ),
       child: TextButton(
         style: TextButton.styleFrom(
-          foregroundColor: Colors.white, backgroundColor: Colors.green,
+          backgroundColor: Colors.green,
+          primary: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),

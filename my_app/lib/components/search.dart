@@ -11,8 +11,8 @@ class SearchTasks extends SearchDelegate {
   @override
   ThemeData appBarTheme(BuildContext context) {
     return super.appBarTheme(context).copyWith(
-          textTheme: const TextTheme(
-            titleLarge: TextStyle(
+          textTheme: TextTheme(
+            headline6: TextStyle(
               color: Color(0xff000000), // Adjust text color if needed
             ),
           ),
@@ -57,7 +57,7 @@ class SearchTasks extends SearchDelegate {
             return ListTile(title: Text(result));
           });
     } else {
-      return const Center(
+      return Center(
         child: Text('No search results found for your query'),
       );
     }
@@ -81,7 +81,7 @@ class SearchTasks extends SearchDelegate {
             return ListTile(title: Text(result));
           });
     } else {
-      return const Center(
+      return Center(
         child: Text('No search results found for your query'),
       );
     }
@@ -99,8 +99,8 @@ class SearchUsers extends SearchDelegate<String> {
   @override
   ThemeData appBarTheme(BuildContext context) {
     return super.appBarTheme(context).copyWith(
-          textTheme: const TextTheme(
-            titleLarge: TextStyle(
+          textTheme: TextTheme(
+            headline6: TextStyle(
               color: Color(0xff000000), // Adjust text color if needed
             ),
           ),
@@ -151,7 +151,7 @@ class SearchUsers extends SearchDelegate<String> {
         },
       );
     } else {
-      return const Center(
+      return Center(
         child: Text('No search results found for your query'),
       );
     }
@@ -181,7 +181,7 @@ class SearchUsers extends SearchDelegate<String> {
         },
       );
     } else {
-      return const Center(
+      return Center(
         child: Text('No search results found for your query'),
       );
     }

@@ -32,7 +32,7 @@ Future main() async {
       ),
   );
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {  // This widget is the root of your application.
@@ -46,10 +46,10 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
       theme: ThemeData
       (
       // useMaterial3: true, // Uncomment if you want to use Material 3 features
-      primaryColor: const Color(0xFFFFE6C9),
-      scaffoldBackgroundColor: const Color(0xFFFFE6C9),
-      buttonTheme: const ButtonThemeData(
-        buttonColor: Color(0x001e232c), // Use this for buttons or specify in button styl
+      primaryColor: Color(0xFFFFE6C9),
+      scaffoldBackgroundColor: Color(0xFFFFE6C9),
+      buttonTheme: ButtonThemeData(
+        buttonColor: Color(0x1E232C), // Use this for buttons or specify in button styl
       
       ),
       fontFamily: 'Urbanist', // Apply Urbanist as the default font for your app
@@ -61,24 +61,24 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
       routes: {
         // ignore: prefer_const_constructors
         '/': (context) => StartPage(),
-        '/login': (context) => const LoginPage(),
-        '/register': (context) => const RegisterPage(),
-        '/home': (context) => const HomePage(
+        '/login': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
+        '/home': (context) => HomePage(
               username: "routedfrommainpage",
             ),
-        '/tasks': (context) => const TaskPage(
+        '/tasks': (context) => TaskPage(
               username: "routedfrommainpage",
             ),
-        '/settings': (context) => const SettingsPage(
+        '/settings': (context) => SettingsPage(
               username: "routedfrommainpage",
             ),
-        '/calendar': (context) => const CalendarPage(
+        '/calendar': (context) => CalendarPage(
               username: "routedfrommainpage",
             ),
-        '/chat': (context) => const ChatPage(
+        '/chat': (context) => ChatPage(
               username: "routedfrommainpage",
             ),
-          '/colab': (context) => const ColabPage(
+          '/colab': (context) => ColabPage(
               username: "routedfrommainpage",
             ),
       },

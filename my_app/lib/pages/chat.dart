@@ -3,7 +3,7 @@ import 'package:my_app/components/footer.dart';
 
 class ChatPage extends StatefulWidget {
   final String username;
-  const ChatPage({super.key, required this.username});
+  ChatPage({required this.username});
   @override
   _ChatPageState createState() => _ChatPageState(username: username);
 }
@@ -16,13 +16,9 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat Page',
-        style: TextStyle(color: Colors.white),),
-        centerTitle: true, 
-        backgroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.white),
+        title: Text('Chat Page'),
       ),
-      body: const Center(
+      body: Center(
         child: Text('This is where you chat with GPT.'),
       ),
       bottomNavigationBar: Footer(context, idx, username),
