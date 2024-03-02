@@ -88,7 +88,7 @@ class SearchTasks extends SearchDelegate {
   }
 }
 
-class SearchUsers extends SearchDelegate {
+class SearchUsers extends SearchDelegate<String> {
   final String username;
   final List<String> users;
 
@@ -123,27 +123,33 @@ class SearchUsers extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(
         onPressed: () {
-          close(context, null);
+          close(context, "");
         },
         icon: const Icon(Icons.arrow_back));
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    // print("build-res");
+    // print("build-results");
     List<String> res = [];
     for (var user in users) {
       if (user.toLowerCase().contains(query.toLowerCase())) {
         res.add(user);
       }
     }
-    if (res.isNotEmpty == true) {
+    if (res.isNotEmpty) {
       return ListView.builder(
-          itemCount: res.length,
-          itemBuilder: (context, index) {
-            var result = res[index];
-            return ListTile(title: Text(result));
-          });
+        itemCount: res.length,
+        itemBuilder: (context, index) {
+          var result = res[index];
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
+            },
+          );
+        },
+      );
     } else {
       return Center(
         child: Text('No search results found for your query'),
@@ -163,11 +169,17 @@ class SearchUsers extends SearchDelegate {
 
     if (res.isNotEmpty == true) {
       return ListView.builder(
-          itemCount: res.length,
-          itemBuilder: (context, index) {
-            var result = res[index];
-            return ListTile(title: Text(result));
-          });
+        itemCount: res.length,
+        itemBuilder: (context, index) {
+          var result = res[index];
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
+            },
+          );
+        },
+      );
     } else {
       return Center(
         child: Text('No search results found for your query'),

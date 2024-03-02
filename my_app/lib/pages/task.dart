@@ -1,42 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
+import 'package:my_app/models/usermodel.dart';
 
-void main() => runApp(MyApp());
+// void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TaskPage(username: 'Essa'),
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: TaskPage(username: 'Essa'),
+//     );
+//   }
+// }
 
 class TaskPage extends StatefulWidget {
   final String username;
-
   const TaskPage({Key? key, required this.username}) : super(key: key);
 
   @override
   State<TaskPage> createState() => _TaskPageState();
 }
 
-class _TaskPageState extends State<TaskPage> 
-{
+class _TaskPageState extends State<TaskPage> {
+  final int idx = 2;
+  List<Map<String, dynamic>> teamMembers = [];
+
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
-      bottomNavigationBar: Footer(context, 2, widget.username), 
+      bottomNavigationBar: Footer(context, idx, widget.username),
     );
   }
 
   AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: const Color(0xFFFFE6C9),
-      title: const Text('Create New Task'),
+      title: const Text(
+        'Create New Task',
+        style: TextStyle(color: Colors.black),
+      ),
     );
   }
 
@@ -92,7 +97,8 @@ class _TaskPageState extends State<TaskPage>
       ),
       child: TextField(
         maxLength: maxLines == 1 ? 50 : 500,
-        keyboardType: maxLines == 1 ? TextInputType.text : TextInputType.multiline,
+        keyboardType:
+            maxLines == 1 ? TextInputType.text : TextInputType.multiline,
         maxLines: maxLines,
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -105,24 +111,52 @@ class _TaskPageState extends State<TaskPage>
   }
 
   Widget _buildTeamMembersRow() {
-    // Dummy data for team members, replace with your actual data source
-    List<Map<String, dynamic>> teamMembers = [
-      {"name": "Robert", "color": Colors.lightBlue[100]},
-      {"name": "Sophia", "color": Colors.lightGreen[100]},
-      {"name": "Ethan", "color": Colors.lightBlue[100]},
-      {"name": "Olivia", "color": Colors.lightBlue[100]},
-      {"name": "Liam", "color": Colors.orange[100]},
-      {"name": "Mia", "color": Colors.yellow[100]},
-    ];
+    // List<Map<String, dynamic>> teamMembers = [
+    //   {"name": "Robert", "color": Colors.lightBlue[100]},
+    //   {"name": "Sophia", "color": Colors.lightGreen[100]},
+    //   {"name": "Ethan", "color": Colors.lightBlue[100]},
+    //   {"name": "Olivia", "color": Colors.lightBlue[100]},
+    //   {"name": "Liam", "color": Colors.orange[100]},
+    //   {"name": "Mia", "color": Colors.yellow[100]},
+    // ];
 
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: teamMembers
-            .map((member) => _buildTeamMember(member["name"], member["color"]))
-            .toList(),
-      ),
-    );
+        scrollDirection: Axis.horizontal,
+        child: Row(children: [
+          Row(
+            children: teamMembers
+                .map((member) =>
+                    _buildTeamMember(member["name"], member["color"]))
+                .toList(),
+          ),
+          // const Spacer(),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () async {
+              final List<String> allusers = await getallUsers();
+              final List<String> otherusers = [];
+              for (var user in allusers) {
+                if (user != widget.username) {
+                  otherusers.add(user);
+                }
+              }
+              Future<String?> selectedUsername =  showSearch(
+                context: context,
+                delegate:
+                    SearchUsers(username: widget.username, users: otherusers)
+                        as SearchDelegate<String>,
+              );
+              selectedUsername.then((username) {
+                if (username != "") {
+                  setState(() {
+                    teamMembers
+                        .add({"name": username, "color": Colors.yellow[100]});
+                  });
+                }
+              });
+            },
+          ),
+        ]));
   }
 
   Widget _buildTeamMember(String name, Color color) {
@@ -143,9 +177,7 @@ class _TaskPageState extends State<TaskPage>
           Text(name),
           const SizedBox(width: 8),
           GestureDetector(
-            onTap: () 
-            {
-            },
+            onTap: () {},
             child: const Icon(Icons.close, color: Colors.red),
           ),
         ],
@@ -153,40 +185,39 @@ class _TaskPageState extends State<TaskPage>
     );
   }
 
- Widget _buildTimeAndDateSection() 
- {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          _buildIconContainer(icon: Icons.access_time),
-          const SizedBox(width: 10),
-          _buildDateTimeField('09:00 AM', 'Time Start'),
-          const SizedBox(width: 10),
-          const Text(
-            ':',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+  Widget _buildTimeAndDateSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            _buildIconContainer(icon: Icons.access_time),
+            const SizedBox(width: 10),
+            _buildDateTimeField('09:00 AM', 'Time Start'),
+            const SizedBox(width: 10),
+            const Text(
+              ':',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          _buildDateTimeField('10:00 AM', 'Time End'),
-        ],
-      ),
-      const SizedBox(height: 20),
-      Row(
-        children: [
-          _buildIconContainer(icon: Icons.calendar_month),
-          const SizedBox(width: 10),
-          _buildDateTimeField('Select Date', 'Date'),
-        ],
-      ),
-    ],
-  );
-}
+            const SizedBox(width: 10),
+            _buildDateTimeField('10:00 AM', 'Time End'),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            _buildIconContainer(icon: Icons.calendar_month),
+            const SizedBox(width: 10),
+            _buildDateTimeField('Select Date', 'Date'),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _buildIconContainer({required IconData icon}) {
     return Container(
@@ -204,55 +235,49 @@ class _TaskPageState extends State<TaskPage>
   }
 
   Widget _buildDateTimeField(String hint, String label) {
-  return Expanded( 
-    child: Container(
-      height: 40.0,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: Colors.grey, width: 1.0),
-      ),
-      child: TextField(
-        readOnly: label == 'Date', 
-        onTap: () {
-          if (label == 'Date')
-           {
-            _selectDate(context);
-          }
-        },
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          counterText: '',
-          hintText: hint,
+    return Expanded(
+      child: Container(
+        height: 40.0,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: Colors.grey, width: 1.0),
         ),
-        style: const TextStyle(
-          fontFamily: 'Inter',
-          color: Colors.black,
-          fontSize: 16.0,
+        child: TextField(
+          readOnly: label == 'Date',
+          onTap: () {
+            if (label == 'Date') {
+              _selectDate(context);
+            }
+          },
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            counterText: '',
+            hintText: hint,
+          ),
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            color: Colors.black,
+            fontSize: 16.0,
+          ),
+          keyboardType: TextInputType.datetime,
         ),
-        keyboardType: TextInputType.datetime,
       ),
-    ),
-  );
-}
-
-Future<void> _selectDate(BuildContext context) async 
-{
-  final DateTime? picked = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(), 
-    firstDate: DateTime(2000),
-    lastDate: DateTime(2025), 
-  );
-  if (picked != null) 
-  {
-    
+    );
   }
-}
 
-  Widget _buildCreateTaskButton() 
-  {
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null) {}
+  }
+
+  Widget _buildCreateTaskButton() {
     return Container(
       width: double.infinity,
       height: 50.0,
@@ -264,15 +289,11 @@ Future<void> _selectDate(BuildContext context) async
         style: TextButton.styleFrom(
           backgroundColor: Colors.green,
           primary: Colors.white,
-
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
         ),
-        onPressed: () 
-        {
-
-        },
+        onPressed: () {},
         child: const Text(
           'Create Task',
           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
