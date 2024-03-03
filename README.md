@@ -71,6 +71,20 @@ This command will build the app and open it either on your device/emulator or in
 
 ---
 
+## SignUp:
+
+Once the app is started, it will ask you to register/signup or to login. You initially have to register, where it will ask your username email and password.
+The system will store your credentials in the firebase database.
+
+---
+
+## Log In:
+
+Once you have signed up, Go to the login page, login with your credentials (email and password). If logged in successfully, the home page will pop up on your screen.
+
+---
+
+
 ## **Use Cases:**
 
 - **Home Page:**
