@@ -1,7 +1,3 @@
-Certainly! Here's the information with proper formatting:
-
----
-
 # Flutter Note-Taking App Setup Instructions
 
 Welcome to our Flutter Note-Taking App! This app has been built using the Flutter framework, and the database is managed with Firebase. Follow these step-by-step instructions to set up the development environment and run the app on your local machine.
@@ -23,10 +19,8 @@ Before you begin, ensure that you have the following installed on your system:
 2. Clone the Flutter Note-Taking App repository from GitHub:
 
    ```bash
-   git clone https://github.com/your-username/SE_PROJECT.git
+   git clone https://github.com/Mustafa-Ashfaq81/SE-PROJECT
    ```
-
-   Replace `your-username` with your GitHub username.
 
 3. Change into the project directory:
 
@@ -61,5 +55,3 @@ flutter run -d chrome
 This command will build the app and open it in the Chrome browser. You should now see the Flutter Note-Taking App running on your screen!
 
 ---
-
-Feel free to customize the instructions based on your app's specifics and include any additional setup steps or dependencies as needed.
