@@ -2,23 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
+import 'package:my_app/models/taskmodel.dart';
 
 class TaskPage extends StatefulWidget {
   final String username;
   const TaskPage({Key? key, required this.username}) : super(key: key);
 
   @override
-  State<TaskPage> createState() => _TaskPageState();
+  State<TaskPage> createState() => _TaskPageState(username:username);
 }
 
 class _TaskPageState extends State<TaskPage> {
   final int idx = 2;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String username; 
+  _TaskPageState({required this.username});
+
   DateTime? _selectedDate;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _dateController = TextEditingController();
   TextEditingController _startTimeController = TextEditingController(); // Controller for start time
   TextEditingController _endTimeController = TextEditingController(); // Controller for end time
+  TextEditingController  descController  = TextEditingController(); 
+  TextEditingController headingController  = TextEditingController(); 
   List<Map<String, dynamic>> teamMembers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    username = widget.username;
+  }
+
+
+  @override
+  void dispose() {
+    descController.dispose();
+    headingController.dispose();
+    _endTimeController.dispose();
+    _startTimeController.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +121,7 @@ class _TaskPageState extends State<TaskPage> {
         border: Border.all(color: Colors.grey, width: 1.0),
       ),
       child: TextField(
+        controller: hint == 'Enter task title' ? descController : headingController,
         maxLength: maxLines == 1 ? 50 : 500,
         keyboardType:
             maxLines == 1 ? TextInputType.text : TextInputType.multiline,
@@ -235,7 +259,7 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _buildDateTimeField(String hint, String label) {
   TextEditingController controller; // Now directly assigning the correct controller based on the label
-  bool isTimeField = label.contains('Time');
+  // bool isTimeField = label.contains('Time');
   if (label == 'Date') {
     controller = _dateController; // Assign the _dateController for the date field
   } else if (label == 'Time Start') {
@@ -319,9 +343,21 @@ return Expanded(
       decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
       child: TextButton(
         style: TextButton.styleFrom(backgroundColor: Colors.green, primary: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0))),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
+        onPressed: () async {
+          if (_formKey.currentState!.validate())  {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Form is valid and processing data')));
+             List<String> collaborators= [];
+            for (Map<String, dynamic> item in teamMembers) {
+              if (item.containsKey('name')) {
+                collaborators.add(item['name'] as String);
+              } else {
+                print("TEAM-MEMBERS missing 'name' key: $item");
+              }
+            }
+            await addTask(username, headingController.text, descController.text, collaborators);
+          }
+          else{
+            print("un-submittable-invalid-form");
           }
         },
         child: const Text('Create Task', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),

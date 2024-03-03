@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class SearchTasks extends SearchDelegate {
+class SearchTasks extends SearchDelegate<String> {
   final String username;
   final List<String> headings;
 
   SearchTasks({required this.username, required this.headings}) {
-    print("headings $headings username $username");
+    // print("headings $headings username $username");
   }
 
   @override
@@ -35,7 +35,7 @@ class SearchTasks extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(
         onPressed: () {
-          close(context, null);
+          close(context, "");
         },
         icon: const Icon(Icons.arrow_back));
   }
@@ -54,7 +54,12 @@ class SearchTasks extends SearchDelegate {
           itemCount: res.length,
           itemBuilder: (context, index) {
             var result = res[index];
-            return ListTile(title: Text(result));
+             return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
+            },
+          );
           });
     } else {
       return Center(
@@ -78,7 +83,12 @@ class SearchTasks extends SearchDelegate {
           itemCount: res.length,
           itemBuilder: (context, index) {
             var result = res[index];
-            return ListTile(title: Text(result));
+             return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
+            },
+          );
           });
     } else {
       return Center(

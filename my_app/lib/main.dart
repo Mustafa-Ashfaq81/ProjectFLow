@@ -65,23 +65,23 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/home': (context) => HomePage(
-              username: "routedfrommainpage",
+              username: "abz",
             ),
         '/tasks': (context) => TaskDetailsPage(
-              username: "routedfrommainpage",
-              // integrate taskdetails page
+              username: "abz",
+              task:{},
             ),
         '/settings': (context) => SettingsPage(
-              username: "routedfrommainpage",
+              username: "abz",
             ),
         '/calendar': (context) => CalendarPage(
-              username: "routedfrommainpage",
+              username: "abz",
             ),
-        '/chat': (context) => ChatPage(
-              username: "routedfrommainpage",
+        '/chat': (context) => NotesPage(
+              username: "abz",
             ),
           '/colab': (context) => ColabPage(
-              username: "routedfrommainpage",
+              username: "abz",
             ),
       },
     );

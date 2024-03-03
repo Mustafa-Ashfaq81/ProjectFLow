@@ -7,6 +7,7 @@ import 'package:my_app/components/image.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/pages/settings.dart';
+import 'package:my_app/pages/task_details.dart';
 
 enum MenuAction { logout, settings }
 
@@ -166,10 +167,23 @@ class _HomePageState extends State<HomePage> {
                           currquery = text;
                         });
                         if (currquery != "") {
-                          showSearch(
-                              context: context,
-                              delegate: SearchTasks(
-                                  username: username, headings: headings));
+                           Future<String?> selectedTask = showSearch(
+                      context: context,
+                      delegate:
+                          SearchTasks(username: username, headings: headings)
+                              as SearchDelegate<String>,
+                  );
+                  selectedTask.then((taskheading) async {
+                    Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
+                    if (taskheading != "") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TaskDetailsPage(username:username,task:task),
+                          ),
+                        );
+                    }
+                  });
                           querycontroller.clear();
                         }
                       },
@@ -179,10 +193,23 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () {
-                        showSearch(
-                            context: context,
-                            delegate: SearchTasks(
-                                username: username, headings: headings));
+                         Future<String?> selectedTask = showSearch(
+                      context: context,
+                      delegate:
+                          SearchTasks(username: username, headings: headings)
+                              as SearchDelegate<String>,
+                  );
+                  selectedTask.then((taskheading) async {
+                    Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
+                    if (taskheading != "") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TaskDetailsPage(username:username,task:task),
+                          ),
+                        );
+                    }
+                  });
                       } // Simulate search button press
                       ),
                 ],

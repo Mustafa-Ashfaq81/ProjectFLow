@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:my_app/pages/task.dart';
-import 'package:my_app/pages/task_details.dart';
+import 'package:my_app/pages/task.dart';
+// import 'package:my_app/pages/task_details.dart';
 import 'package:my_app/pages/calendar.dart';
 import 'package:my_app/pages/notes.dart';
 import 'package:my_app/pages/home.dart';
@@ -24,38 +24,38 @@ class _FooterMenuState extends State<FooterMenu> {
     setState(() {
       selectedIndex = index;
     });
-    print(index);
+    // print(index);
     // Here you can add functionality to navigate to different pages or update the UI accordingly
     if (index == 1) {
-      print("chat page for GPT-API ");
+      // print("chat page for GPT-API ");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChatPage(username: username),
+            builder: (context) => NotesPage(username: username),
           ));
     } else if (index == 2) {
-      print("CRUD - tasks");
+      // print("CRUD - tasks");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username: username),
+            builder: (context) => TaskPage(username: username),
           ));
     } else if (index == 3) {
-      print("check calendar");
+      // print("check calendar");
       Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => CalendarPage(username: username),
           ));
     } else if (index == 4) {
-      print("colab requests");
+      // print("colab requests");
       Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ColabPage(username: username),
           ));
     } else {
-      print("go to home");
+      // print("go to home");
       Navigator.push(
           context,
           MaterialPageRoute(

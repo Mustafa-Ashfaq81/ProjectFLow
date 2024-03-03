@@ -1,37 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/components/search.dart';
+import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/components/footer.dart';
+import 'package:my_app/pages/task_details.dart';
 
-class ChatPage extends StatefulWidget {
+class NotesPage extends StatefulWidget {
   final String username;
-  ChatPage({required this.username});
+  NotesPage({required this.username});
 
   @override
-  _ChatPageState createState() => _ChatPageState(username: username);
+  _NotesPageState createState() => _NotesPageState(username: username);
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _NotesPageState extends State<NotesPage> {
   String username;
   final int idx = 1;
-  _ChatPageState({required this.username});
-
   final TextEditingController queryController = TextEditingController();
   String currQuery = "";
+  List<String> headings = [];
+  List<Map<String,dynamic>> alltasks = [];
+
+  _NotesPageState({required this.username});
+
+
+  @override
+  void initState() {
+    super.initState();
+    username = widget.username;
+  }
+
+  Future<void> atload() async {
+    headings = await getTaskHeadings(username);
+    alltasks = await getAllTasks(username);
+  }
+
+  @override
+  void dispose() {
+    queryController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Chat Page'),
-      ),
-      body: Column(
-        children: [
-          _buildSearchBox(),
-          Expanded(
-            child: _buildNotesList(), // This will build the list of notes
-          ),
-        ],
-      ),
-      bottomNavigationBar: Footer(context, idx, username),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return FutureBuilder(
+          future: atload(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child:CircularProgressIndicator()); // Show loading indicator while fetching data
+      } else if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      } else {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Notes Page'),
+            ),
+            body: Column(
+              children: [
+                _buildSearchBox(),
+                Expanded(
+                  child: _buildNotesList(), // This will build the list of notes
+                ),
+              ],
+            ),
+            bottomNavigationBar: Footer(context, idx, username),
+          );
+      }
+
+    });
+    }
     );
   }
 
@@ -62,14 +101,49 @@ class _ChatPageState extends State<ChatPage> {
                 setState(() {
                   currQuery = text;
                 });
-                // Assuming you have logic to handle search query changes
+                if (currQuery != "") {
+                   Future<String?> selectedTask = showSearch(
+                      context: context,
+                      delegate:
+                          SearchTasks(username: username, headings: headings)
+                              as SearchDelegate<String>,
+                  );
+                  selectedTask.then((taskheading) async {
+                    Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
+                    if (taskheading != "") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TaskDetailsPage(username:username,task:task),
+                          ),
+                        );
+                    }
+                  });
+                  queryController.clear();
+                }
               },
             ),
           ),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              // Assuming you have logic to initiate search
+              Future<String?> selectedTask = showSearch(
+                context: context,
+                delegate:
+                    SearchTasks(username: username, headings: headings)
+                        as SearchDelegate<String>,
+              );
+              selectedTask.then((taskheading) async {
+                Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
+                if (taskheading != "") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TaskDetailsPage(username:username,task:task),
+                      ),
+                    );
+                }
+              });
             },
           ),
         ],
@@ -78,26 +152,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildNotesList() {
-    final List<Map<String, dynamic>> notes = [
-      {
-        'title': 'Mobile App Wireframe',
-        'description':
-            'Revolutionize your real estate taking experience with our idea enhancement app which will not only give you...',
-        'completed': false,
-      },
-      {
-        'title': 'Se Homework',
-        'description':
-            'Revolutionize your real estate taking experience with our idea enhancement app which will not only give you...',
-        'completed': true,
-      },
-      {
-        'title': 'Null Studios',
-        'description':
-            'Revolutionize your real estate taking experience with our idea enhancement app which will not only give you...',
-        'completed': false,
-      },
-    ];
+    final List<Map<String, dynamic>> notes = alltasks;
 
     // Define a list of colors
     final List<Color> colors = [
@@ -118,14 +173,19 @@ class _ChatPageState extends State<ChatPage> {
           margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
           child: ListTile(
             title: Text(
-              notes[index]['title'],
+              notes[index]['heading'],
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
             subtitle: Text(notes[index]['description']),
             onTap: () {
-              // TODO: Implement navigation to note details page
+                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TaskDetailsPage(username:username,task:notes[index]),
+                      ),
+                    );
             },
           ),
         );

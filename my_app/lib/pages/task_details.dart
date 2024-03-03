@@ -4,7 +4,6 @@ import 'package:my_app/pages/taskcrud.dart';
 // import 'package:my_app/components/search.dart';
 // import 'package:my_app/components/footer.dart';
 // import 'package:my_app/models/usermodel.dart';
-import 'dart:math';
 
 
 void main() => runApp(MyApp());
@@ -13,54 +12,42 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: TaskDetailsPage(username: 'musti'),
+      home: TaskDetailsPage(username: 'musti', task:{}),
     );
   }
 }
 
 class TaskDetailsPage extends StatefulWidget {
   final String username;
-  const TaskDetailsPage({Key? key, required this.username}) : super(key: key);
+  final Map<String,dynamic> task;
+  const TaskDetailsPage({Key? key, required this.username, required this.task}) : super(key: key);
 
   @override
-  State<TaskDetailsPage> createState() => _TaskPageState();
+  State<TaskDetailsPage> createState() => _TaskPageState(username: username,mytask: task);
   
 }
 
-
-
 class _TaskPageState extends State<TaskDetailsPage> {
   final int idx = 2;
+  String username; 
+  Map<String,dynamic> mytask;
+  _TaskPageState({required this.username, required this.mytask});
+
+
   List<Map<String, dynamic>> teamMembers = [];
   late TextEditingController _projectHeadingController;
   late TextEditingController _projectDescriptionController;
   final FocusNode _headingFocus = FocusNode();
   final FocusNode _descriptionFocus = FocusNode();
 
-  final List<String> _randomHeadings = [
-    'Revolutionize the Web',
-    'Next-Gen AI for Earth',
-    'Explore Space Virtually',
-  ];
-
-  final List<String> _randomDescriptions = [
-    'Creating the most immersive web experience for users worldwide.',
-    'Using AI to solve real-world problems more efficiently than ever.',
-    'Bringing space exploration to your living room with virtual reality technologies.',
-  ];
-
-  final _random = Random();
-
   @override
   void initState() {
     super.initState();
+    username = widget.username;
+    mytask = widget.task;
     // Initialize the text controllers with random text
-    _projectHeadingController = TextEditingController(
-      text: _randomHeadings[_random.nextInt(_randomHeadings.length)],
-    );
-    _projectDescriptionController = TextEditingController(
-      text: _randomDescriptions[_random.nextInt(_randomDescriptions.length)],
-    );
+    _projectHeadingController = TextEditingController(  text:mytask['heading'], );
+    _projectDescriptionController = TextEditingController(  text:mytask['description'], );
   }
 
   @override
@@ -123,7 +110,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
             ),
           ),
           const SizedBox(height: 30),
-          _buildSectionTitle('All Tasks'),
+          _buildSectionTitle('All Subtasks'),
           const SizedBox(height: 20),
           _buildTaskMenu(),
         ],
@@ -346,7 +333,7 @@ Widget _buildProjectHeadingInput() {
               );
             },
             child: Text(
-              'Add Task',
+              'Add Subtask',
               style: TextStyle(fontSize: 16), // Set your text size here
             ),
           ),

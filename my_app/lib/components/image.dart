@@ -23,6 +23,7 @@ class _ImageSetterState extends State<ImageSetter> {
   @override
   void initState() {
     super.initState();
+    username = widget.username;
     fetchData();
   }
 
@@ -78,7 +79,7 @@ class _ImageSetterState extends State<ImageSetter> {
       print("got-durl");
       return durl;
     } catch (e) {
-      print("err $e");
+      print("load img err $e");
     }
     return "";
   }

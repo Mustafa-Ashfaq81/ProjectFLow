@@ -87,7 +87,7 @@ class Subtask {
 }
 
 Future<List<String>> getTaskHeadings(String username) async {
-  print("get-headings");
+  // print("get-headings");
   QuerySnapshot<Map<String, dynamic>> users =
       await FirebaseFirestore.instance.collection('users').get();
 
@@ -102,7 +102,7 @@ Future<List<String>> getTaskHeadings(String username) async {
       break; // Exit the loop since we found the user
     }
   }
-  print("got-headings");
+  // print("got-headings");
   return headings;
 }
 
@@ -119,6 +119,34 @@ List<Object> getTasks(String username, QuerySnapshot snapshot) {
   }).toList();
 
   return tasks;
+}
+
+Future<Map<String, dynamic>> getTaskbyHeading(String taskheading, String username) async{
+  final userCollection = FirebaseFirestore.instance.collection("users");
+  final snapshot =
+      await userCollection.where('username', isEqualTo: username).get();
+  final doc =
+      snapshot.docs.first; 
+   List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == taskheading) {
+        return tasks[i];
+      }
+    }
+    return {};
+
+}
+
+Future<List<Map<String, dynamic>>> getAllTasks( String username) async{
+  final userCollection = FirebaseFirestore.instance.collection("users");
+  final snapshot =
+      await userCollection.where('username', isEqualTo: username).get();
+  final doc =
+      snapshot.docs.first; 
+  List<dynamic> tasks = doc.data()['tasks'] ?? [];
+  List<Map<String, dynamic>> taskmap = tasks.cast<Map<String, dynamic>>();
+  return taskmap;
+
 }
 
 Future<Map<String, dynamic>> getSpecificTask(req) async {
