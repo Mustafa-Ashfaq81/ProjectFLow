@@ -46,7 +46,12 @@ flutter pub upgrade web
 
 ## Run the App
 
-Connect your device or start an emulator. Then, run the app using the following command:
+If you are using android studio or are running the code on any device, then connect your device or start an emulator. Then, run the app using the following command:
+
+```bash
+flutter run
+```
+Else if you want to run it on the chrome then run the below command
 
 ```bash
 flutter run -d chrome
