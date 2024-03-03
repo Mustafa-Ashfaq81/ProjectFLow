@@ -3,17 +3,6 @@ import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TaskPage(username: 'Essa'),
-    );
-  }
-}
-
 class TaskPage extends StatefulWidget {
   final String username;
   const TaskPage({Key? key, required this.username}) : super(key: key);
@@ -24,7 +13,7 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   final int idx = 2;
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
   TextEditingController _dateController = TextEditingController();
   TextEditingController _startTimeController = TextEditingController(); // Controller for start time
@@ -124,15 +113,6 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTeamMembersRow() {
-    List<Map<String, dynamic>> teamMembers = [
-      {"name": "Robert", "color": Colors.lightBlue[100]},
-      {"name": "Sophia", "color": Colors.lightGreen[100]},
-      {"name": "Ethan", "color": Colors.lightBlue[100]},
-      {"name": "Olivia", "color": Colors.lightBlue[100]},
-      {"name": "Liam", "color": Colors.orange[100]},
-      {"name": "Mia", "color": Colors.yellow[100]},
-    ];
-
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(children: [
@@ -255,7 +235,7 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _buildDateTimeField(String hint, String label) {
   TextEditingController controller; // Now directly assigning the correct controller based on the label
-  // bool isTimeField = label.contains('Time');
+  bool isTimeField = label.contains('Time');
   if (label == 'Date') {
     controller = _dateController; // Assign the _dateController for the date field
   } else if (label == 'Time Start') {
@@ -338,18 +318,13 @@ return Expanded(
       height: 50.0,
       decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
       child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: Colors.green,
-          // primary: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-        ),
-        onPressed: () {},
-        child: const Text(
-          'Create Task',
-          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-        ),
+        style: TextButton.styleFrom(backgroundColor: Colors.green, primary: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0))),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Form is valid and processing data')));
+          }
+        },
+        child: const Text('Create Task', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       ),
     );
   }
