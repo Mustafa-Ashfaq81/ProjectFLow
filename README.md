@@ -51,6 +51,7 @@ API_KEY=AIzaSyBSh7QG4ajePtUK-eA0EMQf9J-spxo_Djs
 PROJECT_ID=ideaenhancerapp
 MSG_SENDER_ID=12273615091
 APP_ID=1:12273615091:web:16e75bf6226f9122d37786
+IMAGE_BUCKET="gs://ideaenhancerapp.appspot.com"
 ```
 
 ## **Run the App**
