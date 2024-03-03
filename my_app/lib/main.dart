@@ -4,7 +4,8 @@ import 'package:my_app/auth/pages/start.dart';
 import 'package:my_app/auth/pages/login.dart';
 import 'package:my_app/auth/pages/register.dart';
 import 'package:my_app/pages/home.dart';
-import 'package:my_app/pages/task.dart';
+// import 'package:my_app/pages/task.dart';
+import 'package:my_app/pages/task_details.dart';
 import 'package:my_app/pages/settings.dart';
 import 'package:my_app/pages/chat.dart';
 import 'package:my_app/pages/calendar.dart';
@@ -66,8 +67,9 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
         '/home': (context) => HomePage(
               username: "routedfrommainpage",
             ),
-        '/tasks': (context) => TaskPage(
+        '/tasks': (context) => TaskDetailsPage(
               username: "routedfrommainpage",
+              // integrate taskdetails page
             ),
         '/settings': (context) => SettingsPage(
               username: "routedfrommainpage",

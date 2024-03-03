@@ -3,16 +3,16 @@ import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
 
-// void main() => runApp(MyApp());
+void main() => runApp(MyApp());
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: TaskPage(username: 'Essa'),
-//     );
-//   }
-// }
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: TaskPage(username: 'Essa'),
+    );
+  }
+}
 
 class TaskPage extends StatefulWidget {
   final String username;
@@ -111,14 +111,14 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTeamMembersRow() {
-    // List<Map<String, dynamic>> teamMembers = [
-    //   {"name": "Robert", "color": Colors.lightBlue[100]},
-    //   {"name": "Sophia", "color": Colors.lightGreen[100]},
-    //   {"name": "Ethan", "color": Colors.lightBlue[100]},
-    //   {"name": "Olivia", "color": Colors.lightBlue[100]},
-    //   {"name": "Liam", "color": Colors.orange[100]},
-    //   {"name": "Mia", "color": Colors.yellow[100]},
-    // ];
+    List<Map<String, dynamic>> teamMembers = [
+      {"name": "Robert", "color": Colors.lightBlue[100]},
+      {"name": "Sophia", "color": Colors.lightGreen[100]},
+      {"name": "Ethan", "color": Colors.lightBlue[100]},
+      {"name": "Olivia", "color": Colors.lightBlue[100]},
+      {"name": "Liam", "color": Colors.orange[100]},
+      {"name": "Mia", "color": Colors.yellow[100]},
+    ];
 
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -288,7 +288,7 @@ class _TaskPageState extends State<TaskPage> {
       child: TextButton(
         style: TextButton.styleFrom(
           backgroundColor: Colors.green,
-          primary: Colors.white,
+          // primary: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),

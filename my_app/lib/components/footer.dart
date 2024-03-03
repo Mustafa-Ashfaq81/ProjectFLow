@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/pages/task.dart';
+// import 'package:my_app/pages/task.dart';
+import 'package:my_app/pages/task_details.dart';
 import 'package:my_app/pages/calendar.dart';
 import 'package:my_app/pages/chat.dart';
 import 'package:my_app/pages/home.dart';
@@ -37,7 +38,7 @@ class _FooterMenuState extends State<FooterMenu> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskPage(username: username),
+            builder: (context) => TaskDetailsPage(username: username),
           ));
     } else if (index == 3) {
       print("check calendar");
