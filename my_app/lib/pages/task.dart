@@ -13,12 +13,12 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   final int idx = 2;
-  List<Map<String, dynamic>> teamMembers = [];
-   DateTime? _selectedDate;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  DateTime? _selectedDate;
   TextEditingController _dateController = TextEditingController();
   TextEditingController _startTimeController = TextEditingController(); // Controller for start time
   TextEditingController _endTimeController = TextEditingController(); // Controller for end time
-  final _formKey = GlobalKey<FormState>(); // Add this line
+  List<Map<String, dynamic>> teamMembers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -235,6 +235,7 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _buildDateTimeField(String hint, String label) {
   TextEditingController controller; // Now directly assigning the correct controller based on the label
+  bool isTimeField = label.contains('Time');
   if (label == 'Date') {
     controller = _dateController; // Assign the _dateController for the date field
   } else if (label == 'Time Start') {
@@ -242,11 +243,9 @@ class _TaskPageState extends State<TaskPage> {
   } else if (label == 'Time End') {
     controller = _endTimeController; // Assign the _endTimeController for the end time field
   } else {
-    // Default case, should not be reached for your current setup
-    controller = TextEditingController(); // Fallback, ideally should not be used
+    controller = TextEditingController(); // Fallback
   }
-
-  return Expanded(
+return Expanded(
     child: Container(
       height: 40.0,
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -256,22 +255,33 @@ class _TaskPageState extends State<TaskPage> {
         border: Border.all(color: Colors.grey, width: 1.0),
       ),
       child: TextFormField(
-        controller: controller, // Use the assigned controller
-        readOnly: label == 'Date',
-        onTap: () {
-          if (label == 'Date') _selectDate(context);
+        controller: controller,
+        readOnly: true, 
+        onTap: () async {
+          if (label.contains('Time')) 
+          {
+            final TimeOfDay? pickedTime = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+            );
+            if (pickedTime != null) 
+            {
+              final String formattedTime = pickedTime.format(context);
+              setState(() 
+              {
+                controller.text = formattedTime; 
+              });
+            }
+          } else if (label == 'Date') 
+          {
+            _selectDate(context);
+          }
         },
         decoration: InputDecoration(
           border: InputBorder.none,
-          counterText: '',
           hintText: hint,
         ),
-        style: const TextStyle(
-          fontFamily: 'Inter',
-          color: Colors.black,
-          fontSize: 16.0,
-        ),
-        keyboardType: label.contains('Time') ? TextInputType.datetime : null,
+        style: const TextStyle(fontFamily: 'Inter', fontSize: 16.0),
         validator: (value) {
           if (label.contains('Time') && !_isValidTime(value)) {
             return 'Enter time in HH:mm format';
@@ -284,17 +294,19 @@ class _TaskPageState extends State<TaskPage> {
 }
 
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context) async 
+  {
   final DateTime? picked = await showDatePicker(
     context: context,
     initialDate: _selectedDate ?? DateTime.now(),
     firstDate: DateTime(2000),
     lastDate: DateTime(2025),
   );
-  if (picked != null && picked != _selectedDate) {
-    setState(() {
+  if (picked != null && picked != _selectedDate) 
+  {
+    setState(() 
+    {
       _selectedDate = picked;
-      // Format the date and update the controller
       _dateController.text = "${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
     });
   }
@@ -304,24 +316,17 @@ class _TaskPageState extends State<TaskPage> {
     return Container(
       width: double.infinity,
       height: 50.0,
-      decoration: BoxDecoration(
-        color: Colors.green,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
       child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: Colors.green,
-          primary: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-        ),
-        onPressed: () {},
-        child: const Text(
-          'Create Task',
-          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-        ),
+        style: TextButton.styleFrom(backgroundColor: Colors.green, primary: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0))),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Form is valid and processing data')));
+          }
+        },
+        child: const Text('Create Task', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       ),
     );
   }
 }
+
