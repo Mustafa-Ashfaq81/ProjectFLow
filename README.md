@@ -90,7 +90,15 @@ This command will build the app and open it either on your device/emulator or in
 
 ## SignUp
 
-Once the app is started, it will prompt you to register/signup or log in. For the initial setup, register by providing your username, email, and password. The system will store your credentials in the Firebase database.
+Once the app is started, it will prompt you to register/signup or log in. For the initial setup, register by providing your username, email, and password. The password requirement are as follow:
+1. Lowercase character required
+2. Uppercase character required
+3. Numeric character required
+4. Non-alphanumeric character required
+5. Minimum password length (ranges from 6 to 30 characters; defaults to 6)
+6. Maximum password length (maximum length of 4096 characters)
+
+The system will store your credentials in the Firebase database.
 
 ---
 
@@ -101,3 +109,60 @@ Once the app is started, it will prompt you to register/signup or log in. For th
 After registering, go to the login page and log in with your credentials (email and password). If logged in successfully, the home page will appear on your screen.
 
 ---
+
+
+
+## Use Cases:
+
+The **Home Page** contains a search bar, from where you can search for your tasks.
+
+The **Add Task Page** can be used to add a new task in the tasks list. You can add the title and details of the task. You can also add the due date and time. You have the option to add collaborators through their usernames which will send a collaboration request to the collaborator.
+
+The **collaborators request page** is used to manage the collaboration requests. You can either accept or reject the request.
+
+The **Task Details/ Note details page** show the details of the tasks. You can also edit those tasks.
+
+The **Calendar page** shows you the deadlines of the tasks through calendar, you can also edit them, through this page.
+ 
+At the bottom of the screen, there is a **navigating bar**, from where you can navigate to different pages including **Task details, Calendar, Add Task, Collaborators request page** to manage the collaborators requests.
+
+The setting and other use cases are not yet implemented.
+
+
+---
+
+
+## Log Out
+There is also a **Logout** and **Setting** option in the right upper corner. (Labeled as **Debug**)
+
+---
+
+
+The App uses **Firebase database** to efficiently manage its functionality as it provides the following features:
+
+**1. Real-Time Data Sync:**
+   - Firebase Realtime Database provides real-time synchronization. Any changes made to the data are immediately reflected across all connected clients in real time.
+   - This is particularly useful for collaborative applications, where you need instant updates across devices.
+
+
+**2. Scalability:**
+ 
+- Firebase is designed to scale automatically based on the demand. As your app grows, Firebase can handle an increasing number of users and data without requiring you to manage the infrastructure.
+   - Firebase's infrastructure is maintained and scaled by Google, allowing you to focus on developing your app rather than managing servers.
+
+
+**3. Authentication:**
+   - Firebase provides built-in authentication services, making it easy to integrate secure user authentication in your app.
+
+
+**4. Cloud Functions:**
+   - Firebase allows you to deploy serverless functions known as Cloud Functions. These functions can be triggered by various events in your app.
+   - Cloud Functions enable you to perform server-side logic without maintaining a separate server, improving efficiency in handling backend operations.
+
+
+**5. Offline Support:**
+   - Firebase Realtime Database provides offline support, allowing users to interact with your app even when they are not connected to the internet.
+   - Offline data is automatically synchronized when the device regains an internet connection.
+
+
+
