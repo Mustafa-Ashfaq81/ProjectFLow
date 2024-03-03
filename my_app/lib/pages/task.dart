@@ -24,7 +24,7 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   final int idx = 2;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
   TextEditingController _dateController = TextEditingController();
   TextEditingController _startTimeController = TextEditingController(); // Controller for start time
@@ -255,7 +255,7 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _buildDateTimeField(String hint, String label) {
   TextEditingController controller; // Now directly assigning the correct controller based on the label
-  bool isTimeField = label.contains('Time');
+  // bool isTimeField = label.contains('Time');
   if (label == 'Date') {
     controller = _dateController; // Assign the _dateController for the date field
   } else if (label == 'Time Start') {

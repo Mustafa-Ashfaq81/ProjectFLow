@@ -7,7 +7,7 @@ import 'package:my_app/pages/home.dart';
 // import 'package:my_app/pages/task.dart';
 import 'package:my_app/pages/task_details.dart';
 import 'package:my_app/pages/settings.dart';
-import 'package:my_app/pages/chat.dart';
+import 'package:my_app/pages/notes.dart';
 import 'package:my_app/pages/calendar.dart';
 import 'package:my_app/pages/colab.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
     ),
 
 
-      initialRoute: '/',
+      initialRoute: '/home',
       routes: {
         // ignore: prefer_const_constructors
         '/': (context) => StartPage(),
