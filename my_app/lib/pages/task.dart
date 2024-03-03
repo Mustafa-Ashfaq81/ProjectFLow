@@ -3,17 +3,6 @@ import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
 
-// void main() => runApp(MyApp());
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: TaskPage(username: 'Essa'),
-//     );
-//   }
-// }
-
 class TaskPage extends StatefulWidget {
   final String username;
   const TaskPage({Key? key, required this.username}) : super(key: key);
@@ -25,6 +14,11 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   final int idx = 2;
   List<Map<String, dynamic>> teamMembers = [];
+   DateTime? _selectedDate;
+  TextEditingController _dateController = TextEditingController();
+  TextEditingController _startTimeController = TextEditingController(); // Controller for start time
+  TextEditingController _endTimeController = TextEditingController(); // Controller for end time
+  final _formKey = GlobalKey<FormState>(); // Add this line
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +28,13 @@ class _TaskPageState extends State<TaskPage> {
       bottomNavigationBar: Footer(context, idx, widget.username),
     );
   }
+
+  bool _isValidTime(String? input) 
+  {
+  // Regular expression to validate input format as "HH:mm"
+  final RegExp timeRegExp = RegExp(r'^([01]?[0-9]|2[0-3]):[0-5][0-9]$');
+  return input != null && timeRegExp.hasMatch(input);
+}
 
   AppBar _buildAppBar() {
     return AppBar(
@@ -78,6 +79,7 @@ class _TaskPageState extends State<TaskPage> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
+                    
       style: const TextStyle(
         fontFamily: 'Inter',
         fontSize: 20.0,
@@ -111,15 +113,6 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTeamMembersRow() {
-    // List<Map<String, dynamic>> teamMembers = [
-    //   {"name": "Robert", "color": Colors.lightBlue[100]},
-    //   {"name": "Sophia", "color": Colors.lightGreen[100]},
-    //   {"name": "Ethan", "color": Colors.lightBlue[100]},
-    //   {"name": "Olivia", "color": Colors.lightBlue[100]},
-    //   {"name": "Liam", "color": Colors.orange[100]},
-    //   {"name": "Mia", "color": Colors.yellow[100]},
-    // ];
-
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(children: [
@@ -140,7 +133,7 @@ class _TaskPageState extends State<TaskPage> {
                   otherusers.add(user);
                 }
               }
-              Future<String?> selectedUsername =  showSearch(
+              Future<String?> selectedUsername = showSearch(
                 context: context,
                 delegate:
                     SearchUsers(username: widget.username, users: otherusers)
@@ -159,35 +152,37 @@ class _TaskPageState extends State<TaskPage> {
         ]));
   }
 
- Widget _buildTeamMember(String name, Color color) {
-  return Container(
-    height: 40.0,
-    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-    margin: const EdgeInsets.only(right: 10),
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(12.0),
-      border: Border.all(color: Colors.grey, width: 1.0),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Icon(Icons.person_outline, color: Colors.grey),
-        const SizedBox(width: 8),
-        Text(name),
-        const SizedBox(width: 8),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              teamMembers.removeWhere((member) => member["name"] == name); // Remove the member by matching the name
-            });
-          },
-          child: const Icon(Icons.close, color: Colors.red),
-        ),
-      ],
-    ),
-  );
-}
+  Widget _buildTeamMember(String name, Color color) {
+    return Container(
+      height: 40.0,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      margin: const EdgeInsets.only(right: 10),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Colors.grey, width: 1.0),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Icon(Icons.person_outline, color: Colors.grey),
+          const SizedBox(width: 8),
+          Text(name),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                teamMembers.removeWhere((member) =>
+                    member["name"] ==
+                    name); // Remove the member by matching the name
+              });
+            },
+            child: const Icon(Icons.close, color: Colors.red),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildTimeAndDateSection() {
     return Column(
@@ -239,47 +234,71 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildDateTimeField(String hint, String label) {
-    return Expanded(
-      child: Container(
-        height: 40.0,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          border: Border.all(color: Colors.grey, width: 1.0),
-        ),
-        child: TextField(
-          readOnly: label == 'Date',
-          onTap: () {
-            if (label == 'Date') {
-              _selectDate(context);
-            }
-          },
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            counterText: '',
-            hintText: hint,
-          ),
-          style: const TextStyle(
-            fontFamily: 'Inter',
-            color: Colors.black,
-            fontSize: 16.0,
-          ),
-          keyboardType: TextInputType.datetime,
-        ),
-      ),
-    );
+  TextEditingController controller; // Now directly assigning the correct controller based on the label
+  if (label == 'Date') {
+    controller = _dateController; // Assign the _dateController for the date field
+  } else if (label == 'Time Start') {
+    controller = _startTimeController; // Assign the _startTimeController for the start time field
+  } else if (label == 'Time End') {
+    controller = _endTimeController; // Assign the _endTimeController for the end time field
+  } else {
+    // Default case, should not be reached for your current setup
+    controller = TextEditingController(); // Fallback, ideally should not be used
   }
 
+  return Expanded(
+    child: Container(
+      height: 40.0,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Colors.grey, width: 1.0),
+      ),
+      child: TextFormField(
+        controller: controller, // Use the assigned controller
+        readOnly: label == 'Date',
+        onTap: () {
+          if (label == 'Date') _selectDate(context);
+        },
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          counterText: '',
+          hintText: hint,
+        ),
+        style: const TextStyle(
+          fontFamily: 'Inter',
+          color: Colors.black,
+          fontSize: 16.0,
+        ),
+        keyboardType: label.contains('Time') ? TextInputType.datetime : null,
+        validator: (value) {
+          if (label.contains('Time') && !_isValidTime(value)) {
+            return 'Enter time in HH:mm format';
+          }
+          return null;
+        },
+      ),
+    ),
+  );
+}
+
+
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
-    );
-    if (picked != null) {}
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: _selectedDate ?? DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2025),
+  );
+  if (picked != null && picked != _selectedDate) {
+    setState(() {
+      _selectedDate = picked;
+      // Format the date and update the controller
+      _dateController.text = "${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+    });
   }
+}
 
   Widget _buildCreateTaskButton() {
     return Container(
