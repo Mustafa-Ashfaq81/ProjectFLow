@@ -134,9 +134,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             // Decrease the height here to move the search box up
-            SizedBox(
-                height:
-                    20), // Adjust this value as needed to control space below your name
+            SizedBox(height:20), // Adjust this value as needed to control space below your name
             Padding(
               padding: const EdgeInsets.only(
                 right: 10.0,
