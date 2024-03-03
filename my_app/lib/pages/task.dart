@@ -69,10 +69,12 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  Widget _buildBody() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+Widget _buildBody() {
+  return SingleChildScrollView(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form( // Here the Form widget is used
+        key: _formKey, // The GlobalKey<FormState> is associated with the Form
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -96,6 +98,7 @@ class _TaskPageState extends State<TaskPage> {
           ],
         ),
       ),
+    )
     );
   }
 
@@ -306,12 +309,12 @@ return Expanded(
           hintText: hint,
         ),
         style: const TextStyle(fontFamily: 'Inter', fontSize: 16.0),
-        validator: (value) {
-          if (label.contains('Time') && !_isValidTime(value)) {
-            return 'Enter time in HH:mm format';
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (label.contains('Time') && !_isValidTime(value)) {
+        //     return 'Enter time in HH:mm format';
+        //   }
+        //   return null;
+        // },
       ),
     ),
   );
