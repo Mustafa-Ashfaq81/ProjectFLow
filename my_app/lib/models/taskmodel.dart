@@ -158,7 +158,7 @@ Future<Map<String, dynamic>> getSpecificTask(req) async {
 
   try {
     for (int i = 0; i < tasks.length; i++) {
-      if (tasks[i] is Map<String, dynamic> && i == req['task']) {
+      if ((tasks[i] is Map<String, dynamic>) && ((i == req['task']) || (i == req['index']) )) {
         // print("ret tsk");
         return tasks[i];
       }

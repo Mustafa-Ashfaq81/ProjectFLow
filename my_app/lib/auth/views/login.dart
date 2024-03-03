@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:my_app/auth/pages/register.dart';
-import 'package:my_app/pages/home.dart';
-import 'package:my_app/auth/services/authservice.dart';
+import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/views/home.dart';
+import 'package:my_app/auth/controllers/authservice.dart';
 // import '../../common/toast.dart';
 
 class LoginPage extends StatefulWidget {

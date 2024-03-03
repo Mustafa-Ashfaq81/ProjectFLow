@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/pages/task.dart';
+import 'package:my_app/views/tasks/newtask.dart';
 // import 'package:my_app/pages/task_details.dart';
-import 'package:my_app/pages/calendar.dart';
-import 'package:my_app/pages/notes.dart';
-import 'package:my_app/pages/home.dart';
-import 'package:my_app/pages/colab.dart';
+import 'package:my_app/views/calendar.dart';
+import 'package:my_app/views/tasks/alltasks.dart';
+import 'package:my_app/views/home.dart';
+import 'package:my_app/views/colab.dart';
 
 class FooterMenu extends StatefulWidget {
   final int index;
@@ -31,14 +31,14 @@ class _FooterMenuState extends State<FooterMenu> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => NotesPage(username: username),
+            builder: (context) => AllTasksPage(username: username),
           ));
     } else if (index == 2) {
       // print("CRUD - tasks");
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskPage(username: username),
+            builder: (context) => NewTaskPage(username: username),
           ));
     } else if (index == 3) {
       // print("check calendar");

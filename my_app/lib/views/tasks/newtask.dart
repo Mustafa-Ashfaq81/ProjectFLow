@@ -4,18 +4,18 @@ import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 
-class TaskPage extends StatefulWidget {
+class NewTaskPage extends StatefulWidget {
   final String username;
-  const TaskPage({Key? key, required this.username}) : super(key: key);
+  const NewTaskPage({Key? key, required this.username}) : super(key: key);
 
   @override
-  State<TaskPage> createState() => _TaskPageState(username:username);
+  State<NewTaskPage> createState() => _NewTaskPageState(username:username);
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _NewTaskPageState extends State<NewTaskPage> {
   final int idx = 2;
   String username; 
-  _TaskPageState({required this.username});
+  _NewTaskPageState({required this.username});
 
   DateTime? _selectedDate;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -124,7 +124,7 @@ Widget _buildBody() {
         border: Border.all(color: Colors.grey, width: 1.0),
       ),
       child: TextField(
-        controller: hint == 'Enter task title' ? descController : headingController,
+        controller: hint == 'Enter task title' ? headingController : descController,
         maxLength: maxLines == 1 ? 50 : 500,
         keyboardType:
             maxLines == 1 ? TextInputType.text : TextInputType.multiline,

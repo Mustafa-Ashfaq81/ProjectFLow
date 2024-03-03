@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
-import 'package:my_app/pages/taskcrud.dart';
+import 'package:my_app/views/tasks/subtasks.dart';
 import 'package:my_app/common/deletedialog.dart';
 // import 'package:my_app/models/usermodel.dart';
 
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TaskDetailsPage(username: 'musti', task:{}),
-    );
-  }
-}
 
 class TaskDetailsPage extends StatefulWidget {
   final String username;
@@ -123,7 +112,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
           const SizedBox(height: 30),
           _buildSectionTitle('All Subtasks'),
           const SizedBox(height: 20),
-          _buildTaskMenu(),
+          _buildTaskMenu(username),
         ],
       ),
     ),
@@ -367,7 +356,7 @@ Widget _buildProjectHeadingInput() {
   }
 }
 
-Widget _buildTaskMenu() {
+Widget _buildTaskMenu(String username) {
   // Assuming your tasks are fetched or defined here
   final List<String> tasks = [
     'User Interviews',
@@ -396,7 +385,7 @@ Widget _buildTaskMenu() {
             await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TaskCRUDPage(taskIndex: index),
+                builder: (context) => SubTaskPage(username:username, taskIndex: index),
               ),
             );
             // This ensures setState is called within the correct context

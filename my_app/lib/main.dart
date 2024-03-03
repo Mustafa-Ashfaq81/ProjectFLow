@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:my_app/auth/pages/start.dart';
-import 'package:my_app/auth/pages/login.dart';
-import 'package:my_app/auth/pages/register.dart';
-import 'package:my_app/pages/home.dart';
-// import 'package:my_app/pages/task.dart';
-import 'package:my_app/pages/task_details.dart';
-import 'package:my_app/pages/settings.dart';
-import 'package:my_app/pages/notes.dart';
-import 'package:my_app/pages/calendar.dart';
-import 'package:my_app/pages/colab.dart';
+
+import 'package:my_app/auth/views/start.dart';
+import 'package:my_app/auth/views/login.dart';
+import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/views/home.dart';
+import 'package:my_app/views/calendar.dart';
+import 'package:my_app/views/colab.dart';
+import 'package:my_app/views/settings/settings.dart';
+import 'package:my_app/views/tasks/task.dart';
+import 'package:my_app/views/tasks/alltasks.dart';
+import 'package:my_app/views/tasks/subtasks.dart';
+import 'package:my_app/views/tasks/newtask.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter/gestures.dart';
 
@@ -58,7 +61,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
     ),
 
 
-      initialRoute: '/home',
+      initialRoute: '/',
       routes: {
         // ignore: prefer_const_constructors
         '/': (context) => StartPage(),
@@ -67,20 +70,27 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
         '/home': (context) => HomePage(
               username: "abz",
             ),
-        '/tasks': (context) => TaskDetailsPage(
-              username: "abz",
-              task:{},
-            ),
-        '/settings': (context) => SettingsPage(
+          '/colab': (context) => ColabPage(
               username: "abz",
             ),
         '/calendar': (context) => CalendarPage(
               username: "abz",
             ),
-        '/chat': (context) => NotesPage(
+        '/settings': (context) => SettingsPage(
               username: "abz",
             ),
-          '/colab': (context) => ColabPage(
+        '/alltasks': (context) => AllTasksPage(
+              username: "abz",
+            ),
+        '/task': (context) => TaskDetailsPage(
+              username: "abz",
+              task:{},
+            ),
+           '/subtasks': (context) => SubTaskPage(
+              username: "abz",
+              taskIndex: 0,
+            ),
+            '/newtask': (context) => NewTaskPage(
               username: "abz",
             ),
       },

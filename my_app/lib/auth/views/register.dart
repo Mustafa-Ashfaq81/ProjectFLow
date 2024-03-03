@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_app/auth/pages/login.dart';
-import 'package:my_app/auth/services/authservice.dart';
-import 'package:my_app/pages/home.dart';
+import 'package:my_app/auth/views/login.dart';
+import 'package:my_app/auth/controllers/authservice.dart';
+import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 import '../../common/toast.dart';

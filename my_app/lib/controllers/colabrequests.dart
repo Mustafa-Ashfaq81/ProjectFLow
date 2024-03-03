@@ -131,12 +131,14 @@ Future<List<Map<String, dynamic>>> get_ifany_requests(
 }
 
 void acceptreq(Map<String, dynamic> task, String username) async {
-  //addTask(task['task] of that user to this user)
-  var updatedtask = await getSpecificTask(task);
-  updatedtask['collaborators'].add(username);
 
+  var updatedtask = await getSpecificTask(task);
   final userCollection = FirebaseFirestore.instance.collection("users");
   try {
+    List<dynamic> colaborators = updatedtask['collaborators'];
+    List<String> colabz = colaborators.cast<String>();
+    colabz.add(username);
+    updatedtask['collaborators'] = colabz;
     //add collaborator(this user who accepted request) to sender's task
     var snapshot =
         await userCollection.where('username', isEqualTo: task['sender']).get();
@@ -152,11 +154,11 @@ void acceptreq(Map<String, dynamic> task, String username) async {
     tasks = doc.data()['tasks'];
     tasks.add(updatedtask);
     await doc.reference.update({'tasks': tasks});
+    print("accepted-req-successfully");
   } catch (e) {
     print("accepting req err $e");
   }
 
-  print("accepted-req-successfully");
 }
 
 void rejectreq(Map<String, dynamic> task, String username) async {
@@ -181,8 +183,8 @@ void rejectreq(Map<String, dynamic> task, String username) async {
         });
       }
     });
+    print("rejected-req-successfully");
   } catch (error) {
     print("Error rejecting reqst: $error");
   }
-  print("rejected-req-successfully");
 }

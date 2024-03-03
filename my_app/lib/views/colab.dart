@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
-import 'package:my_app/views/colabrequests.dart';
+import 'package:my_app/controllers/colabrequests.dart';
 import 'package:my_app/models/usermodel.dart';
 
 class ColabPage extends StatefulWidget {

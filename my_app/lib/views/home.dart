@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/auth/services/authservice.dart';
+import 'package:my_app/auth/controllers/authservice.dart';
 import 'package:my_app/common/logoutdialog.dart';
-import 'package:my_app/views/taskstatus.dart';
+import 'package:my_app/controllers/taskstatus.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/components/image.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
-import 'package:my_app/pages/settings.dart';
-import 'package:my_app/pages/task_details.dart';
+import 'package:my_app/views/settings/settings.dart';
+import 'package:my_app/views/tasks/task.dart';
 
 enum MenuAction { logout, settings }
 

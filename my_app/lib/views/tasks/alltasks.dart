@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/components/footer.dart';
-import 'package:my_app/pages/task_details.dart';
+import 'package:my_app/views/tasks/task.dart';
 
-class NotesPage extends StatefulWidget {
+class AllTasksPage extends StatefulWidget {
   final String username;
-  NotesPage({required this.username});
+  AllTasksPage({required this.username});
 
   @override
-  _NotesPageState createState() => _NotesPageState(username: username);
+  _AllTasksPageState createState() => _AllTasksPageState(username: username);
 }
 
-class _NotesPageState extends State<NotesPage> {
+class _AllTasksPageState extends State<AllTasksPage> {
   String username;
   final int idx = 1;
   final TextEditingController queryController = TextEditingController();
@@ -20,7 +20,7 @@ class _NotesPageState extends State<NotesPage> {
   List<String> headings = [];
   List<Map<String,dynamic>> alltasks = [];
 
-  _NotesPageState({required this.username});
+  _AllTasksPageState({required this.username});
 
 
   @override

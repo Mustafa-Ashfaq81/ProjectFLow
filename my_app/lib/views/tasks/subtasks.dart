@@ -11,22 +11,34 @@ List<String> tasks = [
   'Gym',
 ];
 
-class TaskCRUDPage extends StatefulWidget {
-  final int taskIndex; // Index of the task in the global 'tasks' list
-  const TaskCRUDPage({Key? key, required this.taskIndex}) : super(key: key);
+class SubTaskPage extends StatefulWidget {
+  final String username;
+  final int taskIndex;    // Index of the task in the global 'tasks' list
+  const SubTaskPage({Key? key, required this.username,  required this.taskIndex  }) : super(key: key);
 
   @override
-  State<TaskCRUDPage> createState() => _TaskCRUDPageState();
+  _SubtaskPageState createState() => _SubtaskPageState(username: username, taskIndex: taskIndex);
+
 }
 
-class _TaskCRUDPageState extends State<TaskCRUDPage> {
-  late TextEditingController _headingController;
+class _SubtaskPageState extends State<SubTaskPage> {
 
+  String username;
+  final int taskIndex;
+  late TextEditingController _headingController;
+  _SubtaskPageState({required this.username, required this.taskIndex,});
+   
   @override
   void initState() {
     super.initState();
-    // Initialize the controller with the title of the task to be edited
+    username = widget.username;
     _headingController = TextEditingController(text: tasks[widget.taskIndex]);
+  }
+
+  @override
+  void dispose() {
+    _headingController.dispose();
+    super.dispose();
   }
 
   void _saveTask() {
@@ -88,9 +100,5 @@ class _TaskCRUDPageState extends State<TaskCRUDPage> {
     );
   }
 
-  @override
-  void dispose() {
-    _headingController.dispose();
-    super.dispose();
-  }
+
 }

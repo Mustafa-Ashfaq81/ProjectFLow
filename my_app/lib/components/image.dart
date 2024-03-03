@@ -24,7 +24,6 @@ class _ImageSetterState extends State<ImageSetter> {
   void initState() {
     super.initState();
     username = widget.username;
-    fetchData();
   }
 
   late FirebaseStorage _storage; //will be initialised later ... and is not NULLABLE
@@ -143,20 +142,30 @@ class _ImageSetterState extends State<ImageSetter> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: loadimg(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            downloadUrl = snapshot.data!;
-            if (downloadUrl != "") {
-              dp = 1;
-            }
-            return buildImage(downloadUrl, _imageFile, dp);
-          } else if (snapshot.hasError) {
-            // Handle error
-            return (Text("error"));
-          } else {
-            return CircularProgressIndicator();
-          }
-        });
+          future: fetchData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child:CircularProgressIndicator()); // Show loading indicator while fetching data
+      } else if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      } else {
+          return FutureBuilder(
+              future: loadimg(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  downloadUrl = snapshot.data!;
+                  if (downloadUrl != "") {
+                    dp = 1;
+                  }
+                  return buildImage(downloadUrl, _imageFile, dp);
+                } else if (snapshot.hasError) {
+                  // Handle error
+                  return (Text("error"));
+                } else {
+                  return CircularProgressIndicator();
+                }
+              });
+      }
+          });
   }
 }
