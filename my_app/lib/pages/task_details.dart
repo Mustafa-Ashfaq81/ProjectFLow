@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/pages/task.dart';
+import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/pages/taskcrud.dart';
-// import 'package:my_app/components/search.dart';
-// import 'package:my_app/components/footer.dart';
+import 'package:my_app/common/deletedialog.dart';
 // import 'package:my_app/models/usermodel.dart';
 
 
@@ -59,19 +58,31 @@ class _TaskPageState extends State<TaskDetailsPage> {
     super.dispose();
   }
 
-  void _saveProjectDetails() {
-  // Here you would typically save the data to a database or some other storage.
-  // For demonstration, we're just printing the values to the console.
-  print('Project Heading: ${_projectHeadingController.text}');
-  print('Project Description: ${_projectDescriptionController.text}');
-  
-  // Show a snackbar as feedback
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Project details saved!')),
-  );
-}
+   void _saveProjectDetails() async{
+    // Here you would typically save the data to a database or some other storage.
+    // For demonstration, we're just printing the values to the console.
+    String headingg =  _projectHeadingController.text;
+    String desc = _projectDescriptionController.text;
+    print('Project Heading: $headingg');
+    print('Project Description: $desc');
+    
+    // Show a snackbar as feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Project details saved!')),
+    );
+
+    await editTask(username,headingg,desc,mytask['heading']);
+
+ }
 
 
+  void deleteProject() async {
+    
+    String headingg =  _projectHeadingController.text;
+    await deleteTask(username, headingg);
+    Navigator.of(context).pop(); // Go back to the previous screen with the list updated
+
+  }
 
 
   AppBar _buildAppBar() {
@@ -187,6 +198,16 @@ Widget _buildProjectHeadingInput() {
                 _buildTeamMemberAvatars()
               ],
             ),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+            IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed:  ()  { showDeleteConfirmationDialog(context,deleteProject); }, // Show confirmation dialog before deleting
+               ),
+              ]
+            )
           ],
         ),
       ],
@@ -324,13 +345,7 @@ Widget _buildProjectHeadingInput() {
               elevation: 0, // Removes shadow
             ),
             onPressed: () {
-              // Navigate to TaskPage when button is pressed
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        TaskPage(username: 'musti',)), // TaskPage is the destination widget
-              );
+              // Navigate to CreateSubTaskPage 
             },
             child: Text(
               'Add Subtask',
@@ -347,7 +362,7 @@ Widget _buildProjectHeadingInput() {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
-      bottomNavigationBar: _buildFooterButton(),
+      // bottomNavigationBar: _buildFooterButton(),
     );
   }
 }

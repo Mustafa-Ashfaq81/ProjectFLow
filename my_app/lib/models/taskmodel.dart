@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:logging/logging.dart';
-
 
 class Task {
   String heading;
@@ -191,7 +189,7 @@ Future<int> getTaskindex(String heading, String username) async {
   return -1;
 }
 
-void editTask(String username, String heading, String description) async {
+Future<void> editTask(String username, String heading, String description, String originalheading) async {
   final userCollection = FirebaseFirestore.instance.collection("users");
   final snapshot =
       await userCollection.where('username', isEqualTo: username).get();
@@ -201,11 +199,13 @@ void editTask(String username, String heading, String description) async {
   try {
     List<dynamic> tasks = doc.data()['tasks'] ?? [];
     for (int i = 0; i < tasks.length; i++) {
-      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == heading) {
-        tasks[i]['status'] = "latest-status";
-        for (int j = 0; j < tasks[i]['subtasks'].length; j++) {
-          tasks[i]['subtasks'][j]['content'] = 'lat-3-est-contnet';
-        }
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == originalheading) {
+        tasks[i]['heading'] = heading;
+        tasks[i]['description'] = description;
+        // tasks[i]['status'] = "latest-status";
+        // for (int j = 0; j < tasks[i]['subtasks'].length; j++) {
+        //   tasks[i]['subtasks'][j]['content'] = 'lat-3-est-contnet';
+        // }
       }
     }
     await doc.reference.update({'tasks': tasks});
@@ -225,14 +225,15 @@ Future<void> addTask(String username, String heading, String description,
 
   try {
     List<dynamic> tasks = doc.data()['tasks'];
-    final Task newtask = Task(
-        heading: heading,
-        description: description,
-        status: "progress",
-        duedate: "",
-        duehour: "",
-        collaborators: collaborators,
-        subtasks: []);
+    final Map<String,dynamic> newtask = {
+        "heading": heading,
+        "description": description,
+        "status": "progress",
+        "duedate": "",
+        "duehour": "",
+        "collaborators": collaborators,
+        "subtasks": []
+    };
     tasks.add(newtask);
     await doc.reference.update({'tasks': tasks});
     if (collaborators.isEmpty == false) {
@@ -243,9 +244,8 @@ Future<void> addTask(String username, String heading, String description,
   }
 }
 
-final _logger = Logger('DeleteTask');
 
-void deleteTask(String username, String taskHeading) async {
+Future<void> deleteTask(String username, String taskHeading) async {
   try {
     final userCollection = FirebaseFirestore.instance.collection("users");
     final snapshot = await userCollection.where('username', isEqualTo: username).get();
@@ -256,9 +256,9 @@ void deleteTask(String username, String taskHeading) async {
     tasks.removeWhere((task) => task['heading'] == taskHeading);
     
     await doc.reference.update({'tasks': tasks});
-    _logger.info("Task '$taskHeading' deleted successfully.");
-  } catch (e, stackTrace) {
-    _logger.severe("Error deleting task: $e", e, stackTrace);
+    print("Task delete success");
+  } catch (e) {
+   print("task del err $e");
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/common/deletedialog.dart';
 
 // Ensure this list is accessible here. This could be a global list or managed via a state management solution.
 List<String> tasks = [
@@ -36,32 +37,6 @@ class _TaskCRUDPageState extends State<TaskCRUDPage> {
     Navigator.of(context).pop(); // Go back to the previous screen with the updated list
   }
 
-  void _showDeleteConfirmationDialog() {
-    // Show a dialog to confirm the deletion
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Confirm"),
-          content: const Text("Are you sure you want to delete this task?"),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Dismiss the dialog
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                // Delete the task and pop back to the previous screen
-                _deleteTask();
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text("Delete"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void _deleteTask() {
     // Remove the task from the global list
@@ -75,11 +50,11 @@ class _TaskCRUDPageState extends State<TaskCRUDPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Task'),
+        title: const Text('Edit Subtask'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: _showDeleteConfirmationDialog, // Show confirmation dialog before deleting
+            onPressed:  ()  { showDeleteConfirmationDialog(context,_deleteTask); }, // Show confirmation dialog before deleting
           ),
         ],
       ),
@@ -91,7 +66,7 @@ class _TaskCRUDPageState extends State<TaskCRUDPage> {
       TextField(
         controller: _headingController,
         decoration: const InputDecoration(
-          labelText: 'Task Title',
+          labelText: 'Subtask Title',
         ),
       ),
       const SizedBox(height: 20),
@@ -101,8 +76,8 @@ class _TaskCRUDPageState extends State<TaskCRUDPage> {
       ),
       const SizedBox(height: 8), // Add some space between the buttons
       ElevatedButton(
-        onPressed: _showDeleteConfirmationDialog,
-        child: const Text('Delete Task'),
+        onPressed:()  { showDeleteConfirmationDialog(context,_deleteTask); },
+        child: const Text('Delete Subtask'),
         style: ElevatedButton.styleFrom(
           primary: Colors.blue, // Use a color that indicates a destructive action
         ),
