@@ -7,6 +7,8 @@
 
 Welcome to our Flutter Note-Taking App! This app has been built using the Flutter framework, and the database is managed with Firebase. Follow these step-by-step instructions to set up the development environment and run the app on your local machine.
 
+
+
 ## Prerequisites
 
 Before you begin, ensure that you have the following installed on your system:
@@ -16,6 +18,8 @@ Before you begin, ensure that you have the following installed on your system:
 - **Code Editor:** Choose a code editor of your preference. You can use VS Code or Android Studio. We recommend Visual Studio Code, which has excellent Flutter support. Download and install it from [Visual Studio Code](https://code.visualstudio.com/).
 
 - **Device or Emulator:** You can run the app on a physical device or use an emulator. Make sure to set up your device or emulator based on your operating system.
+
+
 
 ## Clone the Repository
 
@@ -32,6 +36,9 @@ Before you begin, ensure that you have the following installed on your system:
    ```bash
    cd my_app
    ```
+
+
+
 
 ## Install Dependencies
 
@@ -58,6 +65,8 @@ MSG_SENDER_ID=12273615091
 APP_ID=1:12273615091:web:16e75bf6226f9122d37786
 ```
 
+
+
 ## Run the App
 
 If you are using Android Studio or are running the code on any device, connect your device or start an emulator. Then, run the app using the following command:
@@ -76,9 +85,16 @@ This command will build the app and open it either on your device/emulator or in
 
 ---
 
+
+
+
 ## SignUp
 
 Once the app is started, it will prompt you to register/signup or log in. For the initial setup, register by providing your username, email, and password. The system will store your credentials in the Firebase database.
+
+---
+
+
 
 ## LogIn
 
