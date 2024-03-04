@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
 import 'package:my_app/common/deletedialog.dart';
-// import 'package:my_app/models/usermodel.dart';
+import 'package:my_app/views/home.dart';
+import '../../common/toast.dart';
 
 
 class TaskDetailsPage extends StatefulWidget {
@@ -60,6 +61,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
     );
 
     await editTask(username,headingg,desc,mytask['heading']);
+    //addTask
+    showmsg(message: "Task has been updated successfully!");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(username: username),
+      ));
 
  }
 
@@ -68,7 +76,12 @@ class _TaskPageState extends State<TaskDetailsPage> {
     
     String headingg =  _projectHeadingController.text;
     await deleteTask(username, headingg);
-    Navigator.of(context).pop(); // Go back to the previous screen with the list updated
+    showmsg(message: "Task has been deleted successfully!");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(username: username),
+      )); // Go back to the previous screen with the list updated
 
   }
 

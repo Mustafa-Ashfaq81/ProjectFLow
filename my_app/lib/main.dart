@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:my_app/auth/views/splashscreen.dart';
 import 'package:my_app/auth/views/start.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
+
 import 'package:my_app/views/home.dart';
 import 'package:my_app/views/calendar.dart';
 import 'package:my_app/views/colab.dart';
@@ -52,18 +54,17 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
       // useMaterial3: true, // Uncomment if you want to use Material 3 features
       primaryColor: Color(0xFFFFE6C9),
       scaffoldBackgroundColor: Color(0xFFFFE6C9),
-      buttonTheme: ButtonThemeData(
-        buttonColor: Color(0x1E232C), // Use this for buttons or specify in button styl
-      
+      buttonTheme: const ButtonThemeData(
+        buttonColor: Color(0x1E232C), // Use this for buttons or specify in button style
       ),
       fontFamily: 'Urbanist', // Apply Urbanist as the default font for your app
- 
     ),
 
 
-      initialRoute: '/',
+      initialRoute: '/splash',
       routes: {
         // ignore: prefer_const_constructors
+        '/splash' : (context) => SplashScreen(), 
         '/': (context) => const StartPage(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
@@ -94,6 +95,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
               taskIndex: 0,
             ),
       },
+      debugShowCheckedModeBanner: false, 
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/tasks/task.dart';
+import 'package:my_app/views/loadingscreens/loadingalltasks.dart';
 
 class AllTasksPage extends StatefulWidget {
   final String username;
@@ -49,7 +50,7 @@ class _AllTasksPageState extends State<AllTasksPage> {
           future: atload(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child:CircularProgressIndicator()); // Show loading indicator while fetching data
+        return LoadingAllTasks();  // Show loading page while fetching data
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {

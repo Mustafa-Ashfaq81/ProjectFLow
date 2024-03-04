@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/controllers/colabrequests.dart';
 import 'package:my_app/models/usermodel.dart';
+import 'package:my_app/views/loadingscreens/loadingcolab.dart';
 
 class ColabPage extends StatefulWidget {
   final String username;
@@ -49,9 +50,7 @@ class _ColabPageState extends State<ColabPage> {
         future: atload(context), 
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-                child:
-                    CircularProgressIndicator()); // Show loading indicator while fetching data
+            return LoadingColab();  // Show loading page while fetching data
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
