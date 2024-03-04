@@ -188,14 +188,14 @@ class _RegisterPageState extends State<RegisterPage> {
     String name = _usernameController.text;
 
     if (password != pass) {
-      showmsg(message: "passwords not matching");
+      showerrormsg(message: "passwords not matching");
     } else {
       setState(() {
         isSigningUp = true;
       });
       var allusernames = await getallUsers();
       if (allusernames.contains(name) == true) {
-        showmsg(message: "username already taken");
+        showerrormsg(message: "username already taken");
       } else {
         User? user = await _auth.registeracc(email, password);
 

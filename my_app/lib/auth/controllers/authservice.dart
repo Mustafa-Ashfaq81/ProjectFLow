@@ -12,7 +12,7 @@ class FirebaseAuthService {
           email: email, password: password);
       return credential.user;
     } on FirebaseAuthException catch (e) {
-      showmsg(message: "${e.message}");
+      showerrormsg(message: "${e.message}");
     }
     return null;
   }
@@ -23,7 +23,7 @@ class FirebaseAuthService {
           email: email, password: password);
       return credential.user;
     } on FirebaseAuthException catch (e) {
-      showmsg(message: "${e.message}");
+      showerrormsg(message: "${e.message}");
     }
     return null;
   }
@@ -33,7 +33,7 @@ class FirebaseAuthService {
     if (user != null) {
       await FirebaseAuth.instance.signOut();
     } else {
-      showmsg(message: " user is not logged in ");
+      showerrormsg(message: " user is not logged in ");
     }
     return null;
   }

@@ -8,7 +8,7 @@ Widget fetchTasks(String status, String username) {
     future: FirebaseFirestore.instance.collection('users').get(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator(); // Show loading indicator while fetching data
+        return Center(child: CircularProgressIndicator(),); // Show loading indicator while fetching data
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {

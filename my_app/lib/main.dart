@@ -64,10 +64,10 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
       initialRoute: '/',
       routes: {
         // ignore: prefer_const_constructors
-        '/': (context) => StartPage(),
-        '/login': (context) => LoginPage(),
-        '/register': (context) => RegisterPage(),
-        '/home': (context) => HomePage(
+        '/': (context) => const StartPage(),
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+        '/home': (context) => const HomePage(
               username: "abz",
             ),
           '/colab': (context) => ColabPage(
@@ -82,16 +82,16 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
         '/alltasks': (context) => AllTasksPage(
               username: "abz",
             ),
-        '/task': (context) => TaskDetailsPage(
+            '/newtask': (context) => const NewTaskPage(
+              username: "abz",
+            ),
+        '/task': (context) => const TaskDetailsPage(
               username: "abz",
               task:{},
             ),
-           '/subtasks': (context) => SubTaskPage(
+           '/subtasks': (context) => const SubTaskPage(
               username: "abz",
               taskIndex: 0,
-            ),
-            '/newtask': (context) => NewTaskPage(
-              username: "abz",
             ),
       },
     );

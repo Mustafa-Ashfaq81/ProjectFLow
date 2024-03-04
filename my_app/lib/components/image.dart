@@ -162,7 +162,7 @@ class _ImageSetterState extends State<ImageSetter> {
                   // Handle error
                   return (Text("error"));
                 } else {
-                  return CircularProgressIndicator();
+                  return Center(child:CircularProgressIndicator());
                 }
               });
       }

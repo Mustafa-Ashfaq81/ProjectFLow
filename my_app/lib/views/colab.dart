@@ -27,7 +27,7 @@ class _ColabPageState extends State<ColabPage> {
     // atload();
   }
 
-  Future<void> atload() async {
+  Future<void> atload(BuildContext context) async {
     if (otherusers.isEmpty) {
       List<String> allusers = await getallUsers();
       for (var user in allusers) {
@@ -35,16 +35,18 @@ class _ColabPageState extends State<ColabPage> {
           otherusers.add(user);
         }
       }
+      await Future.delayed(const Duration(
+          seconds: 3)); //helps in updating requests if added/declined just now
       reqtasks = await get_ifany_requests(username, otherusers);
     }
-    requests = showRequests(reqtasks, username);
+    requests = showRequests(context,reqtasks, username);
   }
 
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return FutureBuilder(
-        future: atload(), // Call atload() directly here
+        future: atload(context), 
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(

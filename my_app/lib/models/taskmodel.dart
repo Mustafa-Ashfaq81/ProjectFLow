@@ -231,7 +231,7 @@ Future<void> addTask(String username, String heading, String description,
         "status": "progress",
         "duedate": "",
         "duehour": "",
-        "collaborators": collaborators,
+        "collaborators": [],
         "subtasks": []
     };
     tasks.add(newtask);

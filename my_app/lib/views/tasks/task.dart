@@ -16,7 +16,6 @@ class TaskDetailsPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskDetailsPage> {
-  final int idx = 2;
   String username; 
   Map<String,dynamic> mytask;
   _TaskPageState({required this.username, required this.mytask});

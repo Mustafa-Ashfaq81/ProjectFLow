@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/models/taskmodel.dart';
+import 'package:my_app/views/colab.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-Widget showRequests(List<Map<String, dynamic>> requests, String username) {
+Widget showRequests( BuildContext context,  List<Map<String, dynamic>> requests, String username) {
   return requests.isEmpty
       ? Padding(
           padding: const EdgeInsets.only(
@@ -13,7 +14,6 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
           scrollDirection: Axis.horizontal,
           child: Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
-            // child: Text("wut"),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: requests
@@ -46,13 +46,13 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                acceptreq(task, username);
+                                acceptreq(context,task, username);
                               },
                               child: Text("Accept request"),
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                rejectreq(task, username);
+                                rejectreq(context,task, username);
                               },
                               child: Text("Decline request"),
                             )
@@ -84,13 +84,13 @@ Widget showRequests(List<Map<String, dynamic>> requests, String username) {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                acceptreq(task, username);
+                                acceptreq(context,task, username);
                               },
                               child: Text("Accept request"),
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                rejectreq(task, username);
+                                rejectreq(context,task, username);
                               },
                               child: Text("Decline request"),
                             )
@@ -125,12 +125,11 @@ Future<List<Map<String, dynamic>>> get_ifany_requests(
       "index": req['task']
     });
   }
-  print("got other users $otherusers $reqtasks");
   // return fetchRequests(reqtasks);
   return reqtasks;
 }
 
-void acceptreq(Map<String, dynamic> task, String username) async {
+void acceptreq(BuildContext context,Map<String, dynamic> task, String username) async {
 
   var updatedtask = await getSpecificTask(task);
   final userCollection = FirebaseFirestore.instance.collection("users");
@@ -154,37 +153,57 @@ void acceptreq(Map<String, dynamic> task, String username) async {
     tasks = doc.data()['tasks'];
     tasks.add(updatedtask);
     await doc.reference.update({'tasks': tasks});
+    updateColabinDatabase(username, task);
     print("accepted-req-successfully");
+    Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ColabPage(username: username),
+              ));
+    
   } catch (e) {
     print("accepting req err $e");
   }
 
 }
 
-void rejectreq(Map<String, dynamic> task, String username) async {
+void rejectreq(BuildContext context,Map<String, dynamic> task, String username) async {
   try {
-    print("rej---$task");
-    await FirebaseFirestore.instance
-        .collection('colab')
-        .where('req_sender', isEqualTo: task['sender'])
-        .where('req_task', isEqualTo: task['index'])
-        .get()
-        .then((querySnapshot) {
-      for (var doc in querySnapshot.docs) {
-        doc.reference.update({
-          'req_recv': FieldValue.arrayRemove([username])
-        }).then((value) {
-          // Check if 'usernames' is now empty and delete the record
-          doc.reference.get().then((docSnapshot) {
-            if (docSnapshot.get('req_recv').isEmpty) {
-              doc.reference.delete();
-            }
-          });
-        });
-      }
-    });
+    updateColabinDatabase(username, task);
     print("rejected-req-successfully");
+    Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ColabPage(username: username),
+              ));
   } catch (error) {
     print("Error rejecting reqst: $error");
+  }
+}
+
+
+Future<void> updateColabinDatabase(String username, Map<String,dynamic> task) async{
+  try{
+    await FirebaseFirestore.instance
+          .collection('colab')
+          .where('req_sender', isEqualTo: task['sender'])
+          .where('req_task', isEqualTo: task['index'])
+          .get()
+          .then((querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          doc.reference.update({
+            'req_recv': FieldValue.arrayRemove([username])
+          }).then((value) {
+            // Check if 'usernames' is now empty and delete the record
+            doc.reference.get().then((docSnapshot) {
+              if (docSnapshot.get('req_recv').isEmpty) {
+                doc.reference.delete();
+              }
+            });
+          });
+        }
+      });
+  } catch (e){
+    print("error at updating colab collection in db  $e");
   }
 }

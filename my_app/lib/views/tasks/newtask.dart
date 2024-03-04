@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/views/home.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
+import '../../common/toast.dart';
 
 class NewTaskPage extends StatefulWidget {
   final String username;
@@ -21,7 +23,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _dateController = TextEditingController();
   TextEditingController _startTimeController = TextEditingController(); // Controller for start time
-  TextEditingController _endTimeController = TextEditingController(); // Controller for end time
+  TextEditingController _endTimeController = TextEditingController();   // Controller for end time
   TextEditingController  descController  = TextEditingController(); 
   TextEditingController headingController  = TextEditingController(); 
   List<Map<String, dynamic>> teamMembers = [];
@@ -347,19 +349,11 @@ return Expanded(
       child: TextButton(
         style: TextButton.styleFrom(backgroundColor: Colors.green, primary: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0))),
         onPressed: () async {
-          if (_formKey.currentState!.validate())  {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Form is valid and processing data')));
-             List<String> collaborators= [];
-            for (Map<String, dynamic> item in teamMembers) {
-              if (item.containsKey('name')) {
-                collaborators.add(item['name'] as String);
-              } else {
-                print("TEAM-MEMBERS missing 'name' key: $item");
-              }
-            }
-            await addTask(username, headingController.text, descController.text, collaborators);
+          if (_formKey.currentState!.validate() && headingController.text!="" && descController.text!="")  {
+            handleValidTaskSubmission(context,username, headingController.text, descController.text,teamMembers);
           }
           else{
+            showerrormsg(message: "The form is invalid - No heading or description added");
             print("un-submittable-invalid-form");
           }
         },
@@ -367,5 +361,24 @@ return Expanded(
       ),
     );
   }
+}
+
+Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, List<Map<String, dynamic>> teamMembers)async{
+   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Form is valid and processing data'),duration: const Duration(seconds: 2),));
+    List<String> collaborators= [];
+  for (Map<String, dynamic> item in teamMembers) {
+    if (item.containsKey('name')) {
+      collaborators.add(item['name'] as String);
+    } else {
+      print("TEAM-MEMBERS missing 'name' key: $item");
+    }
+  }
+  await addTask(username, heading, desc, collaborators);
+  showmsg(message: "Task has been added successfully!");
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => HomePage(username: username),
+    ));
 }
 
