@@ -101,8 +101,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
 }
 
 void testingfunc() {
-  int x = 5;
-  print("$x my app is being built.....");
+  print(" my app is being built.....");
 }
 
 

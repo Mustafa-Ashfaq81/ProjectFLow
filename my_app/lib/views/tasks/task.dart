@@ -165,14 +165,16 @@ Widget _buildProjectHeadingInput() {
 }
 
   Widget _buildDuedateProjectTeam() {
-    return Column(
+    return SingleChildScrollView(
+        scrollDirection: Axis.horizontal, 
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             _buildIconContainer(icon: Icons.calendar_month),
             const SizedBox(width: 10),
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -190,7 +192,7 @@ Widget _buildProjectHeadingInput() {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Project Team',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -212,7 +214,7 @@ Widget _buildProjectHeadingInput() {
           ],
         ),
       ],
-    );
+    ));
   }
 
   Widget _buildTeamMemberAvatars() {
