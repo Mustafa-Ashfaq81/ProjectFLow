@@ -40,7 +40,7 @@ class _ImageSetterState extends State<ImageSetter> {
   int dp = 0;
 
 
-  void _startUpload(File _imageFile, String imageUrl, XFile selectedImage) async { //uploads image to database
+  void _startUpload(File imageFile, String imageUrl, XFile selectedImage) async { //uploads image to database
     try {
       String filePath = 'images/$username.png';
       if (kIsWeb) {
@@ -48,7 +48,7 @@ class _ImageSetterState extends State<ImageSetter> {
         _storage.ref().child(filePath).putData(bytes);
         downloadUrl = await _storage.ref().child(filePath).getDownloadURL();
       } else {
-        _storage.ref().child(filePath).putFile(_imageFile);
+        _storage.ref().child(filePath).putFile(imageFile);
       }
       print("successupload");
     } catch (e) {
@@ -83,7 +83,7 @@ class _ImageSetterState extends State<ImageSetter> {
     return "";
   }
 
-  Widget buildImage(String imageUrl, File _imageFile, int dp) { //builds the image
+  Widget buildImage(String imageUrl, File imageFile, int dp) { //builds the image
     if (dp == 1) {
       if (kIsWeb) {
         return Padding(
@@ -106,7 +106,7 @@ class _ImageSetterState extends State<ImageSetter> {
         return Padding(
             padding: const EdgeInsets.only(right: 15.0, top: 15.0),
             child: Stack(children: [
-              CircleAvatar(radius: 24, backgroundImage: FileImage(_imageFile)),
+              CircleAvatar(radius: 24, backgroundImage: FileImage(imageFile)),
               Positioned(
                 bottom: -15, // Adjust the offset as needed
                 right: -10, // Adjust the offset as needed
@@ -122,7 +122,7 @@ class _ImageSetterState extends State<ImageSetter> {
       return Padding(
           padding: const EdgeInsets.only(right: 15.0, top: 15.0),
           child: Stack(children: [
-            CircleAvatar(
+            const CircleAvatar(
               backgroundImage:
                   AssetImage("pictures/profile.png"), // Your profile image
               radius: 24, // Adjust as needed
@@ -145,7 +145,7 @@ class _ImageSetterState extends State<ImageSetter> {
           future: fetchData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child:CircularProgressIndicator()); // Show loading indicator while fetching data
+        return const Center(child:CircularProgressIndicator()); // Show loading indicator while fetching data
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
@@ -160,9 +160,9 @@ class _ImageSetterState extends State<ImageSetter> {
                   return buildImage(downloadUrl, _imageFile, dp);
                 } else if (snapshot.hasError) {
                   // Handle error
-                  return (Text("error"));
+                  return (const Text("error"));
                 } else {
-                  return Center(child:CircularProgressIndicator());
+                  return const Center(child:CircularProgressIndicator());
                 }
               });
       }

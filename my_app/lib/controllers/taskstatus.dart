@@ -8,7 +8,7 @@ Widget fetchTasks(String status, String username) {
     future: FirebaseFirestore.instance.collection('users').get(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator(),); // Show loading indicator while fetching data
+        return const Center(child: CircularProgressIndicator(),); // Show loading indicator while fetching data
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
@@ -52,8 +52,8 @@ Widget fetchTasks(String status, String username) {
 
 Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headings, String username) {
   return headings.isEmpty
-      ? Padding(
-          padding: const EdgeInsets.only(
+      ? const Padding(
+          padding: EdgeInsets.only(
             top: 10.0,
           ),
           child: Center(child: Text("No completed task yet")))
@@ -73,7 +73,7 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
                               height: 200.0,
                               width: 200.0,
                               decoration: BoxDecoration(
-                                color: Color(0xFFE16C00).withOpacity(0.48),
+                                color: const Color(0xFFE16C00).withOpacity(0.48),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Material( // Make the container clickable
@@ -119,7 +119,7 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
                             height: 200.0,
                             width: 200.0,
                             decoration: BoxDecoration(
-                              color: Color(0xFF141310),
+                              color: const Color(0xFF141310),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Material( // Make the container clickable
@@ -166,8 +166,8 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
 
 Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> headings, String username) {
   return headings.isEmpty
-      ? Padding(
-          padding: const EdgeInsets.only(
+      ? const Padding(
+          padding: EdgeInsets.only(
             top: 10.0,
           ),
           child: Center(child: Text("No task in progress")))
@@ -184,7 +184,7 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
                           height: 90.0,
                           width: 450.0,
                           decoration: BoxDecoration(
-                            color: Color(0xFFE16C00).withOpacity(0.48),
+                            color: const Color(0xFFE16C00).withOpacity(0.48),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Material( // Make the container clickable
@@ -230,7 +230,7 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
                           height: 90.0,
                           width: 450.0,
                           decoration: BoxDecoration(
-                            color: Color(0xFF141310),
+                            color: const Color(0xFF141310),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Material( // Make the container clickable

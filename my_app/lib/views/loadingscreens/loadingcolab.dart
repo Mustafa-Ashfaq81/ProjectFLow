@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingColab extends StatefulWidget {
-  LoadingColab();
+  const LoadingColab({super.key});
 
   @override
   _LoadingColabState createState() => _LoadingColabState();
@@ -16,6 +16,6 @@ class _LoadingColabState extends State<LoadingColab> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child:CircularProgressIndicator());
+    return const Center(child:CircularProgressIndicator());
   }
 }

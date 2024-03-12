@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
   final String username;
-  SettingsPage({required this.username});
+  const SettingsPage({super.key, required this.username});
   @override
   _SettingsPageState createState() => _SettingsPageState(username: username);
 }
@@ -14,9 +14,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings Page'),
+        title: const Text('Settings Page'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('This is where you add Settingss.'),
       ),
     );

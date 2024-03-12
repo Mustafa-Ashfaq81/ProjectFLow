@@ -57,7 +57,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     
     // Show a snackbar as feedback
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Project details saved!')),
+      const SnackBar(content: Text('Project details saved!')),
     );
 
     await editTask(username,headingg,desc,mytask['heading']);
@@ -116,10 +116,10 @@ class _TaskPageState extends State<TaskDetailsPage> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _saveProjectDetails,
-            child: Text('Save Project Details'),
             style: ElevatedButton.styleFrom(
-              primary: Theme.of(context).primaryColor,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
+            child: const Text('Save Project Details'),
           ),
           const SizedBox(height: 30),
           _buildSectionTitle('All Subtasks'),
@@ -299,15 +299,15 @@ Widget _buildProjectHeadingInput() {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
+        const Text(
           'Project Progress',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(width: 200),
-        Container(
+        const SizedBox(width: 200),
+        SizedBox(
           width: 20, // Width of the circle
           height: 20, // Height of the circle
           child: CircularProgressIndicator(
@@ -317,10 +317,10 @@ Widget _buildProjectHeadingInput() {
             strokeWidth: 2,
           ),
         ),
-        SizedBox(width: 5), // Space after the progress indicator
+        const SizedBox(width: 5), // Space after the progress indicator
         Text(
           '${(progress * 100).toInt()}%', // The percentage text
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
           ),
         ),
@@ -350,7 +350,7 @@ Widget _buildProjectHeadingInput() {
             onPressed: () {
               // Navigate to CreateSubTaskPage 
             },
-            child: Text(
+            child: const Text(
               'Add Subtask',
               style: TextStyle(fontSize: 16), // Set your text size here
             ),
@@ -386,14 +386,14 @@ Widget _buildTaskMenu(String username) {
     itemCount: tasks.length,
     itemBuilder: (context, index) {
       return Card(
-        margin: EdgeInsets.all(5.0),
+        margin: const EdgeInsets.all(5.0),
         color: Colors.orangeAccent,
         child: ListTile(
           title: Text(
             tasks[index],
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
           ),
-          trailing: Icon(Icons.edit, color: Colors.blue),
+          trailing: const Icon(Icons.edit, color: Colors.blue),
           onTap: () async {
             // Use async-await instead of then
             await Navigator.push(

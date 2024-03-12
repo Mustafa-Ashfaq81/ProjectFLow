@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingAllTasks extends StatefulWidget {
-  LoadingAllTasks();
+  const LoadingAllTasks({super.key});
 
   @override
   _LoadingAllTasksState createState() => _LoadingAllTasksState();
@@ -16,6 +16,6 @@ class _LoadingAllTasksState extends State<LoadingAllTasks> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child:CircularProgressIndicator());
+    return const Center(child:CircularProgressIndicator());
   }
 }

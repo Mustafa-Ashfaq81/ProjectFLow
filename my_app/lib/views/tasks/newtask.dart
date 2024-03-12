@@ -21,9 +21,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
   DateTime? _selectedDate;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _startTimeController = TextEditingController(); // Controller for start time
-  TextEditingController _endTimeController = TextEditingController();   // Controller for end time
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _startTimeController = TextEditingController(); // Controller for start time
+  final TextEditingController _endTimeController = TextEditingController();   // Controller for end time
   TextEditingController  descController  = TextEditingController(); 
   TextEditingController headingController  = TextEditingController(); 
   List<Map<String, dynamic>> teamMembers = [];
@@ -153,7 +153,7 @@ Widget _buildBody() {
           ),
           // const Spacer(),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () async {
               final List<String> allusers = await getallUsers();
               final List<String> otherusers = [];
@@ -347,7 +347,7 @@ return Expanded(
       height: 50.0,
       decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
       child: TextButton(
-        style: TextButton.styleFrom(backgroundColor: Colors.green, primary: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0))),
+        style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.green, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0))),
         onPressed: () async {
           if (_formKey.currentState!.validate() && headingController.text!="" && descController.text!="")  {
             handleValidTaskSubmission(context,username, headingController.text, descController.text,teamMembers);
@@ -364,7 +364,7 @@ return Expanded(
 }
 
 Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, List<Map<String, dynamic>> teamMembers)async{
-   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Form is valid and processing data'),duration: const Duration(seconds: 2),));
+   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Form is valid and processing data'),duration: Duration(seconds: 2),));
     List<String> collaborators= [];
   for (Map<String, dynamic> item in teamMembers) {
     if (item.containsKey('name')) {

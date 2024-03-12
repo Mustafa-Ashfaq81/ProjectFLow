@@ -89,10 +89,10 @@ class _SubtaskPageState extends State<SubTaskPage> {
       const SizedBox(height: 8), // Add some space between the buttons
       ElevatedButton(
         onPressed:()  { showDeleteConfirmationDialog(context,_deleteTask); },
-        child: const Text('Delete Subtask'),
         style: ElevatedButton.styleFrom(
-          primary: Colors.blue, // Use a color that indicates a destructive action
+          backgroundColor: Colors.blue, // Use a color that indicates a destructive action
         ),
+        child: const Text('Delete Subtask'),
       ),
     ],
         ),

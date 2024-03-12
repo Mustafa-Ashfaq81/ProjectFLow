@@ -3,7 +3,7 @@ import 'package:my_app/components/footer.dart';
 
 class CalendarPage extends StatefulWidget {
   final String username;
-  CalendarPage({required this.username});
+  const CalendarPage({super.key, required this.username});
   @override
   _CalendarPageState createState() => _CalendarPageState(username: username);
 }
@@ -16,9 +16,9 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendar Page'),
+        title: const Text('Calendar Page'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('This is where you add deadlines.'),
       ),
       bottomNavigationBar: Footer(context, idx, username),

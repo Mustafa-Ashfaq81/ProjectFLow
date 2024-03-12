@@ -12,7 +12,7 @@ class StartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Home')),
+        title: const Center(child: Text('Home')),
          backgroundColor: Colors.black,
       ),
       body: Center(
@@ -23,31 +23,31 @@ class StartPage extends StatelessWidget {
               width: 150, // Increase the width of the buttons
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push( context, MaterialPageRoute(builder: (context) => LoginPage()),
+                  Navigator.push( context, MaterialPageRoute(builder: (context) => const LoginPage()),
                     );
                 },
-                child: Text('Login'),
+                child: const Text('Login'),
               ),
             ),
-            SizedBox(height: 20), // Adding some spacing
+            const SizedBox(height: 20), // Adding some spacing
             SizedBox(
               width: 150,
               child: ElevatedButton(
                 onPressed: () {
-                   Navigator.push( context, MaterialPageRoute(builder: (context) => RegisterPage()),
+                   Navigator.push( context, MaterialPageRoute(builder: (context) => const RegisterPage()),
                     );
                 },
-                child: Text('Register'),
+                child: const Text('Register'),
               ),
             ),
-            SizedBox(height: 20), // Adding some spacing
+            const SizedBox(height: 20), // Adding some spacing
             SizedBox(
               width: 150, // Increase the width of the buttons
               child: ElevatedButton(
                 onPressed: () async{
                     await apicall();
                 },
-                child: Text('API'),
+                child: const Text('API'),
               ),
             ),
           ],
@@ -78,7 +78,7 @@ class StartPage extends StatelessWidget {
         format the subtasks(with headings,descriptions, and deadlines) accordingly. And I dont want you to output anything else
         other than the array (dont think out loud, dont say "yes, certainly, ill do it" , just send the array of dictionaries 
         in output), so I can easily treat your answer as the array and deal with it accordingly. Ok so, now that my instructions are clear, 
-        the heading of the idea is: ${heading}, description: ${description} Today is 5th March 2024, deadline of this project is ${deadline}. 
+        the heading of the idea is: $heading, description: $description Today is 5th March 2024, deadline of this project is $deadline. 
         And lastly, while writing the list of dictionaries, just write the list of dictionaries, 
         dont declare it or initialise it as some variable, i will handle that part. Thank you !
     """;
@@ -86,7 +86,7 @@ class StartPage extends StatelessWidget {
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${apiKey}' 
+        'Authorization': 'Bearer $apiKey' 
       },
       body: jsonEncode({
         "model":"gpt-3.5-turbo",

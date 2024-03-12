@@ -7,7 +7,7 @@ import 'package:my_app/views/loadingscreens/loadingalltasks.dart';
 
 class AllTasksPage extends StatefulWidget {
   final String username;
-  AllTasksPage({required this.username});
+  const AllTasksPage({super.key, required this.username});
 
   @override
   _AllTasksPageState createState() => _AllTasksPageState(username: username);
@@ -50,13 +50,13 @@ class _AllTasksPageState extends State<AllTasksPage> {
           future: atload(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-        return LoadingAllTasks();  // Show loading page while fetching data
+        return const LoadingAllTasks();  // Show loading page while fetching data
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Notes Page'),
+              title: const Text('Notes Page'),
             ),
             body: Column(
               children: [
@@ -90,13 +90,13 @@ class _AllTasksPageState extends State<AllTasksPage> {
               controller: queryController,
               decoration: InputDecoration(
                 hintText: 'Search Notes',
-                hintStyle: TextStyle(color: Color(0xFF000000)),
+                hintStyle: const TextStyle(color: Color(0xFF000000)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Color(0xFFFFFFFF),
+                fillColor: const Color(0xFFFFFFFF),
               ),
               onChanged: (text) {
                 setState(() {
@@ -126,7 +126,7 @@ class _AllTasksPageState extends State<AllTasksPage> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               Future<String?> selectedTask = showSearch(
                 context: context,
@@ -171,11 +171,11 @@ class _AllTasksPageState extends State<AllTasksPage> {
 
         return Card(
           color: bgColor, // Use the bgColor for this note card
-          margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+          margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
           child: ListTile(
             title: Text(
               notes[index]['heading'],
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),

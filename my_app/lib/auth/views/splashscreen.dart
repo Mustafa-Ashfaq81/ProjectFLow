@@ -5,7 +5,7 @@ import 'package:page_transition/page_transition.dart';
 
 
 class SplashScreen extends StatefulWidget {
-  SplashScreen();
+  const SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();

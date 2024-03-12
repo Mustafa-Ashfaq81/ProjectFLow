@@ -38,7 +38,7 @@ Future main() async {
       ),
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {  // This widget is the root of your application.
@@ -52,10 +52,10 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
       theme: ThemeData
       (
       // useMaterial3: true, // Uncomment if you want to use Material 3 features
-      primaryColor: Color(0xFFFFE6C9),
-      scaffoldBackgroundColor: Color(0xFFFFE6C9),
+      primaryColor: const Color(0xFFFFE6C9),
+      scaffoldBackgroundColor: const Color(0xFFFFE6C9),
       buttonTheme: const ButtonThemeData(
-        buttonColor: Color(0x1E232C), // Use this for buttons or specify in button style
+        buttonColor: Color(0x001e232c), // Use this for buttons or specify in button style
       ),
       fontFamily: 'Urbanist', // Apply Urbanist as the default font for your app
     ),
@@ -71,16 +71,16 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
         '/home': (context) => const HomePage(
               username: "abz",
             ),
-          '/colab': (context) => ColabPage(
+          '/colab': (context) => const ColabPage(
               username: "abz",
             ),
-        '/calendar': (context) => CalendarPage(
+        '/calendar': (context) => const CalendarPage(
               username: "abz",
             ),
-        '/settings': (context) => SettingsPage(
+        '/settings': (context) => const SettingsPage(
               username: "abz",
             ),
-        '/alltasks': (context) => AllTasksPage(
+        '/alltasks': (context) => const AllTasksPage(
               username: "abz",
             ),
             '/newtask': (context) => const NewTaskPage(
