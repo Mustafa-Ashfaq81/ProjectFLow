@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 
 class SearchTasks extends SearchDelegate<String> {
@@ -13,7 +15,7 @@ class SearchTasks extends SearchDelegate<String> {
     return super.appBarTheme(context).copyWith(
           textTheme: const TextTheme(
             titleLarge: TextStyle(
-              color: Color(0xff000000), // Adjust text color if needed
+              color: Color(0xff000000), 
             ),
           ),
         );
@@ -21,7 +23,6 @@ class SearchTasks extends SearchDelegate<String> {
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    // print("build-acts");
     return [
       IconButton(
           onPressed: () {
@@ -42,7 +43,6 @@ class SearchTasks extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // print("build-res");
     List<String> res = [];
     for (var title in headings) {
       if (title.toLowerCase().contains(query.toLowerCase())) {
@@ -70,7 +70,6 @@ class SearchTasks extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // print("build-sugg");
     List<String> res = [];
     for (var title in headings) {
       if (title.toLowerCase().contains(query.toLowerCase())) {
@@ -106,20 +105,22 @@ class SearchUsers extends SearchDelegate<String> {
     print("username $username other-users $users");
   }
 
+  // APP Bar styling below according to our color scheme
+
   @override
   ThemeData appBarTheme(BuildContext context) {
     return super.appBarTheme(context).copyWith(
           textTheme: const TextTheme(
             titleLarge: TextStyle(
-              color: Color(0xff000000), // Adjust text color if needed
+              color: Color(0xff000000), 
             ),
           ),
         );
   }
 
+
   @override
   List<Widget> buildActions(BuildContext context) {
-    // print("build-acts");
     return [
       IconButton(
           onPressed: () {
@@ -140,7 +141,6 @@ class SearchUsers extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // print("build-results");
     List<String> res = [];
     for (var user in users) {
       if (user.toLowerCase().contains(query.toLowerCase())) {
@@ -169,7 +169,6 @@ class SearchUsers extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // print("build-sugg");
     List<String> res = [];
     for (var user in users) {
       if (user.toLowerCase().contains(query.toLowerCase())) {

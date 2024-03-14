@@ -1,3 +1,4 @@
+// ignore_for_file: no_logic_in_create_state, library_private_types_in_public_api,unnecessary_cast,use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
@@ -29,6 +30,8 @@ class _AllTasksPageState extends State<AllTasksPage> {
     super.initState();
     username = widget.username;
   }
+
+  // Getting the headings and tasks from the  database for a specific user
 
   Future<void> atload() async {
     headings = await getTaskHeadings(username);
@@ -106,6 +109,7 @@ class _AllTasksPageState extends State<AllTasksPage> {
                    Future<String?> selectedTask = showSearch(
                       context: context,
                       delegate:
+        
                           SearchTasks(username: username, headings: headings)
                               as SearchDelegate<String>,
                   );
@@ -166,11 +170,11 @@ class _AllTasksPageState extends State<AllTasksPage> {
     return ListView.builder(
       itemCount: notes.length,
       itemBuilder: (context, index) {
-        // Use modulo (%) operator to cycle through the colors list if there are more notes than colors
+        // Using modulo (%) operator to cycle through the colors list if there are more notes than colors
         Color bgColor = colors[index % colors.length];
 
         return Card(
-          color: bgColor, // Use the bgColor for this note card
+          color: bgColor, // Using the bgColor for this note card
           margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
           child: ListTile(
             title: Text(

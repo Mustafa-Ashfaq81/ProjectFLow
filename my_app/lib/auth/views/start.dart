@@ -95,6 +95,7 @@ class StartPage extends StatelessWidget {
     );
 
     final resp = response.body;
+    // ignore: avoid_print
     print("response ... $resp");
   }
 

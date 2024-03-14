@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print,use_build_context_synchronously,no_logic_in_create_state,unnecessary_cast
 import 'package:flutter/material.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/components/search.dart';
@@ -15,6 +16,8 @@ class NewTaskPage extends StatefulWidget {
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
+  // Idx of the page corresponds to it in the footer bar. 
+  // Task page is at index 2
   final int idx = 2;
   String username; 
   _NewTaskPageState({required this.username});
@@ -263,14 +266,13 @@ Widget _buildBody() {
   }
 
   Widget _buildDateTimeField(String hint, String label) {
-  TextEditingController controller; // Now directly assigning the correct controller based on the label
-  // bool isTimeField = label.contains('Time');
+  TextEditingController controller; // Directly assigning the correct controller based on the label
   if (label == 'Date') {
-    controller = _dateController; // Assign the _dateController for the date field
+    controller = _dateController; // Assign the _dateControllering for the date field
   } else if (label == 'Time Start') {
-    controller = _startTimeController; // Assign the _startTimeController for the start time field
+    controller = _startTimeController; 
   } else if (label == 'Time End') {
-    controller = _endTimeController; // Assign the _endTimeController for the end time field
+    controller = _endTimeController; 
   } else {
     controller = TextEditingController(); // Fallback
   }
@@ -311,12 +313,6 @@ return Expanded(
           hintText: hint,
         ),
         style: const TextStyle(fontFamily: 'Inter', fontSize: 16.0),
-        // validator: (value) {
-        //   if (label.contains('Time') && !_isValidTime(value)) {
-        //     return 'Enter time in HH:mm format';
-        //   }
-        //   return null;
-        // },
       ),
     ),
   );

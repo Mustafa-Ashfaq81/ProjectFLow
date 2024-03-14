@@ -1,3 +1,4 @@
+// ignore_for_file: no_logic_in_create_state, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast
+
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
 import 'package:my_app/common/logoutdialog.dart';
@@ -8,6 +10,9 @@ import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
+
+
+// enum data type for logout and settings
 
 enum MenuAction { logout, settings }
 
@@ -23,10 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // _HomePageState() { //constructor(init) for async functions
-  //   print("init-state-async");
-  //   atload(); //async func
-  // }
 
   final FirebaseAuthService _auth = FirebaseAuthService();
   TextEditingController querycontroller = TextEditingController();
@@ -45,8 +46,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     print("init-state-sync");
     username = widget.username;
-    // editTask(username, "t_three"); //for testing
-    //instantiate this data only once (at page load)
     completedtasks = fetchTasks("completed", username);
     inprogresstasks = fetchTasks("progress", username);
     profilepic = ImageSetter(username: username);
@@ -134,8 +133,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // Decrease the height here to move the search box up
-            const SizedBox(height:20), // Adjust this value as needed to control space below your name
+            const SizedBox(height:20),
             Padding(
               padding: const EdgeInsets.only(
                 right: 10.0,
@@ -152,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                           hintText: 'Search Task',
                           hintStyle: const TextStyle(
                             fontFamily: 'Inter',
-                            color: Color(0xFF000000), // Adjust the hint color
+                            color: Color(0xFF000000), // Adjusting the hint color
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
@@ -187,7 +185,6 @@ class _HomePageState extends State<HomePage> {
                           querycontroller.clear();
                         }
                       },
-                      // onSubmitted:  showSearch(context: context, delegate: SearchTasks());,
                     ),
                   ),
                   IconButton(
@@ -210,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                         );
                     }
                   });
-                      } // Simulate search button press
+                      } 
                       ),
                 ],
               ),
@@ -218,7 +215,7 @@ class _HomePageState extends State<HomePage> {
             const Padding(
               padding: EdgeInsets.only(left: 30.0, top: 0.0),
               child: Text(
-                'Completed Tasks', // Your name
+                'Completed Tasks', 
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 22,
@@ -230,7 +227,7 @@ class _HomePageState extends State<HomePage> {
             const Padding(
               padding: EdgeInsets.only(left: 30.0, top: 20.0),
               child: Text(
-                'Ongoing Projects', // Your name
+                'Ongoing Projects', 
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 22,

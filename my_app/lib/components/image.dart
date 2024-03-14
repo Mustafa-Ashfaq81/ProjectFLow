@@ -1,3 +1,6 @@
+
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -13,11 +16,12 @@ class ImageSetter extends StatefulWidget {
   //the next line makes this class directly importable as a widget
   const ImageSetter({Key? key, required this.username}) : super(key: key);
   @override
+  // ignore: library_private_types_in_public_api, no_logic_in_create_state
   _ImageSetterState createState() => _ImageSetterState(username: username);
 }
 
 class _ImageSetterState extends State<ImageSetter> {
-  String username; // Track the username
+  String username; 
   _ImageSetterState({required this.username});
 
   @override
@@ -29,7 +33,7 @@ class _ImageSetterState extends State<ImageSetter> {
   late FirebaseStorage _storage; //will be initialised later ... and is not NULLABLE
 
   Future<void> fetchData() async {
-    await dotenv.load(); // Load the environment variables
+    await dotenv.load(); 
     String imagebucket = dotenv.env['IMAGE_BUCKET']!;
     _storage = FirebaseStorage.instanceFor(bucket: imagebucket);
   }
@@ -78,12 +82,12 @@ class _ImageSetterState extends State<ImageSetter> {
       print("got-durl");
       return durl;
     } catch (e) {
-      print("load img err $e");
+      // print("load img err $e");
     }
     return "";
   }
 
-  Widget buildImage(String imageUrl, File imageFile, int dp) { //builds the image
+  Widget buildImage(String imageUrl, File imageFile, int dp) { 
     if (dp == 1) {
       if (kIsWeb) {
         return Padding(
@@ -94,8 +98,8 @@ class _ImageSetterState extends State<ImageSetter> {
                 backgroundImage: NetworkImage(imageUrl, scale: 1.0),
               ),
               Positioned(
-                bottom: -15, // Adjust the offset as needed
-                right: -10, // Adjust the offset as needed
+                bottom: -15, 
+                right: -10,
                 child: IconButton(
                   icon: const Icon(Icons.photo_library),
                   onPressed: () => _pickImage(ImageSource.gallery),
@@ -108,8 +112,8 @@ class _ImageSetterState extends State<ImageSetter> {
             child: Stack(children: [
               CircleAvatar(radius: 24, backgroundImage: FileImage(imageFile)),
               Positioned(
-                bottom: -15, // Adjust the offset as needed
-                right: -10, // Adjust the offset as needed
+                bottom: -15, 
+                right: -10, 
                 child: IconButton(
                   icon: const Icon(Icons.photo_library),
                   onPressed: () => _pickImage(ImageSource.gallery),
@@ -124,12 +128,12 @@ class _ImageSetterState extends State<ImageSetter> {
           child: Stack(children: [
             const CircleAvatar(
               backgroundImage:
-                  AssetImage("pictures/profile.png"), // Your profile image
-              radius: 24, // Adjust as needed
+                  AssetImage("pictures/profile.png"), 
+              radius: 24, 
             ),
             Positioned(
-              bottom: -15, // Adjust the offset as needed
-              right: -10, // Adjust the offset as needed
+              bottom: -15, 
+              right: -10, 
               child: IconButton(
                 icon: const Icon(Icons.photo_library),
                 onPressed: () => _pickImage(ImageSource.gallery),
@@ -145,7 +149,7 @@ class _ImageSetterState extends State<ImageSetter> {
           future: fetchData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child:CircularProgressIndicator()); // Show loading indicator while fetching data
+        return const Center(child:CircularProgressIndicator()); // Used in displaying the loading indicator while fetching data
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
@@ -159,7 +163,7 @@ class _ImageSetterState extends State<ImageSetter> {
                   }
                   return buildImage(downloadUrl, _imageFile, dp);
                 } else if (snapshot.hasError) {
-                  // Handle error
+                  // Handling fallback error here
                   return (const Text("error"));
                 } else {
                   return const Center(child:CircularProgressIndicator());

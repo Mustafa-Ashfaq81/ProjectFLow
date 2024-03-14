@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print, non_constant_identifier_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Task {
@@ -57,7 +58,7 @@ List<Map<String, dynamic>> maptasks(List<Task> tasks) {
                 .map((subtask) => {
                       'content': subtask.content,
                       'subheading': subtask.subheading
-                          .toString(), // Assuming DateTime or similar
+                          .toString(), 
                     })
                 .toList(),
           })
@@ -85,7 +86,6 @@ class Subtask {
 }
 
 Future<List<String>> getTaskHeadings(String username) async {
-  // print("get-headings");
   QuerySnapshot<Map<String, dynamic>> users =
       await FirebaseFirestore.instance.collection('users').get();
 
@@ -97,10 +97,9 @@ Future<List<String>> getTaskHeadings(String username) async {
       for (var item in tasks) {
         headings.add(item['heading']);
       }
-      break; // Exit the loop since we found the user
+      break; // Exiting the loop since we found the user
     }
   }
-  // print("got-headings");
   return headings;
 }
 
@@ -113,7 +112,7 @@ List<Object> getTasks(String username, QuerySnapshot snapshot) {
     } else if (tsk is String) {
       return tsk;
     }
-    return ''; // Return empty string as fallback
+    return ''; // Fall back condition
   }).toList();
 
   return tasks;
@@ -159,7 +158,6 @@ Future<Map<String, dynamic>> getSpecificTask(req) async {
   try {
     for (int i = 0; i < tasks.length; i++) {
       if ((tasks[i] is Map<String, dynamic>) && ((i == req['task']) || (i == req['index']) )) {
-        // print("ret tsk");
         return tasks[i];
       }
     }
@@ -194,7 +192,7 @@ Future<void> editTask(String username, String heading, String description, Strin
   final snapshot =
       await userCollection.where('username', isEqualTo: username).get();
   final doc =
-      snapshot.docs.first; //since only there is one user with that username
+      snapshot.docs.first; 
 
   try {
     List<dynamic> tasks = doc.data()['tasks'] ?? [];
@@ -202,10 +200,6 @@ Future<void> editTask(String username, String heading, String description, Strin
       if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == originalheading) {
         tasks[i]['heading'] = heading;
         tasks[i]['description'] = description;
-        // tasks[i]['status'] = "latest-status";
-        // for (int j = 0; j < tasks[i]['subtasks'].length; j++) {
-        //   tasks[i]['subtasks'][j]['content'] = 'lat-3-est-contnet';
-        // }
       }
     }
     await doc.reference.update({'tasks': tasks});
@@ -249,7 +243,7 @@ Future<void> deleteTask(String username, String taskHeading) async {
   try {
     final userCollection = FirebaseFirestore.instance.collection("users");
     final snapshot = await userCollection.where('username', isEqualTo: username).get();
-    final doc = snapshot.docs.first; // Assuming there's only one user with that username
+    final doc = snapshot.docs.first; 
 
     List<dynamic> tasks = doc.data()['tasks'] ?? [];
     
@@ -264,7 +258,7 @@ Future<void> deleteTask(String username, String taskHeading) async {
 
 
 List<Task> get_random_task() {
-  //hardcoded random tasks for testing purposes
+  // We hardcoded random tasks for testing purposes. Will be changed to a dynamic list later
   return [
     Task(
         heading: "t_one",

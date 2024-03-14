@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
@@ -12,6 +14,7 @@ class TaskDetailsPage extends StatefulWidget {
   const TaskDetailsPage({Key? key, required this.username, required this.task}) : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<TaskDetailsPage> createState() => _TaskPageState(username: username,mytask: task);
   
 }
@@ -48,7 +51,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
    void _saveProjectDetails() async{
-    // Here you would typically save the data to a database or some other storage.
+    // Here we would typically save the data to a database or some other storage.
     // For demonstration, we're just printing the values to the console.
     String headingg =  _projectHeadingController.text;
     String desc = _projectDescriptionController.text;
@@ -61,7 +64,6 @@ class _TaskPageState extends State<TaskDetailsPage> {
     );
 
     await editTask(username,headingg,desc,mytask['heading']);
-    //addTask
     showmsg(message: "Task has been updated successfully!");
     Navigator.push(
       context,
@@ -154,8 +156,6 @@ Widget _buildProjectHeadingInput() {
       hintText: 'Enter project description here',
     ),
     onSubmitted: (_) {
-      // Handle the submission of the project description (e.g., save the data)
-      // For demonstration, just closing the keyboard:
       _descriptionFocus.unfocus();
     },
     maxLines: null,

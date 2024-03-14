@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/common/deletedialog.dart';
 
-// Ensure this list is accessible here. This could be a global list or managed via a state management solution.
 List<String> tasks = [
   'User Interviews',
   'Wireframes',
@@ -17,6 +16,7 @@ class SubTaskPage extends StatefulWidget {
   const SubTaskPage({Key? key, required this.username,  required this.taskIndex  }) : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state, library_private_types_in_public_api
   _SubtaskPageState createState() => _SubtaskPageState(username: username, taskIndex: taskIndex);
 
 }

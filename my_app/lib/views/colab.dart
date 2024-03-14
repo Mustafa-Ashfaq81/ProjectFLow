@@ -1,3 +1,5 @@
+// ignore_for_file: no_logic_in_create_state, library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/controllers/colabrequests.dart';
@@ -23,9 +25,6 @@ class _ColabPageState extends State<ColabPage> {
   @override
   void initState() {
     super.initState();
-    // print("init-state-sync");
-    //instantiate this data only once (at page load)
-    // atload();
   }
 
   Future<void> atload(BuildContext context) async {

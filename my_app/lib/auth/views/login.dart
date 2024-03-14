@@ -1,10 +1,11 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/auth/views/register.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
-// import '../../common/toast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,7 +16,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
-  // final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Login')),
-        automaticallyImplyLeading: false, // Remove the default back button
+        automaticallyImplyLeading: false, 
         backgroundColor: Colors.black,
       ),
       body: Padding(
@@ -40,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // SizedBox(height: 5),
             Row(
               children: [
                 InkWell(
@@ -59,17 +58,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
-            // SizedBox(height: 5),
-            // ignore: prefer_const_constructors
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              // ignore: prefer_const_literals_to_create_immutables
               children: [
-                // ignore: prefer_const_constructors
                 Text(
                   'Welcome back! Glad to \n see you, Again!',
-                  // textAlign: TextAlign.center,
-                  // ignore: prefer_const_constructors
                   style: TextStyle(
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.bold,
@@ -101,24 +94,24 @@ class _LoginPageState extends State<LoginPage> {
                   controller: _emailController,
                 ),
 
-                const SizedBox(height: 10), // Increased height for more spacing
+                const SizedBox(height: 10), 
 
                 TextFormField(
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Enter your Password',
-                    fillColor: Colors.white, // Set the fill color to white
+                    fillColor: Colors.white, 
                     filled: true,
                     border: const OutlineInputBorder(),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           color:
-                              Colors.grey.shade400), // Change the border color
+                              Colors.grey.shade400), 
                     ),
                     focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                           color: Colors
-                              .blue), // Change the border color when the field is selected
+                              .blue), 
                     ),
                   ),
                   controller: _passwordController,
@@ -128,9 +121,9 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        const Color(0xFF1E232C), // Button background color
+                        const Color(0xFF1E232C), 
                     foregroundColor:
-                        Colors.white, // Button text color set to white
+                        Colors.white, 
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

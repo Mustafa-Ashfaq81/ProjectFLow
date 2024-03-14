@@ -1,6 +1,6 @@
+// ignore_for_file: library_private_types_in_public_api, no_logic_in_create_state, non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:my_app/views/tasks/newtask.dart';
-// import 'package:my_app/pages/task_details.dart';
 import 'package:my_app/views/calendar.dart';
 import 'package:my_app/views/tasks/alltasks.dart';
 import 'package:my_app/views/home.dart';
@@ -16,16 +16,15 @@ class FooterMenu extends StatefulWidget {
 }
 
 class _FooterMenuState extends State<FooterMenu> {
-  int selectedIndex; // Track the selected index
-  String username; // Track the username
+  int selectedIndex; // This Tracks the selected index on the footer menu
+  String username; 
   _FooterMenuState({required this.selectedIndex, required this.username});
 
   void _onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
     });
-    // print(index);
-    // Here you can add functionality to navigate to different pages or update the UI accordingly
+    // Here we can add functionality to navigate to different pages or update the UI accordingly
     if (index == 1) {
       // print("chat page for GPT-API ");
       Navigator.push(
@@ -64,6 +63,7 @@ class _FooterMenuState extends State<FooterMenu> {
     }
   }
 
+// Building the application below using the App Bae
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -100,13 +100,12 @@ class _FooterMenuState extends State<FooterMenu> {
 Theme Footer(BuildContext context, int index, String username) {
   return Theme(
     data: Theme.of(context).copyWith(
-      // This custom theme only applies to the BottomNavigationBar.
-      canvasColor: Colors.black, // Forcefully sets the background color
-      primaryColor: Colors.white, // This will affect the selected item color.
+      canvasColor: Colors.black, 
+      primaryColor: Colors.white, 
       textTheme: Theme.of(context).textTheme.copyWith(
             bodySmall: TextStyle(
                 color: Colors.white.withOpacity(
-                    0.6)), // This will affect the unselected item color.
+                    0.6)), 
           ),
     ),
     child: FooterMenu(

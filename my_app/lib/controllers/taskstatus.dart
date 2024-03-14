@@ -1,14 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+// Fetching the tasks by username from the database 
 
 Widget fetchTasks(String status, String username) {
   return FutureBuilder<QuerySnapshot>(
     future: FirebaseFirestore.instance.collection('users').get(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator(),); // Show loading indicator while fetching data
+        return const Center(child: CircularProgressIndicator(),); 
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
@@ -21,10 +26,9 @@ Widget fetchTasks(String status, String username) {
           } else if (tsk is String) {
             return tsk;
           }
-          return ''; // Return empty string as fallback
+          return ''; 
         }).toList();
 
-        // print(tasks[0]);
         List<Map<String, dynamic>> headings = [];
         for (var item in tasks) {
           List<dynamic> itemList = item as List<dynamic>;
@@ -39,12 +43,11 @@ Widget fetchTasks(String status, String username) {
             }
           }
         }
-        // print(headings);
         if (status == "completed") {
           return completedIdeasView(context, headings, username);
         } else {
           return inprogressIdeasView(context, headings, username);
-        } //"progress"
+        } 
       }
     },
   );
@@ -76,32 +79,31 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
                                 color: const Color(0xFFE16C00).withOpacity(0.48),
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                              child: Material( // Make the container clickable
-    color: Colors.transparent, // Maintain container color
-    child: InkWell( // Handle taps
+                              child: Material( 
+    color: Colors.transparent, 
+    child: InkWell( 
       onTap: () async {
         Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        // Navigate to another page with task data (replace with your navigation logic)
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask), // Pass the task data
+            builder: (context) => TaskDetailsPage(username:username, task:thistask), 
           ),
         );
       },
-      child: Padding( // Add padding
+      child: Padding( 
         padding: const EdgeInsets.all(16.0),
-        child: Column( // Arrange heading and description vertically
-          crossAxisAlignment: CrossAxisAlignment.start, // Align heading to left
+        child: Column( 
+          crossAxisAlignment: CrossAxisAlignment.start, // Aligning heading to left
           children: [
             Text(
               task['heading'],
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 18.0, // Adjust font size as needed
+                fontSize: 18.0,
               ),
             ),
-            const SizedBox(height: 8.0), // Add space between heading and description
+            const SizedBox(height: 8.0), // Adding space between heading and description
             Text(
               task['description'],
               style: const TextStyle(color: Colors.white70),
@@ -122,32 +124,31 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
                               color: const Color(0xFF141310),
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Material( // Make the container clickable
-    color: Colors.transparent, // Maintain container color
-    child: InkWell( // Handle taps
+                            child: Material( 
+    color: Colors.transparent, 
+    child: InkWell( 
       onTap: () async {
         Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        // Navigate to another page with task data (replace with your navigation logic)
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask), // Pass the task data
+            builder: (context) => TaskDetailsPage(username:username, task:thistask), // Task data will be passed as parameters
           ),
         );
       },
-      child: Padding( // Add padding
+      child: Padding( 
         padding: const EdgeInsets.all(16.0),
-        child: Column( // Arrange heading and description vertically
-          crossAxisAlignment: CrossAxisAlignment.start, // Align heading to left
+        child: Column( 
+          crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
             Text(
               task['heading'],
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 18.0, // Adjust font size as needed
+                fontSize: 18.0, 
               ),
             ),
-            const SizedBox(height: 8.0), // Add space between heading and description
+            const SizedBox(height: 8.0), 
             Text(
               task['description'],
               style: const TextStyle(color: Colors.white70),
@@ -173,7 +174,7 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
           child: Center(child: Text("No task in progress")))
       : Padding(
           padding:
-              const EdgeInsets.only(right: 20.0), // Adjust the margin as needed
+              const EdgeInsets.only(right: 20.0), 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: headings
@@ -187,32 +188,31 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
                             color: const Color(0xFFE16C00).withOpacity(0.48),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: Material( // Make the container clickable
-    color: Colors.transparent, // Maintain container color
-    child: InkWell( // Handle taps
+                          child: Material( 
+    color: Colors.transparent, 
+    child: InkWell( 
       onTap: () async {
         Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        // Navigate to another page with task data (replace with your navigation logic)
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask), // Pass the task data
+            builder: (context) => TaskDetailsPage(username:username, task:thistask), 
           ),
         );
       },
-      child: Padding( // Add padding
+      child: Padding( 
         padding: const EdgeInsets.all(16.0),
-        child: Column( // Arrange heading and description vertically
-          crossAxisAlignment: CrossAxisAlignment.start, // Align heading to left
+        child: Column( 
+          crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
             Text(
               task['heading'],
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 18.0, // Adjust font size as needed
+                fontSize: 18.0, 
               ),
             ),
-            const SizedBox(height: 8.0), // Add space between heading and description
+            const SizedBox(height: 8.0), 
             Text(
               task['description'],
               style: const TextStyle(color: Colors.white70),
@@ -224,7 +224,6 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
   ),                 
                       )
                       :
-                      // SizedBox(width: 20.0), // Adjust the space between the containers
                       Container(
                           margin: const EdgeInsets.only(left: 30.0, top: 15.0),
                           height: 90.0,
@@ -233,32 +232,31 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
                             color: const Color(0xFF141310),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: Material( // Make the container clickable
-    color: Colors.transparent, // Maintain container color
-    child: InkWell( // Handle taps
+                          child: Material( 
+    color: Colors.transparent, 
+    child: InkWell( 
       onTap: () async {
         Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        // Navigate to another page with task data (replace with your navigation logic)
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask), // Pass the task data
+            builder: (context) => TaskDetailsPage(username:username, task:thistask),
           ),
         );
       },
-      child: Padding( // Add padding
+      child: Padding( 
         padding: const EdgeInsets.all(16.0),
-        child: Column( // Arrange heading and description vertically
-          crossAxisAlignment: CrossAxisAlignment.start, // Align heading to left
+        child: Column( 
+          crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
             Text(
               task['heading'],
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 18.0, // Adjust font size as needed
+                fontSize: 18.0, 
               ),
             ),
-            const SizedBox(height: 8.0), // Add space between heading and description
+            const SizedBox(height: 8.0), 
             Text(
               task['description'],
               style: const TextStyle(color: Colors.white70),

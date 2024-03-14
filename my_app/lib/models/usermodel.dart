@@ -1,12 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:my_app/models/taskmodel.dart';
 
 class UserModel {
   final String? username;
   final String? id;
   final String? email;
   List<Map<String, dynamic>>? tasks;
-  //settings as a separate class or maybe directly here
 
   UserModel({this.id, this.username, this.email, this.tasks});
 
@@ -16,8 +16,7 @@ class UserModel {
     final tasksMap = data['tasks'] as List<Map<String, dynamic>>?;
 
     if (tasksMap != null) {
-      // final tasks =
-      //     tasksMap.map((taskData) => MapEntry(Task.fromMap(taskData))).toList();
+
       return UserModel(
         id: snapshot.id,
         email: data['email'],
@@ -61,7 +60,7 @@ Stream<List<UserModel>> readUser() {
 Future<List<String>> getallUsers() async {
   final QuerySnapshot<Map<String, dynamic>> snapshot =
       await FirebaseFirestore.instance.collection("users").get();
-  // Extract names from User objects instead of returning the User objects themselves
+  // Here we extract names from User objects instead of returning the User objects themselves
   return snapshot.docs.map((doc) => doc['username'] as String).toList();
 }
 

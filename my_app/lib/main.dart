@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -16,12 +18,13 @@ import 'package:my_app/views/tasks/subtasks.dart';
 import 'package:my_app/views/tasks/newtask.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:flutter/gestures.dart';
 
 
 Future main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  // .env file declared in our project directory for connection to the firebase database
 
   await dotenv.load(); // Load the environment variables
   String apiKey = dotenv.env['API_KEY']!;
@@ -41,29 +44,29 @@ Future main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {  // This widget is the root of your application.
+class MyApp extends StatelessWidget {  // This widget is the root of our application.
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    testingfunc();
     return MaterialApp(
       title: 'Flutter Hello World',
 
       theme: ThemeData
       (
-      // useMaterial3: true, // Uncomment if you want to use Material 3 features
       primaryColor: const Color(0xFFFFE6C9),
       scaffoldBackgroundColor: const Color(0xFFFFE6C9),
       buttonTheme: const ButtonThemeData(
-        buttonColor: Color(0x001e232c), // Use this for buttons or specify in button style
+        buttonColor: Color(0x001e232c),
       ),
-      fontFamily: 'Urbanist', // Apply Urbanist as the default font for your app
+      fontFamily: 'Urbanist', 
     ),
 
 
+    // Project routes for the different screens
+    // Routing according to the context
+
       initialRoute: '/splash',
       routes: {
-        // ignore: prefer_const_constructors
         '/splash' : (context) => SplashScreen(), 
         '/': (context) => const StartPage(),
         '/login': (context) => const LoginPage(),
@@ -100,16 +103,4 @@ class MyApp extends StatelessWidget {  // This widget is the root of your applic
   }
 }
 
-void testingfunc() {
-  print(" my app is being built.....");
-}
 
-
-// // {-theme: ThemeData(
-//   // useMaterial3: true, // Uncomment if you want to use Material 3 features
-//   primaryColor: Color(0xFFFFE6C9),
-//   scaffoldBackgroundColor: Color(0xFFFFE6C9),
-//   buttonTheme: ButtonThemeData(
-//     buttonColor: Color(0xFFFFE6C9), //  Use this for buttons or specify in button style
-//   ),
-// ),}

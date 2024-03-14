@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, duplicate_ignore, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/auth/views/login.dart';
@@ -46,7 +48,6 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // SizedBox(height: 5),
             Row(
               children: [
                 InkWell(
@@ -65,13 +66,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ],
             ),
-            // SizedBox(height: 5),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Welcome! Glad to \n see you!',
-                  // textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 26,
@@ -128,9 +127,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: _register,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        const Color(0xFF1E232C), // Button background color
+                        const Color(0xFF1E232C), 
                     foregroundColor:
-                        Colors.white, // Button text color set to white
+                        Colors.white, 
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -146,9 +145,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             )
                           : const Text('Register',
                               style: TextStyle(
-                                fontSize: 18, // Adjust the font size here
+                                fontSize: 18, 
                                 fontWeight:
-                                    FontWeight.bold, // Make the text bold
+                                    FontWeight.bold, 
                               ))),
                 ),
               ],
@@ -209,7 +208,6 @@ class _RegisterPageState extends State<RegisterPage> {
           } catch (e) {
             print("got-some-err ---> $e");
           }
-          // Navigator.pushNamed(context, "/home");
           Navigator.push(
               context,
               MaterialPageRoute(
