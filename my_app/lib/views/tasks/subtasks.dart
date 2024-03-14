@@ -16,7 +16,6 @@ class SubTaskPage extends StatefulWidget {
   const SubTaskPage({Key? key, required this.username,  required this.taskIndex  }) : super(key: key);
 
   @override
-  // ignore: no_logic_in_create_state, library_private_types_in_public_api
   _SubtaskPageState createState() => _SubtaskPageState(username: username, taskIndex: taskIndex);
 
 }
