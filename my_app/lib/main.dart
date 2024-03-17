@@ -95,7 +95,8 @@ class MyApp extends StatelessWidget {  // This widget is the root of our applica
             ),
            '/subtasks': (context) => const SubTaskPage(
               username: "abz",
-              taskIndex: 0,
+              subtasks: [],
+              subtaskIndex: -1,
             ),
       },
       debugShowCheckedModeBanner: false, 

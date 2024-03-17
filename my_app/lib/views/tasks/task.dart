@@ -5,6 +5,8 @@ import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
 import 'package:my_app/common/deletedialog.dart';
 import 'package:my_app/views/home.dart';
+import 'package:my_app/controllers/gptapi.dart';
+import 'package:my_app/views/loadingscreens/loadingtask.dart';
 import '../../common/toast.dart';
 
 
@@ -26,6 +28,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
 
   List<Map<String, dynamic>> teamMembers = [];
+  List<dynamic> subtasks = [];
   late TextEditingController _projectHeadingController;
   late TextEditingController _projectDescriptionController;
   final FocusNode _headingFocus = FocusNode();
@@ -48,6 +51,11 @@ class _TaskPageState extends State<TaskDetailsPage> {
     _headingFocus.dispose();
     _descriptionFocus.dispose();
     super.dispose();
+  }
+
+   Future<void> atload() async {
+    subtasks = await getSubTasks(username,mytask['heading']);
+    print("subtasks ... $subtasks");
   }
 
    void _saveProjectDetails() async{
@@ -99,6 +107,14 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildBody() {
+   return FutureBuilder(
+          future: atload(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+        return const LoadingTask();  // Show loading page while fetching data
+      } else if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      } else {
   return SingleChildScrollView(
     child: Padding(
       padding: const EdgeInsets.all(16.0),
@@ -124,13 +140,51 @@ class _TaskPageState extends State<TaskDetailsPage> {
             child: const Text('Save Project Details'),
           ),
           const SizedBox(height: 30),
-          _buildSectionTitle('All Subtasks'),
-          const SizedBox(height: 20),
-          _buildTaskMenu(username),
+          _buildSubtasks(username),
         ],
       ),
     ),
   );
+      }
+          }
+   );
+}
+
+Widget _buildSubtasks(String username){ //show diff views dep on if subtasks are available
+
+  if (subtasks.isEmpty == true){
+    List<Map<String,dynamic>> newsubtasks = [];
+    return Padding( 
+    padding: const EdgeInsets.all(16.0),
+    child: Column(children: [
+    const Text("no subtasks for this task ... you might want to enhance your idea"),
+     SizedBox(
+            width: 150,
+            child: ElevatedButton(
+              onPressed: () async{
+                  newsubtasks = await gptapicall(_projectHeadingController.text,_projectDescriptionController.text);
+                  await addSubTasks(username,mytask['heading'],newsubtasks);
+                  //reload this page to see reflected changes ... 
+                  setState(() {
+                    subtasks = newsubtasks;
+                  });
+              },
+              child: const Text('Enhance your project ideas (I AM A FOOTER)'),
+            ),
+          ),
+        ]
+      )
+    );
+  }
+  return Padding( 
+    padding: const EdgeInsets.all(16.0),
+    child: Column(children: [
+      _buildSectionTitle('All Subtasks'),
+      const SizedBox(height: 20),
+      _buildTaskMenu(username),
+    ],
+   )
+ );
 }
 
 // Method to create the project heading input field
@@ -368,45 +422,40 @@ Widget _buildProjectHeadingInput() {
       // bottomNavigationBar: _buildFooterButton(),
     );
   }
-}
 
-Widget _buildTaskMenu(String username) {
-  // Assuming your tasks are fetched or defined here
-  final List<String> tasks = [
-    'User Interviews',
-    'Wireframes',
-    'Design System',
-    'Icons',
-    'Final Mockups',
-    'Gym',
-  ];
+  Widget _buildTaskMenu(String username) {
+    // Assuming your tasks are fetched or defined here
+    final List<String> tasks = subtasks.map((item) => item['subheading'] as String).toList();
 
-  return ListView.builder(
-    shrinkWrap: true,
-    itemCount: tasks.length,
-    itemBuilder: (context, index) {
-      return Card(
-        margin: const EdgeInsets.all(5.0),
-        color: Colors.orangeAccent,
-        child: ListTile(
-          title: Text(
-            tasks[index],
-            style: const TextStyle(color: Colors.black),
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: tasks.length,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: const EdgeInsets.all(5.0),
+          color: Colors.orangeAccent,
+          child: ListTile(
+            title: Text(
+              tasks[index],
+              style: const TextStyle(color: Colors.black),
+            ),
+            trailing: const Icon(Icons.edit, color: Colors.blue),
+            onTap: () async {
+              // Use async-await instead of then
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubTaskPage(username:username, subtasks: subtasks, subtaskIndex: index),
+                ),
+              );
+              // This ensures setState is called within the correct context
+              // setState(() {}); // Refresh the list upon return
+            },
           ),
-          trailing: const Icon(Icons.edit, color: Colors.blue),
-          onTap: () async {
-            // Use async-await instead of then
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SubTaskPage(username:username, taskIndex: index),
-              ),
-            );
-            // This ensures setState is called within the correct context
-            // setState(() {}); // Refresh the list upon return
-          },
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
+  }
 }
+
+

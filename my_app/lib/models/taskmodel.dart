@@ -57,7 +57,8 @@ List<Map<String, dynamic>> maptasks(List<Task> tasks) {
             'subtasks': task.subtasks
                 .map((subtask) => {
                       'content': subtask.content,
-                      'subheading': subtask.subheading
+                      'subheading': subtask.subheading,
+                      'deadline' : subtask.deadline
                           .toString(), 
                     })
                 .toList(),
@@ -68,20 +69,24 @@ List<Map<String, dynamic>> maptasks(List<Task> tasks) {
 class Subtask {
   String subheading;
   String content;
+  String deadline;
 
   Subtask({
     required this.subheading,
     required this.content,
+    required this.deadline
   });
 
   Map<String, dynamic> toMap() => {
         'subheading': subheading,
         'content': content,
+        'deadline':deadline,
       };
 
   factory Subtask.fromMap(Map<String, dynamic> map) => Subtask(
         subheading: map['subheading'] as String,
         content: map['content'] as String,
+        deadline:map['deadline'] as String,
       );
 }
 
@@ -101,6 +106,33 @@ Future<List<String>> getTaskHeadings(String username) async {
     }
   }
   return headings;
+}
+
+Future<List<dynamic>> getSubTasks(String username, String taskheading) async {
+  Map<String, dynamic> task = await getTaskbyHeading(taskheading, username);
+  return task["subtasks"];
+}
+
+Future<void> addSubTasks(String username, String taskheading, List<Map<String,dynamic>> subtasks) async {
+ print("adding subtasks ");
+ final userCollection = FirebaseFirestore.instance.collection("users");
+  final snapshot =
+      await userCollection.where('username', isEqualTo: username).get();
+  final doc =  snapshot.docs.first; 
+
+  try {
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == taskheading) {
+        tasks[i]['subtasks'] = subtasks;
+      }
+    }
+    await doc.reference.update({'tasks': tasks});
+  } catch (e) {
+    print("adding subtask err $e");
+  }
+
+  print("adding-subtask-done");
 }
 
 List<Object> getTasks(String username, QuerySnapshot snapshot) {
@@ -258,7 +290,7 @@ Future<void> deleteTask(String username, String taskHeading) async {
 
 
 List<Task> get_random_task() {
-  // We hardcoded random tasks for testing purposes. Will be changed to a dynamic list later
+  // We hardcoded random tasks for testing purposes.
   return [
     Task(
         heading: "t_one",
@@ -275,7 +307,7 @@ List<Task> get_random_task() {
         description: "none2",
         duedate: "",
         duehour: "",
-        subtasks: [Subtask(subheading: "sub_t2", content: "cont_t2")]),
+        subtasks: [Subtask(subheading: "sub_t2", content: "cont_t2", deadline: "")]),
     Task(
         heading: "t_three",
         status: "",
@@ -284,8 +316,8 @@ List<Task> get_random_task() {
         collaborators: [],
         description: "none3",
         subtasks: [
-          Subtask(subheading: "sub_t1", content: "cont_t1"),
-          Subtask(subheading: "sub_t2", content: "cont_t2")
+          Subtask(subheading: "sub_t1", content: "cont_t1", deadline: ""),
+          Subtask(subheading: "sub_t2", content: "cont_t2", deadline: "")
         ]),
     Task(
         heading: "t_5",
