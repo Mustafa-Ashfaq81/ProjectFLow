@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print,use_build_context_synchronously,no_logic_in_create_state,unnecessary_cast
 import 'package:flutter/material.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/components/search.dart';
@@ -12,31 +11,44 @@ class NewTaskPage extends StatefulWidget {
   const NewTaskPage({Key? key, required this.username}) : super(key: key);
 
   @override
-  State<NewTaskPage> createState() => _NewTaskPageState(username:username);
+  State<NewTaskPage> createState() => _NewTaskPageState(username: username);
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
-  // Idx of the page corresponds to it in the footer bar. 
-  // Task page is at index 2
   final int idx = 2;
-  String username; 
+  String username;
   _NewTaskPageState({required this.username});
 
   DateTime? _selectedDate;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _startTimeController = TextEditingController(); // Controller for start time
-  final TextEditingController _endTimeController = TextEditingController();   // Controller for end time
-  TextEditingController  descController  = TextEditingController(); 
-  TextEditingController headingController  = TextEditingController(); 
+  final TextEditingController _startTimeController = TextEditingController();
+  final TextEditingController _endTimeController = TextEditingController();
+  TextEditingController descController = TextEditingController();
+  TextEditingController headingController = TextEditingController();
   List<Map<String, dynamic>> teamMembers = [];
+
+  void showCustomError(String message) {
+  final snackBar = SnackBar(
+    content: Text(message),
+    backgroundColor: Colors.redAccent,
+    action: SnackBarAction(
+      label: 'Dismiss',
+      onPressed: () {
+        // Some code to undo the change if needed.
+      },
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
 
   @override
   void initState() {
     super.initState();
     username = widget.username;
+    headingController.addListener(_validateForm);
+    descController.addListener(_validateForm);
   }
-
 
   @override
   void dispose() {
@@ -48,6 +60,14 @@ class _NewTaskPageState extends State<NewTaskPage> {
     super.dispose();
   }
 
+  void _validateForm() {
+    setState(() {});
+  }
+
+  bool _isFormValid() {
+    return headingController.text.isNotEmpty && descController.text.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,13 +76,6 @@ class _NewTaskPageState extends State<NewTaskPage> {
       bottomNavigationBar: Footer(index: idx, username: username),
     );
   }
-
-  bool _isValidTime(String? input) 
-  {
-  // Regular expression to validate input format as "HH:mm"
-  final RegExp timeRegExp = RegExp(r'^([01]?[0-9]|2[0-3]):[0-5][0-9]$');
-  return input != null && timeRegExp.hasMatch(input);
-}
 
   AppBar _buildAppBar() {
     return AppBar(
@@ -74,43 +87,62 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
   }
 
-Widget _buildBody() {
-  return SingleChildScrollView(
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form( // Here the Form widget is used
-        key: _formKey, // The GlobalKey<FormState> is associated with the Form
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle('Task Title'),
-            const SizedBox(height: 10),
-            _buildTextInputField(hint: 'Enter task title', maxLines: 1),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Task Details'),
-            const SizedBox(height: 10),
-            _buildTextInputField(hint: 'Enter task details', maxLines: null),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Add Team Members'),
-            const SizedBox(height: 10),
-            _buildTeamMembersRow(),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Time & Date'),
-            const SizedBox(height: 10),
-            _buildTimeAndDateSection(),
-            const SizedBox(height: 30),
-            _buildCreateTaskButton(),
-          ],
+  Widget _buildBody() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('Task Title'),
+              const SizedBox(height: 10),
+              _buildTextInputField(
+                hint: 'Enter task title',
+                maxLines: 1,
+                controller: headingController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a task title';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildSectionTitle('Task Details'),
+              const SizedBox(height: 10),
+              _buildTextInputField(
+                hint: 'Enter task details',
+                maxLines: null,
+                controller: descController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter task details';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildSectionTitle('Add Team Members'),
+              const SizedBox(height: 10),
+              _buildTeamMembersRow(),
+              const SizedBox(height: 20),
+              _buildSectionTitle('Time & Date'),
+              const SizedBox(height: 10),
+              _buildTimeAndDateSection(),
+              const SizedBox(height: 30),
+              _buildCreateTaskButton(),
+            ],
+          ),
         ),
       ),
-    )
     );
   }
 
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-                    
       style: const TextStyle(
         fontFamily: 'Inter',
         fontSize: 20.0,
@@ -119,7 +151,12 @@ Widget _buildBody() {
     );
   }
 
-  Widget _buildTextInputField({required String hint, int? maxLines}) {
+  Widget _buildTextInputField({
+    required String hint,
+    int? maxLines,
+    required TextEditingController controller,
+    required String? Function(String?) validator,
+  }) {
     return Container(
       width: 400.0,
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -128,33 +165,34 @@ Widget _buildBody() {
         borderRadius: BorderRadius.circular(12.0),
         border: Border.all(color: Colors.grey, width: 1.0),
       ),
-      child: TextField(
-        controller: hint == 'Enter task title' ? headingController : descController,
+      child: TextFormField(
+        controller: controller,
         maxLength: maxLines == 1 ? 50 : 500,
-        keyboardType:
-            maxLines == 1 ? TextInputType.text : TextInputType.multiline,
+        keyboardType: maxLines == 1 ? TextInputType.text : TextInputType.multiline,
         maxLines: maxLines,
         decoration: InputDecoration(
           border: InputBorder.none,
           counterText: '',
           hintText: hint,
+          errorStyle: const TextStyle(fontSize: 14.0),
         ),
         style: const TextStyle(fontSize: 18.0),
+        validator: validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
       ),
     );
   }
 
   Widget _buildTeamMembersRow() {
     return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(children: [
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
           Row(
             children: teamMembers
-                .map((member) =>
-                    _buildTeamMember(member["name"], member["color"]))
+                .map((member) => _buildTeamMember(member["name"], member["color"]))
                 .toList(),
           ),
-          // const Spacer(),
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () async {
@@ -167,21 +205,21 @@ Widget _buildBody() {
               }
               Future<String?> selectedUsername = showSearch(
                 context: context,
-                delegate:
-                    SearchUsers(username: widget.username, users: otherusers)
-                        as SearchDelegate<String>,
+                delegate: SearchUsers(username: widget.username, users: otherusers)
+                    as SearchDelegate<String>,
               );
               selectedUsername.then((username) {
                 if (username != "") {
                   setState(() {
-                    teamMembers
-                        .add({"name": username, "color": Colors.yellow[100]});
+                    teamMembers.add({"name": username, "color": Colors.yellow[100]});
                   });
                 }
               });
             },
           ),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget _buildTeamMember(String name, Color color) {
@@ -204,9 +242,7 @@ Widget _buildBody() {
           GestureDetector(
             onTap: () {
               setState(() {
-                teamMembers.removeWhere((member) =>
-                    member["name"] ==
-                    name); // Remove the member by matching the name
+                teamMembers.removeWhere((member) => member["name"] == name);
               });
             },
             child: const Icon(Icons.close, color: Colors.red),
@@ -266,97 +302,99 @@ Widget _buildBody() {
   }
 
   Widget _buildDateTimeField(String hint, String label) {
-  TextEditingController controller; // Directly assigning the correct controller based on the label
-  if (label == 'Date') {
-    controller = _dateController; // Assign the _dateControllering for the date field
-  } else if (label == 'Time Start') {
-    controller = _startTimeController; 
-  } else if (label == 'Time End') {
-    controller = _endTimeController; 
-  } else {
-    controller = TextEditingController(); // Fallback
-  }
-return Expanded(
-    child: Container(
-      height: 40.0,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: Colors.grey, width: 1.0),
-      ),
-      child: TextFormField(
-        controller: controller,
-        readOnly: true, 
-        onTap: () async {
-          if (label.contains('Time')) 
-          {
-            final TimeOfDay? pickedTime = await showTimePicker(
-              context: context,
-              initialTime: TimeOfDay.now(),
-            );
-            if (pickedTime != null) 
-            {
-              final String formattedTime = pickedTime.format(context);
-              setState(() 
-              {
-                controller.text = formattedTime; 
-              });
-            }
-          } else if (label == 'Date') 
-          {
-            _selectDate(context);
-          }
-        },
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: hint,
+    TextEditingController controller;
+    if (label == 'Date') {
+      controller = _dateController;
+    } else if (label == 'Time Start') {
+      controller = _startTimeController;
+    } else if (label == 'Time End') {
+      controller = _endTimeController;
+    } else {
+      controller = TextEditingController();
+    }
+    return Expanded(
+      child: Container(
+        height: 40.0,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: Colors.grey, width: 1.0),
         ),
-        style: const TextStyle(fontFamily: 'Inter', fontSize: 16.0),
-      ),
-    ),
-  );
-}
-
-
-  Future<void> _selectDate(BuildContext context) async 
-  {
-  final DateTime? picked = await showDatePicker(
-    context: context,
-    initialDate: _selectedDate ?? DateTime.now(),
-    firstDate: DateTime(2000),
-    lastDate: DateTime(2025),
-  );
-  if (picked != null && picked != _selectedDate) 
-  {
-    setState(() 
-    {
-      _selectedDate = picked;
-      _dateController.text = "${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
-    });
-  }
-}
-
-  Widget _buildCreateTaskButton() {
-    return Container(
-      width: double.infinity,
-      height: 50.0,
-      decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
-      child: TextButton(
-        style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.green, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0))),
-        onPressed: () async {
-          if (_formKey.currentState!.validate() && headingController.text!="" && descController.text!="")  {
-            handleValidTaskSubmission(context,username, headingController.text, descController.text,teamMembers);
-          }
-          else{
-            showerrormsg(message: "The form is invalid - No heading or description added");
-            print("un-submittable-invalid-form");
-          }
-        },
-        child: const Text('Create Task', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+        child: TextFormField(
+          controller: controller,
+          readOnly: true,
+          onTap: () async {
+            if (label.contains('Time')) {
+              final TimeOfDay? pickedTime = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.now(),
+              );
+              if (pickedTime != null) {
+                final String formattedTime = pickedTime.format(context);
+                setState(() {
+                  controller.text = formattedTime;
+                });
+              }
+            } else if (label == 'Date') {
+              _selectDate(context);
+            }
+          },
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: hint,
+          ),
+          style: const TextStyle(fontFamily: 'Inter', fontSize: 16.0),
+        ),
       ),
     );
   }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text =
+            "${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+      });
+    }
+  }
+
+Widget _buildCreateTaskButton() {
+  return Container(
+    width: double.infinity,
+    height: 50.0,
+    decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
+    child: TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      ),
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+          handleValidTaskSubmission(
+            context,
+            username,
+            headingController.text,
+            descController.text,
+            teamMembers,
+          );
+        } else 
+        {
+          showCustomError("Please fill in all required fields.");
+        }
+      },
+      child: const Text('Create Task', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+    ),
+  );
+}
 }
 
 Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, List<Map<String, dynamic>> teamMembers)async{

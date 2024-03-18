@@ -124,10 +124,10 @@ class _TaskPageState extends State<TaskDetailsPage> {
           const SizedBox(height: 40),
           _buildDuedateProjectTeam(),
           const SizedBox(height: 30),
-          _buildSectionTitle('Project Heading'),
+          _buildSectionTitle('Task Heading'),
           _buildProjectHeadingInput(),
           const SizedBox(height: 10),
-          _buildSectionTitle('Project Description'),
+          _buildSectionTitle('Task Description'),
           _buildProjectDescriptionInput(),
           const SizedBox(height: 20),
           _buildProgressIndicatorWithText(), // Moved here
