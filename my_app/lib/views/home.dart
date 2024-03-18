@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast
+// ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
@@ -18,6 +18,7 @@ enum MenuAction { logout, settings }
 
 class HomePage extends StatefulWidget {
   final String username;
+
   const HomePage({
     Key? key,
     required this.username,
@@ -28,7 +29,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final FirebaseAuthService _auth = FirebaseAuthService();
   TextEditingController querycontroller = TextEditingController();
 
@@ -67,6 +67,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('My Notes')),
+        foregroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
@@ -101,7 +103,7 @@ class _HomePageState extends State<HomePage> {
         ],
         backgroundColor: Colors.black,
       ),
-      body: SingleChildScrollView(
+ body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                   const Text(
                     'Welcome back!',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -125,7 +127,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(left: 30.0, top: 0.0),
               child: Text(
-                username, // Your name
+                username,
                 style: const TextStyle(
                   fontFamily: 'PilotExtended',
                   fontSize: 23,
@@ -133,85 +135,74 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const SizedBox(height:20),
+            const SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(
-                right: 10.0,
-                top: 20.0,
-                left: 10.0,
-                bottom: 20.0,
+  padding: const EdgeInsets.only(
+    right: 10.0,
+    top: 20.0,
+    left: 30.0,
+    bottom: 20.0,
+  ),
+  child: GestureDetector(
+    onTap: () {
+      Future<String?> selectedTask = showSearch(
+        context: context,
+        delegate: SearchTasks(username: username, headings: headings)
+            as SearchDelegate<String>,
+      );
+      selectedTask.then((taskheading) async {
+        Map<String, dynamic> task =
+            await getTaskbyHeading(taskheading!, username);
+        if (taskheading != "") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  TaskDetailsPage(username: username, task: task),
+            ),
+          );
+        }
+      });
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: querycontroller,
+              decoration: InputDecoration(
+                hintText: 'Search Task',
+                hintStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  color: Color(0xFF000000),
+                  fontWeight: FontWeight.w600,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 20,
+                ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: querycontroller,
-                      decoration: InputDecoration(
-                          hintText: 'Search Task',
-                          hintStyle: const TextStyle(
-                            fontFamily: 'Inter',
-                            color: Color(0xFF000000), // Adjusting the hint color
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                                8), // Radius of the text field
-                            borderSide:
-                                BorderSide.none, // Removes default border
-                          ),
-                          filled: true, // Needed for fillColor to work
-                          fillColor: const Color(0xFFFFFFFF)),
-                      onChanged: (text) {
-                        setState(() {
-                          currquery = text;
-                        });
-                        if (currquery != "") {
-                           Future<String?> selectedTask = showSearch(
-                      context: context,
-                      delegate:
-                          SearchTasks(username: username, headings: headings)
-                              as SearchDelegate<String>,
-                  );
-                  selectedTask.then((taskheading) async {
-                    Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
-                    if (taskheading != "") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TaskDetailsPage(username:username,task:task),
-                          ),
-                        );
-                    }
-                  });
-                          querycontroller.clear();
-                        }
-                      },
-                    ),
-                  ),
-                  IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                         Future<String?> selectedTask = showSearch(
-                      context: context,
-                      delegate:
-                          SearchTasks(username: username, headings: headings)
-                              as SearchDelegate<String>,
-                  );
-                  selectedTask.then((taskheading) async {
-                    Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
-                    if (taskheading != "") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TaskDetailsPage(username:username,task:task),
-                          ),
-                        );
-                    }
-                  });
-                      } 
-                      ),
-                ],
-              ),
-            ), // Padding inside the container for alignment
+              enabled: false,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            // icon color
+            color: Colors.black45,
+
+            onPressed: null,
+          ),
+        ],
+      ),
+    ),
+  ),
+),
+
             const Padding(
               padding: EdgeInsets.only(left: 30.0, top: 0.0),
               child: Text(
@@ -240,7 +231,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: Footer(context, idx, username),
+      bottomNavigationBar: Footer(index: idx, username: username),
     );
   }
 }

@@ -121,7 +121,7 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
                             height: 200.0,
                             width: 200.0,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF141310),
+                              color: const Color(0xFF141310).withOpacity(0.85),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Material( 
@@ -229,7 +229,7 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
                           height: 90.0,
                           width: 450.0,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF141310),
+                            color: const Color(0xFF141310).withOpacity(0.85),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Material( 

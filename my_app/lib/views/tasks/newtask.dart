@@ -53,7 +53,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
-      bottomNavigationBar: Footer(context, idx, widget.username),
+      bottomNavigationBar: Footer(index: idx, username: username),
     );
   }
 

@@ -22,7 +22,8 @@ class _CalendarPageState extends State<CalendarPage> {
       body: const Center(
         child: Text('This is where you add deadlines.'),
       ),
-      bottomNavigationBar: Footer(context, idx, username),
+      bottomNavigationBar: Footer(index: idx, username: username),
+
     );
   }
 }

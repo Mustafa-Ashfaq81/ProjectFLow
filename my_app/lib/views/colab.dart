@@ -60,7 +60,7 @@ class _ColabPageState extends State<ColabPage> {
               body: Column(
                 children: [requests],
               ),
-              bottomNavigationBar: Footer(context, idx, username),
+                  bottomNavigationBar: Footer(index: idx, username: username),
             );
           }
         },

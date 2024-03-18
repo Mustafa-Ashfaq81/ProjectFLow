@@ -69,7 +69,7 @@ class _AllTasksPageState extends State<AllTasksPage> {
                 ),
               ],
             ),
-            bottomNavigationBar: Footer(context, idx, username),
+             bottomNavigationBar: Footer(index: idx, username: username),
           );
       }
 

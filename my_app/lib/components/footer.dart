@@ -6,64 +6,95 @@ import 'package:my_app/views/tasks/alltasks.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/views/colab.dart';
 
+class Footer extends StatelessWidget {
+  final int index;
+  final String username;
+
+  const Footer({Key? key, required this.index, required this.username})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        canvasColor: Colors.black,
+        primaryColor: Colors.white,
+        textTheme: Theme.of(context).textTheme.copyWith(
+              bodySmall: TextStyle(
+                color: Colors.white.withOpacity(0.6),
+              ),
+            ),
+      ),
+      child: FooterMenu(
+        index: index,
+        username: username,
+      ),
+    );
+  }
+}
 class FooterMenu extends StatefulWidget {
   final int index;
   final String username;
   const FooterMenu({super.key, required this.index, required this.username});
+
   @override
   _FooterMenuState createState() =>
       _FooterMenuState(selectedIndex: index, username: username);
 }
 
 class _FooterMenuState extends State<FooterMenu> {
-  int selectedIndex; // This Tracks the selected index on the footer menu
-  String username; 
+  int selectedIndex; // This tracks the selected index on the footer menu
+  String username;
   _FooterMenuState({required this.selectedIndex, required this.username});
 
   void _onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-    // Here we can add functionality to navigate to different pages or update the UI accordingly
-    if (index == 1) {
-      // print("chat page for GPT-API ");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AllTasksPage(username: username),
-          ));
-    } else if (index == 2) {
-      // print("CRUD - tasks");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NewTaskPage(username: username),
-          ));
-    } else if (index == 3) {
-      // print("check calendar");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CalendarPage(username: username),
-          ));
-    } else if (index == 4) {
-      // print("colab requests");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ColabPage(username: username),
-          ));
-    } else {
-      // print("go to home");
-      Navigator.push(
+    // You can optimize this by using a switch statement instead of if-else chain.
+    switch (index) {
+      case 0:
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(username: username),
-          ));
+          ),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AllTasksPage(username: username),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewTaskPage(username: username),
+          ),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CalendarPage(username: username),
+          ),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ColabPage(username: username),
+          ),
+        );
+        break;
+      default:
+        break;
     }
   }
 
-// Building the application below using the App Bae
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -78,7 +109,7 @@ class _FooterMenuState extends State<FooterMenu> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
-          label: '',
+          label: 'Add',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
@@ -86,31 +117,14 @@ class _FooterMenuState extends State<FooterMenu> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.chat),
-          label: 'Collaboration',
+          label: 'Collab',
         ),
       ],
       currentIndex: selectedIndex,
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.white.withOpacity(0.6),
+      showUnselectedLabels: true, // This ensures that labels are shown for unselected items
       onTap: _onItemTapped,
     );
   }
-}
-
-Theme Footer(BuildContext context, int index, String username) {
-  return Theme(
-    data: Theme.of(context).copyWith(
-      canvasColor: Colors.black, 
-      primaryColor: Colors.white, 
-      textTheme: Theme.of(context).textTheme.copyWith(
-            bodySmall: TextStyle(
-                color: Colors.white.withOpacity(
-                    0.6)), 
-          ),
-    ),
-    child: FooterMenu(
-      index: index,
-      username: username,
-    ),
-  );
 }
