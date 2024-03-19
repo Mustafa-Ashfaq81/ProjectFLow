@@ -240,9 +240,9 @@ Widget _buildProjectHeadingInput() {
                 Text('20th Sept'),
               ],
             ),
-            const SizedBox(width: 200),
+            const SizedBox(width: 85),
             _buildIconContainer(icon: Icons.group),
-            const SizedBox(width: 10),
+            const SizedBox(width: 5),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -255,7 +255,7 @@ Widget _buildProjectHeadingInput() {
                 _buildTeamMemberAvatars()
               ],
             ),
-            const SizedBox(width: 10),
+            // const SizedBox(width: 5),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
