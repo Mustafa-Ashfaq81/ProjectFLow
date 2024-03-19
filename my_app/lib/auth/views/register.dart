@@ -197,16 +197,14 @@ class _RegisterPageState extends State<RegisterPage> {
         showerrormsg(message: "username already taken");
       } else {
         User? user = await _auth.registeracc(email, password);
-
         if (user != null) {
           print("User is successfully created");
           List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
           try {
             createUser(
                 UserModel(username: name, email: email, tasks: mappedtasks));
-            print("user model created");
           } catch (e) {
-            print("got-some-err ---> $e");
+            print("got-some-err-creating-user-model ---> $e");
           }
           Navigator.push(
               context,

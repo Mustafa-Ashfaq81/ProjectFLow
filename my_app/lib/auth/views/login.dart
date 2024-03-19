@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/models/usermodel.dart';
+import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
 
@@ -137,7 +139,38 @@ class _LoginPageState extends State<LoginPage> {
                 )
               ],
             ),
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
+                        const SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(child: Divider(color: Colors.grey[400],thickness: 0.5,)),
+                Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text('Or continue with',
+                    style: TextStyle(color: Colors.grey[700]) ,
+                  ) ,
+                ),
+                Expanded(child: Divider(color: Colors.grey[400],thickness: 0.5,)),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap:  _loginGmail,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      borderRadius : BorderRadius.circular(16),
+                      color: Colors.grey[200]
+                    ),
+                    child: Image.asset("pictures/google-icon.png", height:40)
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -193,6 +226,44 @@ class _LoginPageState extends State<LoginPage> {
           ));
     } else {
       print("some error occured ... has been TOASTED");
+    }
+  }
+
+    void _loginGmail() async  { 
+    UserCredential? usercred =  await _auth.signInWithGoogle(); 
+    print(usercred);
+    print("--------");
+    if (usercred != null){
+      var username = usercred.user!.displayName;
+      final gmail = usercred.user!.email;
+
+      //check if user is not created, create that user in db else just login 
+      List<String> allemails = await getallEmails();
+      if (allemails.contains(gmail) == false) { 
+        var allusernames = await getallUsers();
+        if (allusernames.contains(username) == true) {
+          //append some numbers to username such that it stays unique
+          int suffix = 1;
+          String newUsername = username!;
+          while (allusernames.contains(newUsername)) {
+            newUsername = '$username!_${suffix++}';
+          }
+          username = newUsername;
+        } 
+        print("User is successfully created");
+        List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
+        try {
+          createUser(
+              UserModel(username: username, email: gmail, tasks: mappedtasks));
+        } catch (e) {
+          print("got-some-err-creating-user-model ---> $e");
+        }
+      }
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage( username: username!,),
+      ));
     }
   }
 

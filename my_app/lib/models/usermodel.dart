@@ -64,6 +64,13 @@ Future<List<String>> getallUsers() async {
   return snapshot.docs.map((doc) => doc['username'] as String).toList();
 }
 
+Future<List<String>> getallEmails() async {
+  final QuerySnapshot<Map<String, dynamic>> snapshot =
+      await FirebaseFirestore.instance.collection("users").get();
+  // Here we extract emails from User objects instead of returning the User objects themselves
+  return snapshot.docs.map((doc) => doc['email'] as String).toList();
+}
+
 void createUser(UserModel userModel) {
   final userCollection = FirebaseFirestore.instance.collection("users");
   String id = userCollection.doc().id;

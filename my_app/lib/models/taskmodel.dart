@@ -310,7 +310,7 @@ List<Task> get_random_task() {
         subtasks: [Subtask(subheading: "sub_t2", content: "cont_t2", deadline: "")]),
     Task(
         heading: "t_three",
-        status: "",
+        status: "progress",
         duedate: "",
         duehour: "",
         collaborators: [],

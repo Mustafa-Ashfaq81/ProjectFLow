@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../common/toast.dart';
 
 
@@ -36,4 +37,21 @@ class FirebaseAuthService {
     }
     return null;
   }
+
+  Future<UserCredential?> signInWithGoogle() async{
+    try{
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(clientId:"12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com" ).signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch(e) {
+      showerrormsg(message: "Some error occured with Google Sign In Api");
+      return null;
+    }
+  }
+
 }
