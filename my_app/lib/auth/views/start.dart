@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
@@ -9,9 +11,18 @@ class StartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Home')),
-         backgroundColor: Colors.black,
-      ),
+          title: Center(
+            child: Text(
+              'Home',
+              style: TextStyle(
+                color: Colors.white, // Set text color to white
+              ),
+            ),
+          ),
+          backgroundColor: Colors.black, // Set background color to black
+          automaticallyImplyLeading: false, // Disable automatic back button
+        ),
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

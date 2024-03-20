@@ -5,8 +5,40 @@ import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:my_app/utils/cache_util.dart'; 
+
 
 // Fetching the tasks by username from the database 
+
+class TaskService {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Future<void> fetchAndCacheNotesData(String username) async {
+    var snapshot = await firestore.collection('users').get();
+    List<Object> tasks = snapshot.docs
+        .where((doc) => doc['username'] == username)
+        .map((doc) {
+      final dynamic tsk = doc['tasks'];
+      return tsk is List<dynamic> ? tsk : [];
+    }).toList();
+
+    List<Map<String, dynamic>> allTasks = [];
+    tasks.forEach((taskList) {
+      List<dynamic> itemList = taskList as List<dynamic>;
+      itemList.forEach((item) {
+        Map<String, dynamic> taskMap = item as Map<String, dynamic>;
+        allTasks.add({
+          'heading': taskMap['heading'],
+          'description': taskMap['description'],
+          'status': taskMap['status'],
+        });
+      });
+    });
+
+    // Cache the fetched tasks data for quick access later
+    CacheUtil.cacheData('tasks_$username', allTasks);
+  }
+}
 
 Widget fetchTasks(String status, String username) {
   return FutureBuilder<QuerySnapshot>(

@@ -78,13 +78,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
   }
 
   AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: const Color(0xFFFFE6C9),
-      title: const Text(
-        'Create New Task',
-        style: TextStyle(color: Colors.black),
-      ),
-    );
+   return AppBar(
+  backgroundColor: const Color(0xFFFFE6C9),
+  automaticallyImplyLeading: false,
+  title: Center(
+    child: Text(
+      'Create New Task',
+      style: TextStyle(color: Colors.black),
+    ),
+  ),
+);
   }
 
   Widget _buildBody() {

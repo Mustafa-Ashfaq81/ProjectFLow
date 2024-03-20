@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast, prefer_const_constructors
+// ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast, prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
@@ -63,10 +63,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('My Notes')),
+      appBar: PreferredSize(
+      preferredSize: Size.fromHeight(kToolbarHeight),
+
+      child: AppBar(
+        
+        title: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 50.0),
+             child: Text(
+              'My Tasks',
+            style: TextStyle(color: Colors.white),
+             ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
         foregroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
@@ -102,6 +116,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
         backgroundColor: Colors.black,
+      ),
       ),
  body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

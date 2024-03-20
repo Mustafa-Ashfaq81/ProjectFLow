@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../common/toast.dart';
 
+import 'package:my_app/controllers/taskstatus.dart';
+
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -17,16 +19,19 @@ class FirebaseAuthService {
     return null;
   }
 
-  Future<User?> loginacc(String email, String password) async {
-    try {
-      UserCredential credential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      return credential.user;
-    } on FirebaseAuthException catch (e) {
-      showerrormsg(message: "${e.message}");
+Future<User?> loginacc(String email, String password) async {
+  try {
+    UserCredential credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    if (credential.user != null) {
+      String username = email.split('@')[0]; 
+      await TaskService().fetchAndCacheNotesData(username);
     }
-    return null;
+    return credential.user;
+  } on FirebaseAuthException catch (e) {
+    showerrormsg(message: "${e.message}");
   }
+  return null;
+}
   
   Future<User?> logout() async {
     final user = FirebaseAuth.instance.currentUser;

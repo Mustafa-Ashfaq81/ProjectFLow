@@ -32,10 +32,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Login')),
-        automaticallyImplyLeading: false, 
-        backgroundColor: Colors.black,
+      appBar:AppBar(
+        title: Center(
+          child: Text(
+            'Login',
+            textAlign: TextAlign.center, // Align text within the Text widget
+            style: TextStyle(
+              color: Colors.white, // Set text color to white
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false, // Disable automatic back button
+        backgroundColor: Colors.black, // Set background color to black
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -204,20 +212,27 @@ class _LoginPageState extends State<LoginPage> {
 
     User? useracc = await _auth.loginacc(email, password);
 
-    if (useracc != null) {
+    if (useracc != null) 
+    {
       String user = "";
       print("User is successfully logging in");
       await FirebaseFirestore.instance
           .collection('users')
           .where('email', isEqualTo: email)
           .get()
-          .then((QuerySnapshot querySnapshot) {
-        for (var doc in querySnapshot.docs) {
+          .then((QuerySnapshot querySnapshot) 
+          {
+        for (var doc in querySnapshot.docs) 
+        {
           //only one doc with that username
           user = doc['username'];
         }
       });
-      Navigator.push(
+        
+
+
+        Navigator.pushReplacement(
+
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(
@@ -259,7 +274,8 @@ class _LoginPageState extends State<LoginPage> {
           print("got-some-err-creating-user-model ---> $e");
         }
       }
-      Navigator.push(
+          Navigator.pushReplacement(
+
           context,
           MaterialPageRoute(
             builder: (context) => HomePage( username: username!,),

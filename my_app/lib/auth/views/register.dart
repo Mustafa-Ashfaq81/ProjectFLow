@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, duplicate_ignore, use_build_context_synchronously
+// ignore_for_file: avoid_print, duplicate_ignore, use_build_context_synchronously, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -58,10 +58,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     width: 40,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      // color: Colors.white,
+                      // borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.arrow_back, color: Colors.black),
+                    // child: const Icon(Icons.arrow_back, color: Colors.black),
                   ),
                 ),
               ],

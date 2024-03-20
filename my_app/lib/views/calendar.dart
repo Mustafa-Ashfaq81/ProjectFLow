@@ -16,9 +16,17 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calendar Page'),
-      ),
+      appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              centerTitle: true, // Aligns the title to the center
+              backgroundColor: Colors.black, // Set background color to black
+              title: Text(
+                'Calendar Page',
+                style: TextStyle(color: Colors.white), // Set text color to white
+                  ),
+            ),
+                ),
       body: const Center(
         child: Text('This is where you add deadlines.'),
       ),

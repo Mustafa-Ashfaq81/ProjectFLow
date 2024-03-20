@@ -54,9 +54,17 @@ class _ColabPageState extends State<ColabPage> {
             return Text('Error: ${snapshot.error}');
           } else {
             return Scaffold(
-              appBar: AppBar(
-                title: const Text('Colab Page'),
-              ),
+             appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              centerTitle: true, // Aligns the title to the center
+              backgroundColor: Colors.black, // Set background color to black
+              title: Text(
+                'Colab Page',
+                style: TextStyle(color: Colors.white), // Set text color to white
+                  ),
+            ),
+                ),
               body: Column(
                 children: [requests],
               ),

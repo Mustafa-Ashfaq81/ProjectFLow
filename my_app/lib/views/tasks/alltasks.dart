@@ -1,12 +1,15 @@
-// ignore_for_file: no_logic_in_create_state, library_private_types_in_public_api,unnecessary_cast,use_build_context_synchronously
+// ignore_for_file: no_logic_in_create_state, library_private_types_in_public_api,unnecessary_cast,use_build_context_synchronously, prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/views/loadingscreens/loadingalltasks.dart';
+import 'package:my_app/utils/cache_util.dart'; // Ensure this is correctly imported
 
-class AllTasksPage extends StatefulWidget {
+
+class AllTasksPage extends StatefulWidget 
+{
   final String username;
   const AllTasksPage({super.key, required this.username});
 
@@ -14,7 +17,8 @@ class AllTasksPage extends StatefulWidget {
   _AllTasksPageState createState() => _AllTasksPageState(username: username);
 }
 
-class _AllTasksPageState extends State<AllTasksPage> {
+class _AllTasksPageState extends State<AllTasksPage> 
+{
   String username;
   final int idx = 1;
   final TextEditingController queryController = TextEditingController();
@@ -31,12 +35,24 @@ class _AllTasksPageState extends State<AllTasksPage> {
     username = widget.username;
   }
 
-  // Getting the headings and tasks from the  database for a specific user
 
-  Future<void> atload() async {
+  Future<void> atload() async 
+  {
+  List<Map<String, dynamic>>? cachedAllTasks = CacheUtil.getData('tasks_$username');
+  if (cachedAllTasks != null) 
+  {
+
+    alltasks = cachedAllTasks;
+  } 
+  else 
+  {
+
     headings = await getTaskHeadings(username);
     alltasks = await getAllTasks(username);
+
+    CacheUtil.cacheData('tasks_$username', alltasks);
   }
+}
 
   @override
   void dispose() {
@@ -57,10 +73,18 @@ class _AllTasksPageState extends State<AllTasksPage> {
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Notes Page'),
+         return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              centerTitle: true, // Aligns the title to the center
+              backgroundColor: Colors.black, // Set background color to black
+              title: Text(
+                'My Notes',
+                style: TextStyle(color: Colors.white), // Set text color to white
+                  ),
             ),
+                ),
             body: Column(
               children: [
                 _buildSearchBox(),
