@@ -48,10 +48,10 @@ class _FooterMenuState extends State<FooterMenu> {
   _FooterMenuState({required this.selectedIndex, required this.username});
 
   void _onItemTapped(int index) {
-    // You can optimize this by using a switch statement instead of if-else chain.
+  if (index != selectedIndex) {
     switch (index) {
       case 0:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(username: username),
@@ -59,7 +59,7 @@ class _FooterMenuState extends State<FooterMenu> {
         );
         break;
       case 1:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => AllTasksPage(username: username),
@@ -67,7 +67,7 @@ class _FooterMenuState extends State<FooterMenu> {
         );
         break;
       case 2:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => NewTaskPage(username: username),
@@ -75,7 +75,7 @@ class _FooterMenuState extends State<FooterMenu> {
         );
         break;
       case 3:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => CalendarPage(username: username),
@@ -83,7 +83,7 @@ class _FooterMenuState extends State<FooterMenu> {
         );
         break;
       case 4:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => ColabPage(username: username),
@@ -93,7 +93,12 @@ class _FooterMenuState extends State<FooterMenu> {
       default:
         break;
     }
+    setState(() 
+    {
+      selectedIndex = index;
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {
