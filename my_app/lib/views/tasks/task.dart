@@ -9,23 +9,22 @@ import 'package:my_app/controllers/gptapi.dart';
 import 'package:my_app/views/loadingscreens/loadingtask.dart';
 import '../../common/toast.dart';
 
-
 class TaskDetailsPage extends StatefulWidget {
   final String username;
-  final Map<String,dynamic> task;
-  const TaskDetailsPage({Key? key, required this.username, required this.task}) : super(key: key);
+  final Map<String, dynamic> task;
+  const TaskDetailsPage({Key? key, required this.username, required this.task})
+      : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
-  State<TaskDetailsPage> createState() => _TaskPageState(username: username,mytask: task);
-  
+  State<TaskDetailsPage> createState() =>
+      _TaskPageState(username: username, mytask: task);
 }
 
 class _TaskPageState extends State<TaskDetailsPage> {
-  String username; 
-  Map<String,dynamic> mytask;
+  String username;
+  Map<String, dynamic> mytask;
   _TaskPageState({required this.username, required this.mytask});
-
 
   List<Map<String, dynamic>> teamMembers = [];
   List<dynamic> subtasks = [];
@@ -40,8 +39,12 @@ class _TaskPageState extends State<TaskDetailsPage> {
     username = widget.username;
     mytask = widget.task;
     // Initialize the text controllers with random text
-    _projectHeadingController = TextEditingController(  text:mytask['heading'], );
-    _projectDescriptionController = TextEditingController(  text:mytask['description'], );
+    _projectHeadingController = TextEditingController(
+      text: mytask['heading'],
+    );
+    _projectDescriptionController = TextEditingController(
+      text: mytask['description'],
+    );
   }
 
   @override
@@ -53,48 +56,43 @@ class _TaskPageState extends State<TaskDetailsPage> {
     super.dispose();
   }
 
-   Future<void> atload() async {
-    subtasks = await getSubTasks(username,mytask['heading']);
+  Future<void> atload() async {
+    subtasks = await getSubTasks(username, mytask['heading']);
     print("subtasks ... $subtasks");
   }
 
-   void _saveProjectDetails() async{
+  void _saveProjectDetails() async {
     // Here we would typically save the data to a database or some other storage.
     // For demonstration, we're just printing the values to the console.
-    String headingg =  _projectHeadingController.text;
+    String headingg = _projectHeadingController.text;
     String desc = _projectDescriptionController.text;
     print('Project Heading: $headingg');
     print('Project Description: $desc');
-    
+
     // Show a snackbar as feedback
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Project details saved!')),
     );
 
-    await editTask(username,headingg,desc,mytask['heading']);
+    await editTask(username, headingg, desc, mytask['heading']);
     showmsg(message: "Task has been updated successfully!");
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage(username: username),
-      ));
-
- }
-
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(username: username),
+        ));
+  }
 
   void deleteProject() async {
-    
-    String headingg =  _projectHeadingController.text;
+    String headingg = _projectHeadingController.text;
     await deleteTask(username, headingg);
     showmsg(message: "Task has been deleted successfully!");
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage(username: username),
-      )); // Go back to the previous screen with the list updated
-
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(username: username),
+        )); // Go back to the previous screen with the list updated
   }
-
 
   AppBar _buildAppBar() {
     return AppBar(
@@ -107,168 +105,180 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildBody() {
-   return FutureBuilder(
-          future: atload(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-        return const LoadingTask();  // Show loading page while fetching data
-      } else if (snapshot.hasError) {
-        return Text('Error: ${snapshot.error}');
-      } else {
-  return SingleChildScrollView(
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 40),
-          _buildDuedateProjectTeam(),
-          const SizedBox(height: 30),
-          _buildSectionTitle('Task Heading'),
-          _buildProjectHeadingInput(),
-          const SizedBox(height: 10),
-          _buildSectionTitle('Task Description'),
-          _buildProjectDescriptionInput(),
-          const SizedBox(height: 20),
-          _buildProgressIndicatorWithText(), // Moved here
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _saveProjectDetails,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-            ),
-            child: const Text('Save Project Details'),
-          ),
-          const SizedBox(height: 30),
-          _buildSubtasks(username),
-        ],
-      ),
-    ),
-  );
-      }
+    return FutureBuilder(
+        future: atload(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingTask(); // Show loading page while fetching data
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40),
+                    _buildDuedateProjectTeam(),
+                    const SizedBox(height: 30),
+                    _buildSectionTitle('Task Heading'),
+                    _buildProjectHeadingInput(),
+                    const SizedBox(height: 10),
+                    _buildSectionTitle('Task Description'),
+                    _buildProjectDescriptionInput(),
+                    const SizedBox(height: 20),
+                    _buildProgressIndicatorWithText(), // Moved here
+                    const SizedBox(height: 20),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            showDeleteConfirmationDialog(context, deleteProject);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                          ),
+                          // icon: const Icon(Icons.delete),
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          label: const Text('Delete Task',
+                              style: TextStyle(color: Colors.black)),
+                        ),
+                        const SizedBox(width:50),
+                        ElevatedButton(
+                          onPressed: _saveProjectDetails,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                          ),
+                          child: const Text('Save Project Details',
+                              style: TextStyle(color: Colors.black)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    _buildSubtasks(username),
+                  ],
+                ),
+              ),
+            );
           }
-   );
-}
+        });
+  }
 
-Widget _buildSubtasks(String username){ //show diff views dep on if subtasks are available
+  Widget _buildSubtasks(String username) {
+    //show diff views dep on if subtasks are available
 
-  if (subtasks.isEmpty == true){
-    List<Map<String,dynamic>> newsubtasks = [];
-    return Padding( 
-    padding: const EdgeInsets.all(16.0),
-    child: Column(children: [
-    const Text("no subtasks for this task ... you might want to enhance your idea"),
-     SizedBox(
-            width: 150,
-            child: ElevatedButton(
-              onPressed: () async{
-                  newsubtasks = await gptapicall(_projectHeadingController.text,_projectDescriptionController.text);
-                  await addSubTasks(username,mytask['heading'],newsubtasks);
-                  //reload this page to see reflected changes ... 
+    if (subtasks.isEmpty == true) {
+      List<Map<String, dynamic>> newsubtasks = [];
+      return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(children: [
+            const Text(
+                "no subtasks for this task ... you might want to enhance your idea"),
+            SizedBox(
+              width: 150,
+              child: ElevatedButton(
+                onPressed: () async {
+                  newsubtasks = await gptapicall(_projectHeadingController.text,
+                      _projectDescriptionController.text);
+                  await addSubTasks(username, mytask['heading'], newsubtasks);
+                  //reload this page to see reflected changes ...
                   setState(() {
                     subtasks = newsubtasks;
                   });
-              },
-              child: const Text('Enhance your project ideas (I AM A FOOTER)'),
+                },
+                child: const Text('Enhance your project ideas (I AM A FOOTER)'),
+              ),
             ),
-          ),
-        ]
-      )
-    );
+          ]));
+    }
+    return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _buildSectionTitle('All Subtasks'),
+            const SizedBox(height: 20),
+            _buildTaskMenu(username),
+          ],
+        ));
   }
-  return Padding( 
-    padding: const EdgeInsets.all(16.0),
-    child: Column(children: [
-      _buildSectionTitle('All Subtasks'),
-      const SizedBox(height: 20),
-      _buildTaskMenu(username),
-    ],
-   )
- );
-}
 
 // Method to create the project heading input field
-Widget _buildProjectHeadingInput() {
-  return TextField(
-    controller: _projectHeadingController,
-    focusNode: _headingFocus,
-    decoration: const InputDecoration(
-      hintText: 'Enter project heading here',
-    ),
-    onSubmitted: (_) {
-      FocusScope.of(context).requestFocus(_descriptionFocus); // Move focus to the description field
-    },
-    textInputAction: TextInputAction.next, // Adds a "next" button to the keyboard
-  );
-}
+  Widget _buildProjectHeadingInput() {
+    return TextField(
+      controller: _projectHeadingController,
+      focusNode: _headingFocus,
+      decoration: const InputDecoration(
+        hintText: 'Enter project heading here',
+      ),
+      onSubmitted: (_) {
+        FocusScope.of(context).requestFocus(
+            _descriptionFocus); // Move focus to the description field
+      },
+      textInputAction:
+          TextInputAction.next, // Adds a "next" button to the keyboard
+    );
+  }
 
- Widget _buildProjectDescriptionInput() {
-  return TextField(
-    controller: _projectDescriptionController,
-    focusNode: _descriptionFocus,
-    decoration: const InputDecoration(
-      hintText: 'Enter project description here',
-    ),
-    onSubmitted: (_) {
-      _descriptionFocus.unfocus();
-    },
-    maxLines: null,
-    keyboardType: TextInputType.multiline,
-    textInputAction: TextInputAction.done, // Adds a "done" button to the keyboard for multiline input
-  );
-}
+  Widget _buildProjectDescriptionInput() {
+    return TextField(
+      controller: _projectDescriptionController,
+      focusNode: _descriptionFocus,
+      decoration: const InputDecoration(
+        hintText: 'Enter project description here',
+      ),
+      onSubmitted: (_) {
+        _descriptionFocus.unfocus();
+      },
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      textInputAction: TextInputAction
+          .done, // Adds a "done" button to the keyboard for multiline input
+    );
+  }
 
   Widget _buildDuedateProjectTeam() {
     return SingleChildScrollView(
-        scrollDirection: Axis.horizontal, 
+        scrollDirection: Axis.horizontal,
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildIconContainer(icon: Icons.calendar_month),
-            const SizedBox(width: 10),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                Text(
-                  'Due Date',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                _buildIconContainer(icon: Icons.calendar_month),
+                const SizedBox(width: 10),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Due Date',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text('20th Sept'),
+                  ],
                 ),
-                Text('20th Sept'),
+                const SizedBox(width: 110),
+                _buildIconContainer(icon: Icons.group),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Project Team',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    _buildTeamMemberAvatars()
+                  ],
+                ),
               ],
             ),
-            const SizedBox(width: 85),
-            _buildIconContainer(icon: Icons.group),
-            const SizedBox(width: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Project Team',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                _buildTeamMemberAvatars()
-              ],
-            ),
-            // const SizedBox(width: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-            IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed:  ()  { showDeleteConfirmationDialog(context,deleteProject); }, // Show confirmation dialog before deleting
-               ),
-              ]
-            )
           ],
-        ),
-      ],
-    ));
+        ));
   }
 
   Widget _buildTeamMemberAvatars() {
@@ -402,7 +412,7 @@ Widget _buildProjectHeadingInput() {
               elevation: 0, // Removes shadow
             ),
             onPressed: () {
-              // Navigate to CreateSubTaskPage 
+              // Navigate to CreateSubTaskPage
             },
             child: const Text(
               'Add Subtask',
@@ -425,7 +435,8 @@ Widget _buildProjectHeadingInput() {
 
   Widget _buildTaskMenu(String username) {
     // Assuming your tasks are fetched or defined here
-    final List<String> tasks = subtasks.map((item) => item['subheading'] as String).toList();
+    final List<String> tasks =
+        subtasks.map((item) => item['subheading'] as String).toList();
 
     return ListView.builder(
       shrinkWrap: true,
@@ -445,7 +456,10 @@ Widget _buildProjectHeadingInput() {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SubTaskPage(username:username, subtasks: subtasks, subtaskIndex: index),
+                  builder: (context) => SubTaskPage(
+                      username: username,
+                      subtasks: subtasks,
+                      subtaskIndex: index),
                 ),
               );
               // This ensures setState is called within the correct context
@@ -457,5 +471,3 @@ Widget _buildProjectHeadingInput() {
     );
   }
 }
-
-
