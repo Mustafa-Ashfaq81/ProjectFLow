@@ -11,6 +11,7 @@ import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
 
+import '../utils/cache_util.dart';
 
 // enum data type for logout and settings
 
@@ -46,13 +47,55 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     print("init-state-sync");
     username = widget.username;
-    completedtasks = fetchTasks("completed", username);
-    inprogresstasks = fetchTasks("progress", username);
-    profilepic = ImageSetter(username: username);
+
     atload();
   }
 
+  Widget buildTasksList(List<Map<String, dynamic>> tasksData) {
+    List<Widget> taskWidgets = tasksData.map((task) {
+      return ListTile(
+        title: Text(task['heading']),
+        subtitle: Expanded(
+          child: Text(
+            task['description'],
+            style: const TextStyle(color: Colors.white70),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        onTap: () {
+          // Working as of now. No need to implement an OnTap Method for this particular Element
+        },
+      );
+    }).toList();
+
+    // Return the list of task widgets wrapped in a Column, ListView, etc.
+    return ListView(children: taskWidgets);
+  }
+
   Future<void> atload() async {
+    List<Map<String, dynamic>>? cachedOngoingProjects =
+        CacheUtil.getData('ongoingProjects_$username');
+
+    List<Map<String, dynamic>>? cachedCompletedProjects =
+        CacheUtil.getData('completedProjects_$username');
+
+    if (cachedOngoingProjects != null) 
+    {
+      print("NULL: So fetching Ongoing Projects");
+      inprogresstasks = buildTasksList(cachedOngoingProjects);
+    } else {
+      inprogresstasks = fetchTasks("progress", username);
+    }
+
+    if (cachedCompletedProjects != null) {
+      completedtasks = buildTasksList(cachedCompletedProjects);
+    } else {
+      completedtasks = fetchTasks("progress", username);
+    }
+
+    completedtasks = fetchTasks("completed", username);
+    inprogresstasks = fetchTasks("progress", username);
+    profilepic = ImageSetter(username: username);
     headings = await getTaskHeadings(username);
   }
 
@@ -63,62 +106,60 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-      preferredSize: Size.fromHeight(kToolbarHeight),
-
-      child: AppBar(
-        
-        title: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 50.0),
-             child: Text(
-              'My Tasks',
-            style: TextStyle(color: Colors.white),
-             ),
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          title: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 50.0),
+              child: Text(
+                'My Tasks',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ),
+          automaticallyImplyLeading: false,
+          foregroundColor: Colors.white,
+          iconTheme: const IconThemeData(color: Colors.white),
+          actions: [
+            PopupMenuButton<MenuAction>(
+              onSelected: (value) async {
+                switch (value) {
+                  case MenuAction.logout:
+                    final shouldLogout = await showLogOutDialog(context);
+                    if (shouldLogout) {
+                      await _auth.logout();
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil("/", (_) => false);
+                    }
+                    break;
+                  case MenuAction.settings:
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            SettingsPage(username: username)));
+                    break;
+                }
+              },
+              itemBuilder: (context) {
+                return [
+                  const PopupMenuItem<MenuAction>(
+                    value: MenuAction.logout,
+                    child: Text('Log out'),
+                  ),
+                  const PopupMenuItem<MenuAction>(
+                    value: MenuAction.settings,
+                    child: Text('Settings'),
+                  ),
+                ];
+              },
+            )
+          ],
+          backgroundColor: Colors.black,
         ),
-        automaticallyImplyLeading: false,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          PopupMenuButton<MenuAction>(
-            onSelected: (value) async {
-              switch (value) {
-                case MenuAction.logout:
-                  final shouldLogout = await showLogOutDialog(context);
-                  if (shouldLogout) {
-                    await _auth.logout();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil("/", (_) => false);
-                  }
-                  break;
-                case MenuAction.settings:
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SettingsPage(username: username)));
-                  break;
-              }
-            },
-            itemBuilder: (context) {
-              return [
-                const PopupMenuItem<MenuAction>(
-                  value: MenuAction.logout,
-                  child: Text('Log out'),
-                ),
-                const PopupMenuItem<MenuAction>(
-                  value: MenuAction.settings,
-                  child: Text('Settings'),
-                ),
-              ];
-            },
-          )
-        ],
-        backgroundColor: Colors.black,
       ),
-      ),
- body: SingleChildScrollView(
+      body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,76 +193,76 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 20),
             Padding(
-  padding: const EdgeInsets.only(
-    right: 10.0,
-    top: 20.0,
-    left: 30.0,
-    bottom: 20.0,
-  ),
-  child: GestureDetector(
-    onTap: () {
-      Future<String?> selectedTask = showSearch(
-        context: context,
-        delegate: SearchTasks(username: username, headings: headings)
-            as SearchDelegate<String>,
-      );
-      selectedTask.then((taskheading) async {
-        Map<String, dynamic> task =
-            await getTaskbyHeading(taskheading!, username);
-        if (taskheading != "") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  TaskDetailsPage(username: username, task: task),
-            ),
-          );
-        }
-      });
-    },
-    child: Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: querycontroller,
-              decoration: InputDecoration(
-                hintText: 'Search Task',
-                hintStyle: const TextStyle(
-                  fontFamily: 'Inter',
-                  color: Color(0xFF000000),
-                  fontWeight: FontWeight.w600,
-                ),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 20,
+              padding: const EdgeInsets.only(
+                right: 10.0,
+                top: 20.0,
+                left: 30.0,
+                bottom: 20.0,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Future<String?> selectedTask = showSearch(
+                    context: context,
+                    delegate:
+                        SearchTasks(username: username, headings: headings)
+                            as SearchDelegate<String>,
+                  );
+                  selectedTask.then((taskheading) async {
+                    Map<String, dynamic> task =
+                        await getTaskbyHeading(taskheading!, username);
+                    if (taskheading != "") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TaskDetailsPage(username: username, task: task),
+                        ),
+                      );
+                    }
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFFFFF),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: querycontroller,
+                          decoration: InputDecoration(
+                            hintText: 'Search Task',
+                            hintStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              color: Color(0xFF000000),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 20,
+                            ),
+                          ),
+                          enabled: false,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.search),
+                        // icon color
+                        color: Colors.black45,
+
+                        onPressed: null,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              enabled: false,
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            // icon color
-            color: Colors.black45,
-
-            onPressed: null,
-          ),
-        ],
-      ),
-    ),
-  ),
-),
-
             const Padding(
               padding: EdgeInsets.only(left: 30.0, top: 0.0),
               child: Text(
-                'Completed Tasks', 
+                'Completed Tasks',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 22,
@@ -233,7 +274,7 @@ class _HomePageState extends State<HomePage> {
             const Padding(
               padding: EdgeInsets.only(left: 30.0, top: 20.0),
               child: Text(
-                'Ongoing Projects', 
+                'Ongoing Projects',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 22,

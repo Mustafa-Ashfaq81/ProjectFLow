@@ -5,19 +5,17 @@ import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:my_app/utils/cache_util.dart'; 
+import 'package:my_app/utils/cache_util.dart';
 
-
-// Fetching the tasks by username from the database 
+// Fetching the tasks by username from the database
 
 class TaskService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> fetchAndCacheNotesData(String username) async {
     var snapshot = await firestore.collection('users').get();
-    List<Object> tasks = snapshot.docs
-        .where((doc) => doc['username'] == username)
-        .map((doc) {
+    List<Object> tasks =
+        snapshot.docs.where((doc) => doc['username'] == username).map((doc) {
       final dynamic tsk = doc['tasks'];
       return tsk is List<dynamic> ? tsk : [];
     }).toList();
@@ -38,6 +36,50 @@ class TaskService {
     // Cache the fetched tasks data for quick access later
     CacheUtil.cacheData('tasks_$username', allTasks);
   }
+
+  Future<void> fetchAndCacheOngoingProject(String username) async {
+    print("Fetching Ongoing Projects");
+    var snapshot = await FirebaseFirestore.instance.collection('users').get();
+    List<Map<String, dynamic>> ongoingProjects = [];
+
+    for (var doc in snapshot.docs.where((doc) => doc['username'] == username)) {
+      List<dynamic> tasksList = doc['tasks'] ?? [];
+      for (var task in tasksList) {
+        Map<String, dynamic> taskMap = task as Map<String, dynamic>;
+        if (taskMap['status'] == 'ongoing') {
+          ongoingProjects.add({
+            'heading': taskMap['heading'],
+            'description': taskMap['description'],
+            'status': taskMap['status'],
+          });
+        }
+      }
+    }
+
+    CacheUtil.cacheData('ongoingProjects_$username', ongoingProjects);
+  }
+
+  Future<void> fetchAndCacheCompletedProject(String username) async {
+    print("Fetching Completed Projects");
+    var snapshot = await FirebaseFirestore.instance.collection('users').get();
+    List<Map<String, dynamic>> completedProjects = [];
+
+    for (var doc in snapshot.docs.where((doc) => doc['username'] == username)) {
+      List<dynamic> tasksList = doc['tasks'] ?? [];
+      for (var task in tasksList) {
+        Map<String, dynamic> taskMap = task as Map<String, dynamic>;
+        if (taskMap['status'] == 'completed') {
+          completedProjects.add({
+            'heading': taskMap['heading'],
+            'description': taskMap['description'],
+            'status': taskMap['status'],
+          });
+        }
+      }
+    }
+
+    CacheUtil.cacheData('completedProjects_$username', completedProjects);
+  }
 }
 
 Widget fetchTasks(String status, String username) {
@@ -45,7 +87,9 @@ Widget fetchTasks(String status, String username) {
     future: FirebaseFirestore.instance.collection('users').get(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator(),); 
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       } else if (snapshot.hasError) {
         return Text('Error: ${snapshot.error}');
       } else {
@@ -58,7 +102,7 @@ Widget fetchTasks(String status, String username) {
           } else if (tsk is String) {
             return tsk;
           }
-          return ''; 
+          return '';
         }).toList();
 
         List<Map<String, dynamic>> headings = [];
@@ -70,7 +114,7 @@ Widget fetchTasks(String status, String username) {
             if (itemMap['status'] == status) {
               headings.add({
                 'heading': itemMap['heading'],
-                'description': itemMap['description'], 
+                'description': itemMap['description'],
               });
             }
           }
@@ -79,13 +123,14 @@ Widget fetchTasks(String status, String username) {
           return completedIdeasView(context, headings, username);
         } else {
           return inprogressIdeasView(context, headings, username);
-        } 
+        }
       }
     },
   );
 }
 
-Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headings, String username) {
+Widget completedIdeasView(BuildContext context,
+    List<Map<String, dynamic>> headings, String username) {
   return headings.isEmpty
       ? const Padding(
           padding: EdgeInsets.only(
@@ -108,43 +153,51 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
                               height: 200.0,
                               width: 200.0,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE16C00).withOpacity(0.48),
+                                color:
+                                    const Color(0xFFE16C00).withOpacity(0.48),
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                              child: Material( 
-    color: Colors.transparent, 
-    child: InkWell( 
-      onTap: () async {
-        Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask), 
-          ),
-        );
-      },
-      child: Padding( 
-        padding: const EdgeInsets.all(16.0),
-        child: Column( 
-          crossAxisAlignment: CrossAxisAlignment.start, // Aligning heading to left
-          children: [
-            Text(
-              task['heading'],
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-              ),
-            ),
-            const SizedBox(height: 8.0), // Adding space between heading and description
-            Text(
-              task['description'],
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ),           
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () async {
+                                    Map<String, dynamic> thistask =
+                                        await getTaskbyHeading(
+                                            task['heading'], username);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TaskDetailsPage(
+                                            username: username, task: thistask),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start, // Aligning heading to left
+                                      children: [
+                                        Text(
+                                          task['heading'],
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            height:
+                                                8.0), // Adding space between heading and description
+                                        Text(
+                                          task['description'],
+                                          style: const TextStyle(
+                                              color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ])
                         : Container(
@@ -156,40 +209,47 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
                               color: const Color(0xFF141310).withOpacity(0.85),
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Material( 
-    color: Colors.transparent, 
-    child: InkWell( 
-      onTap: () async {
-        Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask), // Task data will be passed as parameters
-          ),
-        );
-      },
-      child: Padding( 
-        padding: const EdgeInsets.all(16.0),
-        child: Column( 
-          crossAxisAlignment: CrossAxisAlignment.start, 
-          children: [
-            Text(
-              task['heading'],
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18.0, 
-              ),
-            ),
-            const SizedBox(height: 8.0), 
-            Text(
-              task['description'],
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ),           
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () async {
+                                  Map<String, dynamic> thistask =
+                                      await getTaskbyHeading(
+                                          task['heading'], username);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TaskDetailsPage(
+                                          username: username,
+                                          task:
+                                              thistask), // Task data will be passed as parameters
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        task['heading'],
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8.0),
+                                      Text(
+                                        task['description'],
+                                        style: const TextStyle(
+                                            color: Colors.white70),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                   )
                   .toList(),
@@ -197,7 +257,8 @@ Widget completedIdeasView(BuildContext context, List<Map<String, dynamic>> headi
           ));
 }
 
-Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> headings, String username) {
+Widget inprogressIdeasView(BuildContext context,
+    List<Map<String, dynamic>> headings, String username) {
   return headings.isEmpty
       ? const Padding(
           padding: EdgeInsets.only(
@@ -205,8 +266,7 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
           ),
           child: Center(child: Text("No task in progress")))
       : Padding(
-          padding:
-              const EdgeInsets.only(right: 20.0), 
+          padding: const EdgeInsets.only(right: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: headings
@@ -220,43 +280,49 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
                             color: const Color(0xFFE16C00).withOpacity(0.48),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: Material( 
-    color: Colors.transparent, 
-    child: InkWell( 
-      onTap: () async {
-        Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask), 
-          ),
-        );
-      },
-      child: Padding( 
-        padding: const EdgeInsets.all(16.0),
-        child: Column( 
-          crossAxisAlignment: CrossAxisAlignment.start, 
-          children: [
-            Text(
-              task['heading'],
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18.0, 
-              ),
-            ),
-            const SizedBox(height: 8.0), 
-            Text(
-              task['description'],
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ),                 
-                      )
-                      :
-                      Container(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () async {
+                                Map<String, dynamic> thistask =
+                                    await getTaskbyHeading(
+                                        task['heading'], username);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TaskDetailsPage(
+                                        username: username, task: thistask),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      task['heading'],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Expanded(
+                                      child: Text(
+                                        task['description'],
+                                        style: const TextStyle(
+                                            color: Colors.white70),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
                           margin: const EdgeInsets.only(left: 30.0, top: 15.0),
                           height: 90.0,
                           width: 450.0,
@@ -264,40 +330,47 @@ Widget inprogressIdeasView(BuildContext context, List<Map<String, dynamic>> head
                             color: const Color(0xFF141310).withOpacity(0.85),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: Material( 
-    color: Colors.transparent, 
-    child: InkWell( 
-      onTap: () async {
-        Map<String,dynamic> thistask = await getTaskbyHeading(task['heading'], username) ;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TaskDetailsPage(username:username, task:thistask),
-          ),
-        );
-      },
-      child: Padding( 
-        padding: const EdgeInsets.all(16.0),
-        child: Column( 
-          crossAxisAlignment: CrossAxisAlignment.start, 
-          children: [
-            Text(
-              task['heading'],
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18.0, 
-              ),
-            ),
-            const SizedBox(height: 8.0), 
-            Text(
-              task['description'],
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ),           
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () async {
+                                Map<String, dynamic> thistask =
+                                    await getTaskbyHeading(
+                                        task['heading'], username);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TaskDetailsPage(
+                                        username: username, task: thistask),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      task['heading'],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Expanded(
+                                      child: Text(
+                                        task['description'],
+                                        style: const TextStyle(
+                                            color: Colors.white70),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                 )
                 .toList(),

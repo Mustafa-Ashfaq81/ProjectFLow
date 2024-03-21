@@ -1,78 +1,80 @@
-// ignore_for_file: no_logic_in_create_state, library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: library_private_types_in_public_api, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
-import 'package:my_app/controllers/colabrequests.dart';
-import 'package:my_app/models/usermodel.dart';
-import 'package:my_app/views/loadingscreens/loadingcolab.dart';
+import 'package:my_app/controllers/colabrequests.dart'; // Ensure this contains fetchAndCacheColabRequests
+import 'package:my_app/utils/cache_util.dart';
 
-class ColabPage extends StatefulWidget {
+class ColabPage extends StatefulWidget 
+{
   final String username;
-  const ColabPage({super.key, required this.username});
+
+  const ColabPage({Key? key, required this.username}) : super(key: key);
+
   @override
-  _ColabPageState createState() => _ColabPageState(username: username);
+  _ColabPageState createState() => _ColabPageState();
 }
 
 class _ColabPageState extends State<ColabPage> {
-  String username;
   final int idx = 4;
-  _ColabPageState({required this.username});
-
-  Widget requests = const Text("at-init-state");
-  List<Map<String, dynamic>> reqtasks = [];
-  List<String> otherusers = [];
+  List<Map<String, dynamic>> colabRequests = [];
 
   @override
   void initState() {
     super.initState();
+    _loadColabRequests();
   }
 
-  Future<void> atload(BuildContext context) async {
-    if (otherusers.isEmpty) {
-      List<String> allusers = await getallUsers();
-      for (var user in allusers) {
-        if (user != username) {
-          otherusers.add(user);
-        }
+  void _loadColabRequests() async {
+    List<Map<String, dynamic>>? cachedRequests =
+        CacheUtil.getData('colabRequests_${widget.username}');
+    if (cachedRequests != null && cachedRequests.isNotEmpty) {
+      // Use cached data if available
+      setState(() {
+        colabRequests = cachedRequests;
+      });
+    } else {
+      // Fetch and cache colab requests if not in cache
+      await fetchAndCacheColabRequests(widget.username);
+      List<Map<String, dynamic>>? newlyFetchedRequests =
+          CacheUtil.getData('colabRequests_${widget.username}');
+      if (newlyFetchedRequests != null) {
+        setState(() {
+          colabRequests = newlyFetchedRequests;
+        });
       }
-      await Future.delayed(const Duration(
-          seconds: 3)); //helps in updating requests if added/declined just now
-      reqtasks = await get_ifany_requests(username, otherusers);
     }
-    requests = showRequests(context,reqtasks, username);
   }
 
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(builder: (context, setState) {
-      return FutureBuilder(
-        future: atload(context), 
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingColab();  // Show loading page while fetching data
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return Scaffold(
-             appBar: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: AppBar(
-              centerTitle: true, // Aligns the title to the center
-              backgroundColor: Colors.black, // Set background color to black
-              title: Text(
-                'Colab Page',
-                style: TextStyle(color: Colors.white), // Set text color to white
-                  ),
-            ),
-                ),
-              body: Column(
-                children: [requests],
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: Text('Colab Page', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
+      ),
+      body: colabRequests.isEmpty
+          ? Center(child: Text("No requests for collaboration yet"))
+          : SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: colabRequests.map((request) {
+                  return ListTile(
+                    title: Text(request['task'],
+                        style: TextStyle(color: Colors.black)),
+                    subtitle: Text("From: ${request['sender']}",
+                        style: TextStyle(color: Colors.grey)),
+                    onTap: () 
+                    {
+                      // Handle tap if needed, for example, to view request details
+                    },
+                  );
+                }).toList(),
               ),
-                  bottomNavigationBar: Footer(index: idx, username: username),
-            );
-          }
-        },
-      );
-    });
+            ),
+      bottomNavigationBar: Footer(index: idx, username: widget.username),
+    );
   }
 }

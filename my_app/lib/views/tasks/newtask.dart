@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, no_logic_in_create_state, use_build_context_synchronously, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/components/search.dart';
@@ -77,16 +79,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar() 
+  {
    return AppBar(
-  backgroundColor: const Color(0xFFFFE6C9),
+    centerTitle: true, // Aligns the title to the center
+    backgroundColor: Colors.black,
   automaticallyImplyLeading: false,
-  title: Center(
-    child: Text(
-      'Create New Task',
-      style: TextStyle(color: Colors.black),
-    ),
-  ),
+   title: Text(
+                'Create New Task',
+                style: TextStyle(color: Colors.white), // Set text color to white
+                  ),
 );
   }
 

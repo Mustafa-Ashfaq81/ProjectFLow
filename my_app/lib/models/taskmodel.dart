@@ -90,7 +90,8 @@ class Subtask {
       );
 }
 
-Future<List<String>> getTaskHeadings(String username) async {
+Future<List<String>> getTaskHeadings(String username) async 
+{
   QuerySnapshot<Map<String, dynamic>> users =
       await FirebaseFirestore.instance.collection('users').get();
 

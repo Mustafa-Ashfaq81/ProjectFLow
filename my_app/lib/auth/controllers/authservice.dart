@@ -4,6 +4,7 @@ import '../../common/toast.dart';
 
 import 'package:my_app/controllers/taskstatus.dart';
 
+import '../../controllers/colabrequests.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,20 +20,28 @@ class FirebaseAuthService {
     return null;
   }
 
-Future<User?> loginacc(String email, String password) async {
-  try {
-    UserCredential credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
-    if (credential.user != null) {
-      String username = email.split('@')[0]; 
-      await TaskService().fetchAndCacheNotesData(username);
+  Future<User?> loginacc(String email, String password) async {
+    try {
+      UserCredential credential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      if (credential.user != null) {
+        String username = email.split('@')[0];
+        await TaskService().fetchAndCacheNotesData(username);
+        await TaskService().fetchAndCacheOngoingProject(username);
+        await TaskService().fetchAndCacheCompletedProject(username);
+        await fetchAndCacheColabRequests(username);
+
+
+      }
+
+      return credential.user;
+    } on FirebaseAuthException catch (e) {
+      showerrormsg(message: "${e.message}");
     }
-    return credential.user;
-  } on FirebaseAuthException catch (e) {
-    showerrormsg(message: "${e.message}");
+
+    return null;
   }
-  return null;
-}
-  
+
   Future<User?> logout() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -43,20 +52,23 @@ Future<User?> loginacc(String email, String password) async {
     return null;
   }
 
-  Future<UserCredential?> signInWithGoogle() async{
-    try{
-      final GoogleSignInAccount? googleUser = await GoogleSignIn(clientId:"12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com" ).signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+              clientId:
+                  "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
+          .signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
       return await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch(e) {
+    } catch (e) {
       showerrormsg(message: "Some error occured with Google Sign In Api");
       return null;
     }
   }
-
 }

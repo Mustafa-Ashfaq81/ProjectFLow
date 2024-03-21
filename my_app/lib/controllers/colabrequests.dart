@@ -1,8 +1,28 @@
-// ignore_for_file: avoid_print,use_build_context_synchronously,non_constant_identifier_names
+// ignore_for_file: avoid_print,use_build_context_synchronously,non_constant_identifier_names, avoid_function_literals_in_foreach_calls
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/colab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../utils/cache_util.dart';
+
+
+Future<void> fetchAndCacheColabRequests(String username) async {
+  List<Map<String, dynamic>> colabRequests = [];
+  var snapshot = await FirebaseFirestore.instance.collection('colab').get();
+
+  snapshot.docs.forEach((doc) {
+    if ((doc.data()['req_recv'] as List<dynamic>).contains(username)) {
+      colabRequests.add({
+        'sender': doc.data()['req_sender'],
+        'task': doc.data()['req_task'],
+      });
+    }
+  });
+
+  // Cache the fetched colab requests for quick access later
+  CacheUtil.cacheData('colabRequests_$username', colabRequests);
+}
 
 Widget showRequests( BuildContext context,  List<Map<String, dynamic>> requests, String username) {
   return requests.isEmpty

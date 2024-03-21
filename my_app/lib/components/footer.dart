@@ -32,6 +32,7 @@ class Footer extends StatelessWidget {
     );
   }
 }
+
 class FooterMenu extends StatefulWidget {
   final int index;
   final String username;
@@ -48,57 +49,56 @@ class _FooterMenuState extends State<FooterMenu> {
   _FooterMenuState({required this.selectedIndex, required this.username});
 
   void _onItemTapped(int index) {
-  if (index != selectedIndex) {
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(username: username),
-          ),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AllTasksPage(username: username),
-          ),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NewTaskPage(username: username),
-          ),
-        );
-        break;
-      case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CalendarPage(username: username),
-          ),
-        );
-        break;
-      case 4:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ColabPage(username: username),
-          ),
-        );
-        break;
-      default:
-        break;
+    if (index != selectedIndex) {
+      switch (index) {
+        case 0:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(username: username),
+            ),
+          );
+          break;
+        case 1:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AllTasksPage(username: username),
+            ),
+          );
+          break;
+        case 2:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewTaskPage(username: username),
+            ),
+          );
+          break;
+        case 3:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CalendarPage(username: username),
+            ),
+          );
+          break;
+        case 4:
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ColabPage(username: username),
+            ),
+          );
+          break;
+        default:
+          break;
+      }
+      setState(() {
+        selectedIndex = index;
+      });
     }
-    setState(() 
-    {
-      selectedIndex = index;
-    });
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +128,8 @@ class _FooterMenuState extends State<FooterMenu> {
       currentIndex: selectedIndex,
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.white.withOpacity(0.6),
-      showUnselectedLabels: true, // This ensures that labels are shown for unselected items
+      showUnselectedLabels:
+          true, // This ensures that labels are shown for unselected items
       onTap: _onItemTapped,
     );
   }

@@ -79,6 +79,8 @@ class _AllTasksPageState extends State<AllTasksPage>
             child: AppBar(
               centerTitle: true, // Aligns the title to the center
               backgroundColor: Colors.black, // Set background color to black
+              automaticallyImplyLeading: false, // Disable automatic back button
+
               title: Text(
                 'My Notes',
                 style: TextStyle(color: Colors.white), // Set text color to white
