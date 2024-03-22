@@ -28,11 +28,11 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
         title: Center(
           child: Text(
             'Login',
@@ -103,25 +103,19 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   controller: _emailController,
                 ),
-
-                const SizedBox(height: 10), 
-
+                const SizedBox(height: 10),
                 TextFormField(
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Enter your Password',
-                    fillColor: Colors.white, 
+                    fillColor: Colors.white,
                     filled: true,
                     border: const OutlineInputBorder(),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color:
-                              Colors.grey.shade400), 
+                      borderSide: BorderSide(color: Colors.grey.shade400),
                     ),
                     focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors
-                              .blue), 
+                      borderSide: BorderSide(color: Colors.blue),
                     ),
                   ),
                   controller: _passwordController,
@@ -130,14 +124,13 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xFF1E232C), 
-                    foregroundColor:
-                        Colors.white, 
+                    backgroundColor: const Color(0xFF1E232C),
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 30),
                     minimumSize: const Size(200, 50),
                   ),
                   child: const Text(
@@ -148,16 +141,26 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             // const SizedBox(height: 20),
-                        const SizedBox(height: 5),
+            const SizedBox(height: 5),
             Row(
               children: [
-                Expanded(child: Divider(color: Colors.grey[400],thickness: 0.5,)),
-                Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text('Or continue with',
-                    style: TextStyle(color: Colors.grey[700]) ,
-                  ) ,
+                Expanded(
+                    child: Divider(
+                  color: Colors.grey[400],
+                  thickness: 0.5,
+                )),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    'Or continue with',
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
                 ),
-                Expanded(child: Divider(color: Colors.grey[400],thickness: 0.5,)),
+                Expanded(
+                    child: Divider(
+                  color: Colors.grey[400],
+                  thickness: 0.5,
+                )),
               ],
             ),
             const SizedBox(height: 10),
@@ -165,16 +168,15 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap:  _loginGmail,
+                  onTap: _loginGmail,
                   child: Container(
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius : BorderRadius.circular(16),
-                      color: Colors.grey[200]
-                    ),
-                    child: Image.asset("pictures/google-icon.png", height:40)
-                  ),
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.grey[200]),
+                      child:
+                          Image.asset("pictures/google-icon.png", height: 40)),
                 ),
               ],
             ),
@@ -190,7 +192,8 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterPage()),
                     );
                   },
                   child: const Text(
@@ -206,55 +209,80 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-    void _login() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  void _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
-    User? useracc = await _auth.loginacc(email, password);
-
-    if (useracc != null) 
+    if (email.isEmpty || password.isEmpty) 
     {
-      String user = "";
-      print("User is successfully logging in");
-      await FirebaseFirestore.instance
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .get()
-          .then((QuerySnapshot querySnapshot) 
-          {
-        for (var doc in querySnapshot.docs) 
-        {
-          //only one doc with that username
-          user = doc['username'];
-        }
-      });
-        
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill in all fields")),
+      );
+      return;
+    }
+    
 
+    try {
+      User? useracc = await _auth.loginacc(email, password);
+
+      if (useracc != null) {
+        String user = "";
+        print("User is successfully logging in");
+        await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .get()
+            .then((QuerySnapshot querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+            //only one doc with that username
+            user = doc['username'];
+          }
+        });
 
         Navigator.pushReplacement(
-
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(
-              username: user,
-            ),
-          ));
-    } else {
-      print("some error occured ... has been TOASTED");
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                username: user,
+              ),
+            ));
+      }
+    } on FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case "user-not-found":
+          message = "No user found for that email.";
+          break;
+        case "wrong-password":
+          message = "Wrong password provided for that user.";
+          break;
+        case "network-request-failed":
+          message = "Check your internet connection and try again.";
+          break;
+        default:
+          message = "An unexpected error occurred. Please try again.";
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to log in. Please try again later.")),
+      );
     }
   }
 
-    void _loginGmail() async  { 
-    UserCredential? usercred =  await _auth.signInWithGoogle(); 
+  void _loginGmail() async {
+    UserCredential? usercred = await _auth.signInWithGoogle();
     print(usercred);
     print("--------");
-    if (usercred != null){
+    if (usercred != null) {
       var username = usercred.user!.displayName;
       final gmail = usercred.user!.email;
 
-      //check if user is not created, create that user in db else just login 
+      //check if user is not created, create that user in db else just login
       List<String> allemails = await getallEmails();
-      if (allemails.contains(gmail) == false) { 
+      if (allemails.contains(gmail) == false) {
         var allusernames = await getallUsers();
         if (allusernames.contains(username) == true) {
           //append some numbers to username such that it stays unique
@@ -264,7 +292,7 @@ class _LoginPageState extends State<LoginPage> {
             newUsername = '$username!_${suffix++}';
           }
           username = newUsername;
-        } 
+        }
         print("User is successfully created");
         List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
         try {
@@ -274,13 +302,17 @@ class _LoginPageState extends State<LoginPage> {
           print("got-some-err-creating-user-model ---> $e");
         }
       }
-          Navigator.pushReplacement(
-
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage( username: username!,),
-      ));
+            builder: (context) => HomePage(
+              username: username!,
+            ),
+          ));
     }
   }
+
+
+  
 
 }

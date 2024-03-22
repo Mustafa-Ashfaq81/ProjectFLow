@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
+// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
@@ -94,16 +94,32 @@ class _TaskPageState extends State<TaskDetailsPage> {
         )); // Go back to the previous screen with the list updated
   }
 
-  AppBar _buildAppBar() {
+AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: const Color(0xFFFFE6C9),
-      title: const Text(
-        'Task Details',
-        style: TextStyle(color: Colors.black),
+      backgroundColor: Colors.black,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: 35.0), // Adjust the value as needed
+            child: Text(
+              'Task Details',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+      iconTheme: IconThemeData(
+          color: Colors.white), // Set the color of the back button
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () => Navigator.of(context).pop(),
+        padding: EdgeInsets.only(
+            left:
+                10), // Adjust the padding to move the icon slightly to the left
       ),
     );
   }
-
   Widget _buildBody() {
     return FutureBuilder(
         future: atload(),
