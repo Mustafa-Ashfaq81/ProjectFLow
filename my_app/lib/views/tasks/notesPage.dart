@@ -5,11 +5,10 @@ import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/views/loadingscreens/loadingalltasks.dart';
-import 'package:my_app/utils/cache_util.dart'; // Ensure this is correctly imported
+import 'package:my_app/utils/cache_util.dart';
+// import 'package:my_app/controllers/taskstatus.dart';
 
-
-class AllTasksPage extends StatefulWidget 
-{
+class AllTasksPage extends StatefulWidget {
   final String username;
   const AllTasksPage({super.key, required this.username});
 
@@ -17,17 +16,15 @@ class AllTasksPage extends StatefulWidget
   _AllTasksPageState createState() => _AllTasksPageState(username: username);
 }
 
-class _AllTasksPageState extends State<AllTasksPage> 
-{
+class _AllTasksPageState extends State<AllTasksPage> {
   String username;
   final int idx = 1;
   final TextEditingController queryController = TextEditingController();
   String currQuery = "";
   List<String> headings = [];
-  List<Map<String,dynamic>> alltasks = [];
+  List<Map<String, dynamic>> alltasks = [];
 
   _AllTasksPageState({required this.username});
-
 
   @override
   void initState() {
@@ -35,24 +32,18 @@ class _AllTasksPageState extends State<AllTasksPage>
     username = widget.username;
   }
 
+  Future<void> atload() async {
+    List<Map<String, dynamic>>? cachedAllTasks =
+        CacheUtil.getData('tasks_$username');
+    if (cachedAllTasks != null) {
+      alltasks = cachedAllTasks;
+    } else {
+      headings = await getTaskHeadings(username);
+      alltasks = await getAllTasks(username);
 
-  Future<void> atload() async 
-  {
-  List<Map<String, dynamic>>? cachedAllTasks = CacheUtil.getData('tasks_$username');
-  if (cachedAllTasks != null) 
-  {
-
-    alltasks = cachedAllTasks;
-  } 
-  else 
-  {
-
-    headings = await getTaskHeadings(username);
-    alltasks = await getAllTasks(username);
-
-    CacheUtil.cacheData('tasks_$username', alltasks);
+      CacheUtil.cacheData('tasks_$username', alltasks);
+    }
   }
-}
 
   @override
   void dispose() {
@@ -60,48 +51,49 @@ class _AllTasksPageState extends State<AllTasksPage>
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return FutureBuilder(
+    return StatefulBuilder(builder: (context, setState) {
+      return FutureBuilder(
           future: atload(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-        return const LoadingAllTasks();  // Show loading page while fetching data
-      } else if (snapshot.hasError) {
-        return Text('Error: ${snapshot.error}');
-      } else {
-         return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: AppBar(
-              centerTitle: true, // Aligns the title to the center
-              backgroundColor: Colors.black, // Set background color to black
-              automaticallyImplyLeading: false, // Disable automatic back button
+              return const LoadingAllTasks(); // Show loading page while fetching data
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Scaffold(
+                appBar: PreferredSize(
+                  preferredSize: Size.fromHeight(kToolbarHeight),
+                  child: AppBar(
+                    centerTitle: true, // Aligns the title to the center
+                    backgroundColor:
+                        Colors.black, // Set background color to black
+                    automaticallyImplyLeading:
+                        false, // Disable automatic back button
 
-              title: Text(
-                'My Notes',
-                style: TextStyle(color: Colors.white), // Set text color to white
+                    title: Text(
+                      'My Notes',
+                      style: TextStyle(
+                          color: Colors.white), // Set text color to white
+                    ),
                   ),
-            ),
                 ),
-            body: Column(
-              children: [
-                _buildSearchBox(),
-                Expanded(
-                  child: _buildNotesList(), // This will build the list of notes
+                body: Column(
+                  children: [
+                    _buildSearchBox(),
+                    Expanded(
+                      child:
+                        // completedIdeasView(context, headings, username)
+                          _buildNotesList(), // This will build the list of notes
+                    ),
+                  ],
                 ),
-              ],
-            ),
-             bottomNavigationBar: Footer(index: idx, username: username),
-          );
-      }
-
+                bottomNavigationBar: Footer(index: idx, username: username),
+              );
+            }
+          });
     });
-    }
-    );
   }
 
   Widget _buildSearchBox() {
@@ -132,22 +124,23 @@ class _AllTasksPageState extends State<AllTasksPage>
                   currQuery = text;
                 });
                 if (currQuery != "") {
-                   Future<String?> selectedTask = showSearch(
-                      context: context,
-                      delegate:
-        
-                          SearchTasks(username: username, headings: headings)
-                              as SearchDelegate<String>,
+                  Future<String?> selectedTask = showSearch(
+                    context: context,
+                    delegate:
+                        SearchTasks(username: username, headings: headings)
+                            as SearchDelegate<String>,
                   );
                   selectedTask.then((taskheading) async {
-                    Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
+                    Map<String, dynamic> task =
+                        await getTaskbyHeading(taskheading!, username);
                     if (taskheading != "") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TaskDetailsPage(username:username,task:task),
-                          ),
-                        );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TaskDetailsPage(username: username, task: task),
+                        ),
+                      );
                     }
                   });
                   queryController.clear();
@@ -160,19 +153,20 @@ class _AllTasksPageState extends State<AllTasksPage>
             onPressed: () {
               Future<String?> selectedTask = showSearch(
                 context: context,
-                delegate:
-                    SearchTasks(username: username, headings: headings)
-                        as SearchDelegate<String>,
+                delegate: SearchTasks(username: username, headings: headings)
+                    as SearchDelegate<String>,
               );
               selectedTask.then((taskheading) async {
-                Map<String, dynamic> task = await getTaskbyHeading(taskheading!,username);
+                Map<String, dynamic> task =
+                    await getTaskbyHeading(taskheading!, username);
                 if (taskheading != "") {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TaskDetailsPage(username:username,task:task),
-                      ),
-                    );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          TaskDetailsPage(username: username, task: task),
+                    ),
+                  );
                 }
               });
             },
@@ -182,14 +176,49 @@ class _AllTasksPageState extends State<AllTasksPage>
     );
   }
 
+  // Widget buildTasksList() {
+  //   return FutureBuilder<void>(
+  //     future: atload(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return Center(child: CircularProgressIndicator());
+  //       } else if (snapshot.hasError) {
+  //         return Center(child: Text('Error: ${snapshot.error}'));
+  //       } else {
+  //         List<Widget> taskWidgets = alltasks.map((task) {
+  //           return ListTile(
+  //             title: Text(task['heading']),
+  //             subtitle: Text(
+  //               task['description'],
+  //               style: const TextStyle(color: Colors.white70),
+  //               overflow: TextOverflow.ellipsis,
+  //             ),
+  //             onTap: () {
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) =>
+  //                       TaskDetailsPage(username: username, task: task),
+  //                 ),
+  //               );
+  //             },
+  //           );
+  //         }).toList();
+
+  //         return ListView(children: taskWidgets);
+  //       }
+  //     },
+  //   );
+  // }
+
   Widget _buildNotesList() {
     final List<Map<String, dynamic>> notes = alltasks;
 
     // Define a list of colors
     final List<Color> colors = [
       // Colors.transparent,
-      const Color(0xFF141310).withOpacity(0.85),
-      const Color(0xFFE16C00).withOpacity(0.48),
+      const Color(0xFF141310).withOpacity(0.80),
+      const Color(0xFFE16C00).withOpacity(0.41),
       // Colors.pink[50]!,
       // Colors.lightGreen[50]!,
       // Colors.lightBlue[50]!,
@@ -209,26 +238,25 @@ class _AllTasksPageState extends State<AllTasksPage>
             title: Text(
               notes[index]['heading'],
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                // backgroundColor: Colors.white
-                color: Colors.white
-              ),
+                  fontWeight: FontWeight.bold,
+                  // backgroundColor: Colors.white
+                  color: Colors.white),
             ),
             subtitle: Text(
               notes[index]['description'],
               style: const TextStyle(
-                // fontWeight: FontWeight.bold,
-                // backgroundColor: Colors.white
-                color: Colors.white
-              ),
+                  // fontWeight: FontWeight.bold,
+                  // backgroundColor: Colors.white
+                  color: Colors.white),
             ),
             onTap: () {
-                Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TaskDetailsPage(username:username,task:notes[index]),
-                      ),
-                    );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      TaskDetailsPage(username: username, task: notes[index]),
+                ),
+              );
             },
           ),
         );
