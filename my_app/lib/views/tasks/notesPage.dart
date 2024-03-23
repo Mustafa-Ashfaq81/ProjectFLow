@@ -187,8 +187,9 @@ class _AllTasksPageState extends State<AllTasksPage>
 
     // Define a list of colors
     final List<Color> colors = [
-      Color(0xFF141310).withOpacity(0.85),
-      Color(0xFFE16C00).withOpacity(0.48),
+      // Colors.transparent,
+      const Color(0xFF141310).withOpacity(0.85),
+      const Color(0xFFE16C00).withOpacity(0.48),
       // Colors.pink[50]!,
       // Colors.lightGreen[50]!,
       // Colors.lightBlue[50]!,
