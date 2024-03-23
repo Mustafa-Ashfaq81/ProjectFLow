@@ -46,19 +46,18 @@ Future main() async {
 
 class MyApp extends StatelessWidget {  // This widget is the root of our application.
   const MyApp({super.key});
+  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Hello World',
-
-      theme: ThemeData
-      (
-      primaryColor: const Color(0xFFFFE6C9),
-      scaffoldBackgroundColor: const Color(0xFFFFE6C9),
-      buttonTheme: const ButtonThemeData(
-        buttonColor: Color(0x001e232c),
-      ),
-      fontFamily: 'Urbanist', 
+      return  MaterialApp(
+        title: 'Flutter Hello World',
+        theme: ThemeData (
+        primaryColor: const Color(0xFFFFE6C9),
+        scaffoldBackgroundColor: const Color(0xFFFFE6C9),
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Color(0x001e232c),
+        ),
+        fontFamily: 'Urbanist', 
     ),
 
 

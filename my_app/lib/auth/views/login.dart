@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/components/image.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/home.dart';
@@ -273,46 +274,47 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _loginGmail() async {
-    UserCredential? usercred = await _auth.signInWithGoogle();
-    print(usercred);
-    print("--------");
-    if (usercred != null) {
-      var username = usercred.user!.displayName;
-      final gmail = usercred.user!.email;
-
-      //check if user is not created, create that user in db else just login
-      List<String> allemails = await getallEmails();
-      if (allemails.contains(gmail) == false) {
-        var allusernames = await getallUsers();
-        if (allusernames.contains(username) == true) {
-          //append some numbers to username such that it stays unique
-          int suffix = 1;
-          String newUsername = username!;
-          while (allusernames.contains(newUsername)) {
-            newUsername = '$username!_${suffix++}';
+    if(kIsWeb){
+      UserCredential? usercred = await _auth.signInWithGoogle();
+      print(usercred);
+      print("--------");
+      if (usercred != null) {
+        var username = usercred.user!.displayName;
+        final gmail = usercred.user!.email;
+      
+        //check if user is not created, create that user in db else just login
+        List<String> allemails = await getallEmails();
+        if (allemails.contains(gmail) == false) {
+          var allusernames = await getallUsers();
+          if (allusernames.contains(username) == true) {
+            //append some numbers to username such that it stays unique
+            int suffix = 1;
+            String newUsername = username!;
+            while (allusernames.contains(newUsername)) {
+              newUsername = '$username!_${suffix++}';
+            }
+            username = newUsername;
           }
-          username = newUsername;
+          print("User is successfully created");
+          List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
+          try {
+            createUser(
+                UserModel(username: username, email: gmail, tasks: mappedtasks));
+          } catch (e) {
+            print("got-some-err-creating-user-model ---> $e");
+          }
         }
-        print("User is successfully created");
-        List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
-        try {
-          createUser(
-              UserModel(username: username, email: gmail, tasks: mappedtasks));
-        } catch (e) {
-          print("got-some-err-creating-user-model ---> $e");
-        }
-      }
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(
-              username: username!,
-            ),
-          ));
-    }
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                username: username!,
+              ),
+            ));
+       }
+    } else {
+      final u = await GoogleSignInAndroid.login();
+      print("got ... $u");
+    } 
   }
-
-
-  
-
 }

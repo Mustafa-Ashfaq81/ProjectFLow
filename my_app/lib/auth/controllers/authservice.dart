@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../common/toast.dart';
-
 import 'package:my_app/controllers/taskstatus.dart';
-
 import '../../controllers/colabrequests.dart';
 
 class FirebaseAuthService {
@@ -55,8 +53,7 @@ class FirebaseAuthService {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
-              clientId:
-                  "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
+              clientId: "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
           .signIn();
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
@@ -72,3 +69,10 @@ class FirebaseAuthService {
     }
   }
 }
+
+class GoogleSignInAndroid {
+  static final _googleSignIn = GoogleSignIn(clientId: "12273615091-qjslsjmhbldn73ketig1haa50u17dl1i.apps.googleusercontent.com");
+  static Future<GoogleSignInAccount?> login() => _googleSignIn.signIn();
+}
+
+
