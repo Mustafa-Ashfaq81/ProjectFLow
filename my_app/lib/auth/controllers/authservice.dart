@@ -56,7 +56,8 @@ class FirebaseAuthService {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
               clientId:
-                  "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
+                  "12273615091-t4jtsgvdkcecpr8fepr8kernbs13big2.apps.googleusercontent.com")
+                  //"12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
           .signIn();
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
