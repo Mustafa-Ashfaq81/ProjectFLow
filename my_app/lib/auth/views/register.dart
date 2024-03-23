@@ -40,7 +40,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Register')),
+        title: const Center(child: 
+            Text('Register', 
+            textAlign: TextAlign.center, // Align text within the Text widget
+            style: TextStyle(
+              color: Colors.white, // Set text color to white
+            ),
+          )
+        ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
       ),
@@ -62,7 +69,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Container(
                         width: 40,
                         height: 30,
-                        // decoration: BoxDecoration(), // You can add decoration if needed
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         child:
                             const Icon(Icons.arrow_back, color: Colors.black),
                       ),
