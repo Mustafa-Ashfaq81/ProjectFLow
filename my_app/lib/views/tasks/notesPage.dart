@@ -187,9 +187,12 @@ class _AllTasksPageState extends State<AllTasksPage>
 
     // Define a list of colors
     final List<Color> colors = [
-      Colors.pink[50]!,
-      Colors.lightGreen[50]!,
-      Colors.lightBlue[50]!,
+      // Colors.transparent,
+      const Color(0xFF141310).withOpacity(0.85),
+      const Color(0xFFE16C00).withOpacity(0.48),
+      // Colors.pink[50]!,
+      // Colors.lightGreen[50]!,
+      // Colors.lightBlue[50]!,
       // Add more colors as needed
     ];
 
@@ -207,9 +210,18 @@ class _AllTasksPageState extends State<AllTasksPage>
               notes[index]['heading'],
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
+                // backgroundColor: Colors.white
+                color: Colors.white
               ),
             ),
-            subtitle: Text(notes[index]['description']),
+            subtitle: Text(
+              notes[index]['description'],
+              style: const TextStyle(
+                // fontWeight: FontWeight.bold,
+                // backgroundColor: Colors.white
+                color: Colors.white
+              ),
+            ),
             onTap: () {
                 Navigator.push(
                       context,
