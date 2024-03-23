@@ -71,20 +71,8 @@ class FirebaseAuthService {
 }
 
 class GoogleSignInAndroid {
-  static final _googleSignIn = GoogleSignIn(clientId: "12273615091-qjslsjmhbldn73ketig1haa50u17dl1i.apps.googleusercontent.com");
-  static Future<GoogleSignInAccount?> login() async {
-    final googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =await googleUser!.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      return googleUser;
-
-  } 
-    
+  static final _googleSignIn = GoogleSignIn(serverClientId: "12273615091-qjslsjmhbldn73ketig1haa50u17dl1i.apps.googleusercontent.com");
+  static Future<GoogleSignInAccount?> login() => _googleSignIn.signIn();
 }
 
 

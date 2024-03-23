@@ -8,6 +8,7 @@ import 'package:my_app/views/home.dart';
 import 'package:my_app/controllers/gptapi.dart';
 import 'package:my_app/views/loadingscreens/loadingtask.dart';
 import '../../common/toast.dart';
+import 'package:my_app/utils/cache_util.dart'; // Ensure this is correctly imported
 
 class TaskDetailsPage extends StatefulWidget {
   final String username;
@@ -76,6 +77,17 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
     await editTask(username, headingg, desc, mytask['heading']);
     showmsg(message: "Task has been updated successfully!");
+
+    List<Map<String, dynamic>>? cachedAllTasks =
+    CacheUtil.getData('tasks_$username');
+    if (cachedAllTasks != null) {
+      int index = cachedAllTasks.indexWhere((task) => task['heading'] == mytask['heading']);
+       if (index != -1) {
+        cachedAllTasks[index]['heading'] = headingg; // Update the heading
+        cachedAllTasks[index]['description'] = desc; // Update the description
+        CacheUtil.cacheData('tasks_$username', cachedAllTasks);
+        }
+        }
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -87,6 +99,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
     String headingg = _projectHeadingController.text;
     await deleteTask(username, headingg);
     showmsg(message: "Task has been deleted successfully!");
+    CacheUtil.removeData('tasks_$username');
+    List<Map<String, dynamic>>? cachedAllTasks = CacheUtil.getData('tasks_$username');
+    if (cachedAllTasks != null) {
+      cachedAllTasks.removeWhere((task) => task['heading'] == headingg);
+       CacheUtil.cacheData('tasks_$username', cachedAllTasks);
+       }
+
     Navigator.push(
         context,
         MaterialPageRoute(
