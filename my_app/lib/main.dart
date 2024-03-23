@@ -13,7 +13,7 @@ import 'package:my_app/views/calendar.dart';
 import 'package:my_app/views/colab.dart';
 import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
-import 'package:my_app/views/tasks/alltasks.dart';
+import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
 import 'package:my_app/views/tasks/newtask.dart';
 

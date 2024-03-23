@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/views/calendar.dart';
-import 'package:my_app/views/tasks/alltasks.dart';
+import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/views/colab.dart';
 
