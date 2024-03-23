@@ -94,7 +94,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
         )); // Go back to the previous screen with the list updated
   }
 
-AppBar _buildAppBar() {
+  AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.black,
       title: Row(
@@ -120,6 +120,7 @@ AppBar _buildAppBar() {
       ),
     );
   }
+
   Widget _buildBody() {
     return FutureBuilder(
         future: atload(),
@@ -151,21 +152,23 @@ AppBar _buildAppBar() {
                       children: [
                         ElevatedButton.icon(
                           onPressed: () {
-                            showDeleteConfirmationDialog(context, deleteProject);
+                            showDeleteConfirmationDialog(
+                                context, deleteProject);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor:
+                                Colors.orangeAccent, // Sunflower Yellow
                           ),
-                          // icon: const Icon(Icons.delete),
                           icon: const Icon(Icons.delete, color: Colors.red),
                           label: const Text('Delete Task',
                               style: TextStyle(color: Colors.black)),
                         ),
-                        const SizedBox(width:50),
+                        const SizedBox(width: 50),
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor:
+                                Colors.orangeAccent, // Sunflower Yellow
                           ),
                           child: const Text('Save Project Details',
                               style: TextStyle(color: Colors.black)),
