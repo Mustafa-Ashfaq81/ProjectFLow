@@ -60,20 +60,29 @@ if (flutterVersionName == null) {
     }
 
     signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('mykey.jks')
+            storePassword 'android'
         }
+        // release {
+        //     keyAlias keystoreProperties['keyAlias']
+        //     keyPassword keystoreProperties['keyPassword']
+        //     storeFile file(keystoreProperties['storeFile'])
+        //     storePassword keystoreProperties['storePassword']
+        // }
     }
     buildTypes {
-              
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.release
-        }
+
+        debug {
+        signingConfig signingConfigs.debug
+        }    
+        // release {
+        //     // TODO: Add your own signing config for the release build.
+        //     // Signing with the debug keys for now, so `flutter run --release` works.
+        //     signingConfig signingConfigs.release
+        // }
     }
 }
 
@@ -88,4 +97,10 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     // Also add the dependency for the Google Play services library and specify its version
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    //Add dependency for app check so that storage files are loaded successfully
+    // implementation("com.google.firebase:firebase-appcheck-playintegrity") //real provider
+    implementation("com.google.firebase:firebase-appcheck-debug") //debug provider
 }
+
+//  SHA1: 9B:CF:49:AF:7A:3B:C4:BE:AD:BF:D6:71:86:1D:83:8F:DA:52:59:52
+//SHA256: 49:7A:7E:76:58:D6:CC:EA:85:B1:8A:1F:08:40:42:B2:86:D3:0A:4E:69:C6:9E:F2:66:80:81:F3:AE:45:B7:3C

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/components/image.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/home.dart';
@@ -168,7 +169,13 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: _loginGmail,
+                  onTap: () async {
+                      if (kIsWeb){  _loginGmail(); } 
+                      else {
+                        final u = await GoogleSignInAndroid.login();
+                        print("got ... $u");
+                      }
+                  }, 
                   child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
