@@ -20,4 +20,8 @@ class CacheUtil {
   static bool hasData(String key) {
     return _cache.containsKey(key);
   }
+
+  static void removeData(String key) {
+    _cache.remove(key);
+  }
 }
