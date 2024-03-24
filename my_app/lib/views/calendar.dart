@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 
@@ -24,6 +26,21 @@ const Map<String, Color> taskColors = {
   'App Making': Color(0xFFF1AB69),
 };
 
+Color _getRandomColor() {
+  List<Color> colors = [
+    const Color(0xFFF09999),
+    const Color(0xFF91BFEA),
+    const Color(0xFFAD8484),
+    const Color.fromARGB(255, 128, 180, 154),
+    const Color.fromARGB(255, 205, 171, 120),
+    const Color(0xFF0CBFB4),
+    const Color(0xFFF1AB69),
+  ];
+
+  return colors[Random().nextInt(colors.length)];
+}
+
+
 class CalendarPageState extends State<CalendarPage> {
   late final String username;
   final int idx = 3;
@@ -39,6 +56,7 @@ class CalendarPageState extends State<CalendarPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calendar'),
+        backgroundColor: const Color(0xFFFFE6C9),
         leading: const BackButton(), // Added back button for navigation
         actions: [
           IconButton(
@@ -79,7 +97,7 @@ class CalendarPageState extends State<CalendarPage> {
       height: 100,
       child: Row(
         children: [
-          SizedBox(width: hourWidth),
+          const SizedBox(width: hourWidth),
           for (int i = 0; i < daysInWeek; i++)
             Expanded(
               child: Column(
@@ -87,16 +105,16 @@ class CalendarPageState extends State<CalendarPage> {
                 children: [
                   Text(
                     _getDayNumber(i),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     _getDayOfWeek(i),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                     ),
@@ -124,7 +142,7 @@ Widget _buildTimeGrid() {
                   alignment: Alignment.centerRight,
                   child: Text(
                     "${index + 1}:00",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -148,105 +166,72 @@ Widget _buildTimeGrid() {
   }
 
 List<Widget> _buildTasks(BuildContext context) {
-    // Example task data
-    final List<Map<String, dynamic>> tasks = [
-      {'name': 'Gym', 'startHour': 9, 'duration': 1, 'day': 1, 'color': 'Gym'},
-      {
-        'name': 'Cricket',
-        'startHour': 10,
-        'duration': 2,
-        'day': 2,
-        'color': 'Cricket'
-      },
-      {
-        'name': 'Football',
-        'startHour': 11,
-        'duration': 2,
-        'day': 1,
-        'color': 'Football'
-      },
-      {
-        'name': 'Project Meeting',
-        'startHour': 9,
-        'duration': 3,
-        'day': 3,
-        'color': 'Project Meeting'
-      },
-      {
-        'name': 'Figma Design',
-        'startHour': 12,
-        'duration': 2,
-        'day': 4,
-        'color': 'Figma Design'
-      },
-      {
-        'name': 'Notes',
-        'startHour': 13,
-        'duration': 1,
-        'day': 5,
-        'color': 'Notes'
-      },
-      {
-        'name': 'App Making',
-        'startHour': 14,
-        'duration': 1,
-        'day': 5,
-        'color': 'App Making'
-      },
-    ];
+  final List<Map<String, dynamic>> tasks = [
+    {'name': 'Gym', 'startHour': 9, 'duration': 1, 'day': 1},
+    {'name': 'Cricket', 'startHour': 10, 'duration': 2, 'day': 2},
+    {'name': 'Football', 'startHour': 11, 'duration': 2, 'day': 1},
+    {'name': 'Project Meeting', 'startHour': 9, 'duration': 3, 'day': 3},
+    {'name': 'Figma Design', 'startHour': 12, 'duration': 2, 'day': 4},
+    {'name': 'Notes', 'startHour': 13, 'duration': 1, 'day': 5},
+    {'name': 'App Making', 'startHour': 14, 'duration': 1, 'day': 5},
+    {'name': 'AP exam', 'startHour': 14, 'duration': 4, 'day': 1},
+  ];
 
-    return tasks.map((task) => _buildTaskContainer(task, context)).toList();
-  }
-
+  return tasks.map((task) {
+    task['color'] = _getRandomColor(); // Assign random color
+    return _buildTaskContainer(task, context);
+  }).toList();
+}
   Widget _buildTaskContainer(Map<String, dynamic> task, BuildContext context) {
-    final taskStartIndex =
-        task['startHour'] - 9; // Normalize start hour to 0-based index
-    final screenWidth = MediaQuery.of(context).size.width;
-    final taskWidth =
-        (screenWidth - hourWidth) / daysInWeek; // Width of each task
-    final taskHeight = hourHeight * task['duration'];
-    final taskDay = task['day'] - 1; // Convert to 0-based index
+  final taskStartIndex =
+      task['startHour'] - 9; // Normalize start hour to 0-based index
+  final screenWidth = MediaQuery.of(context).size.width;
+  final taskWidth =
+      (screenWidth - hourWidth) / daysInWeek; // Width of each task
+  final taskHeight = hourHeight * task['duration'];
+  final taskDay = task['day'] - 1; // Convert to 0-based index
 
-    // Increase the width of each task container by reducing the right margin
-    final taskContainerWidth = taskWidth - 4; // Smaller right margin
+  // Increase the width of each task container by reducing the right margin
+  final taskContainerWidth = taskWidth - 4; // Smaller right margin
 
-    return Positioned(
-      top: taskStartIndex * hourHeight,
-      left: taskDay * taskWidth + hourWidth,
-      child: Container(
-        height: taskHeight,
-        width: taskContainerWidth,
-        margin: const EdgeInsets.only(
-            left: 5, top: 5, bottom: 5), // Adjusted margin
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: taskColors[task['color']] ?? Colors.blue,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black54),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 0,
-              blurRadius: 6,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            task['name'],
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+  return Positioned(
+    top: taskStartIndex * hourHeight,
+    left: taskDay * taskWidth + hourWidth,
+    child: Container(
+      height: taskHeight,
+      width: taskContainerWidth,
+      margin: const EdgeInsets.only(
+          left: 5, top: 5, bottom: 5), // Adjusted margin
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: task['color'], // Use color directly from task map
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.black54),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 0,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
           ),
+        ],
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          task['name'],
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   String _getDayOfWeek(int index) {
     final now = DateTime.now();
