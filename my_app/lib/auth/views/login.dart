@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  var isLoggingIn = false;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -227,6 +228,10 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
+
+    setState(() {
+      isLoggingIn = true;
+    });
 
     try {
       User? useracc = await _auth.loginacc(email, password);
