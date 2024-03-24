@@ -65,7 +65,26 @@ class _SubtaskPageState extends State<SubTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Subtask'),
+        backgroundColor: Colors.black,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(right: 35.0), // Adjust the value as needed
+              child: Text(
+                'Subtask Details',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        iconTheme: const IconThemeData(
+            color: Colors.white), // Set the color of the back button
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+          padding: const EdgeInsets.only(left:10), // Adjust padding to move icon slightly to left
+        ),
       ),
       body: Padding(
   padding: const EdgeInsets.all(16.0),
@@ -99,7 +118,7 @@ class _SubtaskPageState extends State<SubTaskPage> {
             label: const Text('Delete Subtask',
                 style: TextStyle(color: Colors.black)),
           ),
-          const SizedBox(width: 70),
+          const SizedBox(width: 205),
           ElevatedButton(
             onPressed: _saveTask,
             style: ElevatedButton.styleFrom(

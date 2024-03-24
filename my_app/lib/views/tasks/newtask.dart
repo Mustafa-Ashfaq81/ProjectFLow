@@ -79,18 +79,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
   }
 
-  AppBar _buildAppBar() 
-  {
+  AppBar _buildAppBar() {
    return AppBar(
     centerTitle: true, // Aligns the title to the center
     backgroundColor: Colors.black,
-  automaticallyImplyLeading: false,
-   title: Text(
-                'Create New Task',
-                style: TextStyle(color: Colors.white), // Set text color to white
-                  ),
-);
-  }
+    automaticallyImplyLeading: false,
+    title: Text('Create New Task',
+      style: TextStyle(color: Colors.white), // Set text color to white
+    ),
+  );
+}
 
   Widget _buildBody() {
     return SingleChildScrollView(
@@ -359,8 +357,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2030),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -384,15 +382,24 @@ Widget _buildCreateTaskButton() {
       ),
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          handleValidTaskSubmission(
-            context,
-            username,
-            headingController.text,
-            descController.text,
-            teamMembers,
-          );
-        } else 
-        {
+          DateTime comparisonDate = DateTime.parse(_dateController.text);
+          DateTime today = DateTime.now();
+          bool isAfter = today.isAfter(comparisonDate);
+          if (!isAfter){
+            handleValidTaskSubmission(
+              context,
+              username,
+              headingController.text,
+              descController.text,
+              _dateController.text,
+              _startTimeController.text,
+              _endTimeController.text,
+              teamMembers,
+            );
+          } else {
+            showCustomError("Deadline of Project selected should be atleast tomorrow");
+          }
+        } else  {
           showCustomError("Please fill in all required fields.");
         }
       },
@@ -402,7 +409,7 @@ Widget _buildCreateTaskButton() {
 }
 }
 
-Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, List<Map<String, dynamic>> teamMembers)async{
+Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, String date, String start_time, String end_time, List<Map<String, dynamic>> teamMembers)async{
    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Form is valid and processing data'),duration: Duration(seconds: 2),));
     List<String> collaborators= [];
   for (Map<String, dynamic> item in teamMembers) {
@@ -412,7 +419,8 @@ Future<void> handleValidTaskSubmission(BuildContext context, String username, St
       print("TEAM-MEMBERS missing 'name' key: $item");
     }
   }
-  await addTask(username, heading, desc, collaborators);
+  print("$date ... $start_time ... $end_time...");
+  await addTask(username, heading, desc, collaborators,date,start_time,end_time);
   showmsg(message: "Task has been added successfully!");
   Navigator.push(
     context,

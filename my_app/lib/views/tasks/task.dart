@@ -60,7 +60,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
   Future<void> atload() async {
     subtasks = await getSubTasks(username, mytask['heading']);
-    print("subtasks ... $subtasks");
+    // print("subtasks ... $subtasks");
   }
 
   void _saveProjectDetails() async {
@@ -135,9 +135,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.of(context).pop(),
-        padding: EdgeInsets.only(
-            left:
-                10), // Adjust the padding to move the icon slightly to the left
+        padding: EdgeInsets.only(left:10), // Adjust padding to move icon slightly to left
       ),
     );
   }
@@ -184,7 +182,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                           label: const Text('Delete Task',
                               style: TextStyle(color: Colors.black)),
                         ),
-                        const SizedBox(width: 80),
+                        const SizedBox(width: 215),
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(

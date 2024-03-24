@@ -1,12 +1,11 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
+import 'package:my_app/models/taskmodel.dart';
 
 const int daysInWeek = 5;
 const double hourHeight = 100;
-const double hourWidth = 40
-;
+const double hourWidth = 40;
 
 class CalendarPage extends StatefulWidget {
   final String username;
@@ -44,6 +43,7 @@ Color _getRandomColor() {
 class CalendarPageState extends State<CalendarPage> {
   late final String username;
   final int idx = 3;
+  List<Map<String,String>> deadlines = [];
 
   @override
   void initState() {
@@ -51,35 +51,51 @@ class CalendarPageState extends State<CalendarPage> {
     username = widget.username;
   }
 
+  Future<void> atload() async {
+    deadlines = await getdeadlines(username);
+    // print("deadlines ... $deadlines");
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: const Text('Calendar')),
-        backgroundColor: const Color(0xFFFFE6C9),
-        automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildDateRow(),
-            Stack(
-              children: [
-                _buildTimeGrid(),
-                ..._buildTasks(context),
-              ],
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Footer(index: idx, username: username),
-      // floatingActionButton: FloatingActionButton(
-        // onPressed: () {
-          // Implement task adding functionality
-        // },
-        // child: const Icon(Icons.add),
-        // backgroundColor: Colors.black,
-      // ),
+     return FutureBuilder(
+        future: atload(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(),); // Show loading page while fetching data
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+              return Scaffold(
+              appBar: AppBar(
+                title: Center(child: const Text('Calendar')),
+                backgroundColor: const Color(0xFFFFE6C9),
+                automaticallyImplyLeading: false,
+              ),
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildDateRow(),
+                    Stack(
+                      children: [
+                        _buildTimeGrid(),
+                        ..._buildTasks(context),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              bottomNavigationBar: Footer(index: idx, username: username),
+              // floatingActionButton: FloatingActionButton(
+                // onPressed: () {
+                  // Implement task adding functionality
+                // },
+                // child: const Icon(Icons.add),
+                // backgroundColor: Colors.black,
+              // ),
+            );
+        }
+      }
     );
   }
 
@@ -255,9 +271,7 @@ List<Widget> _buildTasks(BuildContext context) {
     final now = DateTime.now();
     final firstDayOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final day = firstDayOfWeek.add(Duration(days: index));
-
     return day.day.toString();
   }
-
   
 }
