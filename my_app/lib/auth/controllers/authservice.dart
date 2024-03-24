@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../common/toast.dart';
 import 'package:my_app/controllers/taskstatus.dart';
@@ -50,29 +51,76 @@ class FirebaseAuthService {
     return null;
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
+  // Future<UserCredential?> signInWithGoogle() async {
+  //   try {
+  //     final GoogleSignInAccount? googleUser = await GoogleSignIn(
+  //             clientId: "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
+  //         .signIn();
+  //     final GoogleSignInAuthentication googleAuth =
+  //         await googleUser!.authentication;
+
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+  //     return await FirebaseAuth.instance.signInWithCredential(credential);
+  //   } catch (e) {
+  //     showerrormsg(message: "Some error occured with Google Sign In Api");
+  //     return null;
+  //   }
+  // }
+
+    Future<UserCredential?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn(
-              clientId: "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
-          .signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+      // Trigger the authentication flow
+      print("HELLO GOOGLE");
+      final GoogleSignInAccount? googleUser;
+      if (kIsWeb){
+        googleUser = await GoogleSignIn(
+          clientId: "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com").signIn();
+      } else{  //Android
+         googleUser = await GoogleSignIn().signIn();
+      }
+      print("GOOGLE USER: $googleUser");
 
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =  await googleUser?.authentication;
+      print("GOOGLE AUTH: $googleAuth");
+
+      // Create a new credential
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
       );
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (e) {
-      showerrormsg(message: "Some error occured with Google Sign In Api");
-      return null;
+      print("CREDENTIAL: $credential");
+
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      print("USER CREDENTIAL: $userCredential");
+
+      // Once signed in, return the UserCredential
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      showerrormsg(message: e.message.toString());
     }
+    print("ret-null-from-sign-in-with-google");
+    return null; 
   }
+
+  Future<void> signOutFromGoogle() async {
+    print("LOGGING OUT");
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+    await _googleSignIn.signOut();
+    await logout();
+    print("LOGGED OUT");
+  }
+
 }
 
-class GoogleSignInAndroid {
-  static final _googleSignIn = GoogleSignIn(serverClientId: "12273615091-qjslsjmhbldn73ketig1haa50u17dl1i.apps.googleusercontent.com");
-  static Future<GoogleSignInAccount?> login() => _googleSignIn.signIn();
-}
+
+
+// class GoogleSignInAndroid {
+//   static final _googleSignIn = GoogleSignIn(serverClientId: "12273615091-qjslsjmhbldn73ketig1haa50u17dl1i.apps.googleusercontent.com");
+//   static Future<GoogleSignInAccount?> login() => _googleSignIn.signIn();
+// }
 
 
