@@ -55,17 +55,9 @@ class CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calendar'),
+        title: Center(child: const Text('Calendar')),
         backgroundColor: const Color(0xFFFFE6C9),
-        leading: const BackButton(), // Added back button for navigation
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // Implement settings navigation if required
-            },
-          ),
-        ],
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(

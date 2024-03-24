@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/common/deletedialog.dart';
-
+import 'package:my_app/models/taskmodel.dart';
 
 class SubTaskPage extends StatefulWidget {
   final String username;
-  final List<dynamic> subtasks;    // The subtask 
-  final int subtaskIndex;
-  const SubTaskPage({Key? key, required this.username,  required this.subtaskIndex, required this.subtasks  }) : super(key: key);
+  final String taskheading;        // The task
+  final List<dynamic> subtasks;    // The subtasks of this task
+  final int subtaskIndex;          // Index of this subtask
+  const SubTaskPage({Key? key, required this.username,  required this.subtaskIndex, required this.subtasks , required this.taskheading  }) : super(key: key);
 
   @override
-  _SubtaskPageState createState() => _SubtaskPageState(username: username, subtaskIndex: subtaskIndex ,subtasks:subtasks );
+  _SubtaskPageState createState() => _SubtaskPageState(username: username, subtaskIndex: subtaskIndex ,subtasks:subtasks, taskheading: taskheading );
 
 }
 
 class _SubtaskPageState extends State<SubTaskPage> {
 
   String username;
+  String taskheading;  
   final List<dynamic> subtasks;
   final int subtaskIndex;
   late TextEditingController _headingController;
   late TextEditingController _descriptionController;
-  _SubtaskPageState({required this.username, required this.subtaskIndex,required this.subtasks });
+  _SubtaskPageState({required this.username, required this.subtaskIndex,required this.subtasks, required this.taskheading });
    
   @override
   void initState() {
     super.initState();
+    taskheading = widget.taskheading;
     username = widget.username;
     _headingController = TextEditingController(text: widget.subtasks[subtaskIndex]['subheading']);
     _descriptionController = TextEditingController(text: widget.subtasks[subtaskIndex]['content']);
@@ -37,8 +40,9 @@ class _SubtaskPageState extends State<SubTaskPage> {
     super.dispose();
   }
 
-  void _saveTask() {
-    // Update the task's title in the global list and pop back to the previous screen
+  void _saveTask() async{
+    // Update the subtask's title,description in the global list and pop back to the previous screen
+    await editSubTask(username,_headingController.text, _descriptionController.text,widget.subtasks[subtaskIndex]['subheading'],taskheading);
     setState(() {
       widget.subtasks[subtaskIndex]['subheading'] = _headingController.text;
       widget.subtasks[subtaskIndex]['content'] = _descriptionController.text;
@@ -47,10 +51,11 @@ class _SubtaskPageState extends State<SubTaskPage> {
   }
 
 
-  void _deleteTask() {
+  void _deleteTask() async{
     // Remove the task from the global list
+    await deleteSubTask(username, taskheading, widget.subtasks[subtaskIndex]['subheading']);
     setState(() {
-      // subtasks.removeAt(widget.subtaskIndex); 
+      subtasks.removeAt(widget.subtaskIndex); 
       //uncomment this after implementing backend functions to edit,remove subtasks ... 
     });
     Navigator.of(context).pop(); // Go back to the previous screen with the list updated
@@ -61,12 +66,6 @@ class _SubtaskPageState extends State<SubTaskPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Subtask'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed:  ()  { showDeleteConfirmationDialog(context,_deleteTask); }, // Show confirmation dialog before deleting
-          ),
-        ],
       ),
       body: Padding(
   padding: const EdgeInsets.all(16.0),
@@ -80,19 +79,51 @@ class _SubtaskPageState extends State<SubTaskPage> {
         ),
       ),
       const SizedBox(height: 20),
-      const Text("similarly fetch subtask description and display it in an editable text input field , access it by _descriptionController"),
-      ElevatedButton(
-        onPressed: _saveTask,
-        child: const Text('Save Changes'),
-      ),
-      const SizedBox(height: 8), 
-      ElevatedButton(
-        onPressed:()  { showDeleteConfirmationDialog(context,_deleteTask); },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red, // Use a color that indicates a destructive action
+       TextField(
+        controller: _descriptionController,
+        decoration: const InputDecoration(
+          labelText: 'Subtask Description',
         ),
-        child: const Text('Delete Subtask'),
       ),
+      const SizedBox(height: 20),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ElevatedButton.icon(
+            onPressed: ()  { showDeleteConfirmationDialog(context,_deleteTask); },
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  Color.fromARGB(255, 255, 215, 100),
+            ),
+            icon: const Icon(Icons.delete, color: Colors.red),
+            label: const Text('Delete Subtask',
+                style: TextStyle(color: Colors.black)),
+          ),
+          const SizedBox(width: 70),
+          ElevatedButton(
+            onPressed: _saveTask,
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  Color.fromARGB(255, 255, 215, 100),
+            ),
+            child: const Text('Save Subtask Details',
+                style: TextStyle(color: Colors.black)),
+          ),
+        ],
+      ),
+
+      // ElevatedButton(
+      //   onPressed: _saveTask,
+      //   child: const Text('Save Changes'),
+      // ),
+      // const SizedBox(height: 8), 
+      // ElevatedButton(
+      //   onPressed:()  { showDeleteConfirmationDialog(context,_deleteTask); },
+      //   style: ElevatedButton.styleFrom(
+      //     backgroundColor: Colors.red, // Use a color that indicates a destructive action
+      //   ),
+      //   child: const Text('Delete Subtask'),
+      // ),
     ],
         ),
       ),

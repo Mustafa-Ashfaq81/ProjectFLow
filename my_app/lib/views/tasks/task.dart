@@ -33,6 +33,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
   late TextEditingController _projectDescriptionController;
   final FocusNode _headingFocus = FocusNode();
   final FocusNode _descriptionFocus = FocusNode();
+  var taskdetailschanged = false;
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     String desc = _projectDescriptionController.text;
     print('Project Heading: $headingg');
     print('Project Description: $desc');
+    taskdetailschanged = true;
 
     // Show a snackbar as feedback
     ScaffoldMessenger.of(context).showSnackBar(
@@ -182,7 +184,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                           label: const Text('Delete Task',
                               style: TextStyle(color: Colors.black)),
                         ),
-                        const SizedBox(width: 50),
+                        const SizedBox(width: 80),
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(
@@ -496,6 +498,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                 MaterialPageRoute(
                   builder: (context) => SubTaskPage(
                       username: username,
+                      taskheading: taskdetailschanged ? _projectHeadingController.text : mytask['heading'],
                       subtasks: subtasks,
                       subtaskIndex: index),
                 ),

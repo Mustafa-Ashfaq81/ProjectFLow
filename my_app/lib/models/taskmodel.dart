@@ -289,6 +289,70 @@ Future<void> deleteTask(String username, String taskHeading) async {
   }
 }
 
+Future<void> deleteSubTask(String username, String taskheading, String subTaskheading) async {
+  try {
+    final userCollection = FirebaseFirestore.instance.collection("users");
+    final snapshot = await userCollection.where('username', isEqualTo: username).get();
+    final doc = snapshot.docs.first; 
+
+
+    List<dynamic> newtasks = [];
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == taskheading) {
+        List<dynamic> updatedsubtasks = [];
+        for (int j=0; j<tasks[i]['subtasks'].length; j++){
+            if(tasks[i]['subtasks'][j]['subheading'] == subTaskheading){
+                print("removing subtask now ..... ");
+            } else {
+              updatedsubtasks.add(tasks[i]['subtasks'][j]);
+            }
+        }
+        dynamic updatedtask = tasks[i];
+        updatedtask['subtasks'] = updatedsubtasks;
+        newtasks.add(updatedtask);
+      } else {
+        newtasks.add(tasks[i]);
+      }
+
+    }
+    
+    await doc.reference.update({'tasks': newtasks});
+    print("Task delete success");
+  } catch (e) {
+   print("subtask del err $e");
+  }
+}
+
+Future<void> editSubTask(String username, String subheading, String content, String originalsubtaskheading, String taskheading) async {
+  final userCollection = FirebaseFirestore.instance.collection("users");
+  final snapshot =
+      await userCollection.where('username', isEqualTo: username).get();
+  final doc = snapshot.docs.first; 
+
+  try {
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == taskheading) {
+        for (int j=0; j<tasks[i]['subtasks'].length; j++){
+            if(tasks[i]['subtasks'][j]['subheading'] == originalsubtaskheading){
+                // print("editing subtask now ..... ");
+                tasks[i]['subtasks'][j]['subheading'] = subheading;
+                tasks[i]['subtasks'][j]['content'] = content;
+                break;
+            }
+        }
+      }
+    }
+    await doc.reference.update({'tasks': tasks});
+  } catch (e) {
+    print("editing subtask err $e");
+  }
+
+  print("editing-done");
+}
+
 
 List<Task> get_random_task() {
   // We hardcoded random tasks for testing purposes.
