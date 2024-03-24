@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                   controller: _passwordController,
                 ),
                 const SizedBox(height: 20),
-                 ElevatedButton(
+                ElevatedButton(
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1E232C),
@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                         vertical: 15, horizontal: 30),
                     minimumSize: const Size(200, 50),
                   ),
-                  child: isLoggingIn? const CircularProgressIndicator( color: Colors.white) : const Text(
+                  child: const Text(
                     'Login',
                     style: TextStyle(fontSize: 18),
                   ),
@@ -276,10 +276,6 @@ class _LoginPageState extends State<LoginPage> {
         SnackBar(content: Text("Failed to log in. Please try again later.")),
       );
     }
-
-     setState(() {
-      isLoggingIn = false;
-    });
   }
 
   Future<UserCredential?> signInWithGoogle() async {
@@ -312,18 +308,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-
-
-
-
-
-  Future<void> signOutFromGoogle() async{
+  Future<void> signOutFromGoogle() async {
     print("LOGGING OUT");
     await _googleSignIn.signOut();
     await _auth.logout();
     print("LOGGED OUT");
   }
-
 
   // void _loginGmail() async {
   //   if(kIsWeb){
