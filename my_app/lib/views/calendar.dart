@@ -15,12 +15,12 @@ class CalendarPage extends StatefulWidget {
 }
 
 const Map<String, Color> taskColors = {
-  'Gym': Colors.orange,
-  'Cricket': Colors.green,
-  'Football': Colors.brown,
-  'Project Meeting': Color(0xFFFED36A),
-  'Figma Design': Color(0xFFFED36A),
-  'Notes': Colors.cyan,
+  'Gym': Color(0xFFF09999),
+  'Cricket': Color(0xFF91BFEA),
+  'Football': Color(0xFFAD8484),
+  'Project Meeting': Color.fromARGB(255, 128, 180, 154),
+  'Figma Design': Color.fromARGB(255, 205, 171, 120),
+  'Notes': Color(0xFF0CBFB4),
   'App Making': Color(0xFFF1AB69),
 };
 
