@@ -139,9 +139,8 @@ Widget completedIdeasView(BuildContext context,
           child: Center(child: Text("No completed task yet")))
       : SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
-            child: Row(
+          child: 
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: headings
                   .map(
@@ -183,6 +182,7 @@ Widget completedIdeasView(BuildContext context,
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                         const SizedBox(
@@ -191,7 +191,9 @@ Widget completedIdeasView(BuildContext context,
                                         Text(
                                           task['description'],
                                           style: const TextStyle(
-                                              color: Colors.white70),
+                                              color: Colors.white70,
+                                               overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -221,8 +223,7 @@ Widget completedIdeasView(BuildContext context,
                                     MaterialPageRoute(
                                       builder: (context) => TaskDetailsPage(
                                           username: username,
-                                          task:
-                                              thistask), // Task data will be passed as parameters
+                                          task:thistask), // Task data will be passed as parameters
                                     ),
                                   );
                                 },
@@ -237,13 +238,16 @@ Widget completedIdeasView(BuildContext context,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 18.0,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       const SizedBox(height: 8.0),
                                       Text(
                                         task['description'],
                                         style: const TextStyle(
-                                            color: Colors.white70),
+                                            color: Colors.white70,
+                                            overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -253,7 +257,6 @@ Widget completedIdeasView(BuildContext context,
                           ),
                   )
                   .toList(),
-            ),
           ));
 }
 
@@ -261,12 +264,10 @@ Widget inprogressIdeasView(BuildContext context,
     List<Map<String, dynamic>> headings, String username) {
   return headings.isEmpty
       ? const Padding(
-          padding: EdgeInsets.only(
-            top: 10.0,
-          ),
+          padding: EdgeInsets.only(top: 10.0,),
           child: Center(child: Text("No task in progress")))
       : Padding(
-          padding: const EdgeInsets.only(right: 20.0),
+          padding: const EdgeInsets.only(left:30.0,right:30.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: headings
@@ -305,6 +306,7 @@ Widget inprogressIdeasView(BuildContext context,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.0,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
@@ -355,6 +357,7 @@ Widget inprogressIdeasView(BuildContext context,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.0,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
