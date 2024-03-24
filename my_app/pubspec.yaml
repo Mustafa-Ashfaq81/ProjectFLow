@@ -18,9 +18,9 @@ dependencies:
   
   #my dependencies -------------------------------------------------------------------
   flutter_dotenv: ^5.0.0
-  firebase_core: ^2.25.4
+  firebase_core: ^2.27.0
   cloud_firestore: ^4.15.4
-  firebase_auth: ^4.17.4
+  firebase_auth: ^4.17.8
   firebase_storage: ^11.6.5
   fluttertoast: ^8.2.4
   image_picker: ^1.0.7
@@ -29,6 +29,7 @@ dependencies:
   page_transition: ^2.1.0
   http: ^1.0.0
   google_sign_in: ^6.2.1
+  web: ^0.4.0
   #my dependencies ---------------------------------------------------------------------
 
 dev_dependencies:

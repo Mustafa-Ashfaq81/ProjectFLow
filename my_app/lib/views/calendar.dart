@@ -39,11 +39,10 @@ Color _getRandomColor() {
   return colors[Random().nextInt(colors.length)];
 }
 
-
 class CalendarPageState extends State<CalendarPage> {
   late final String username;
   final int idx = 3;
-  List<Map<String,String>> deadlines = [];
+  List<Map<String, String>> deadlines = [];
 
   @override
   void initState() {
@@ -58,15 +57,17 @@ class CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-     return FutureBuilder(
+    return FutureBuilder(
         future: atload(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(),); // Show loading page while fetching data
+            return const Center(
+              child: CircularProgressIndicator(),
+            ); // Show loading page while fetching data
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-              return Scaffold(
+            return Scaffold(
               appBar: AppBar(
                 title: Center(child: const Text('Calendar')),
                 backgroundColor: const Color(0xFFFFE6C9),
@@ -87,16 +88,15 @@ class CalendarPageState extends State<CalendarPage> {
               ),
               bottomNavigationBar: Footer(index: idx, username: username),
               // floatingActionButton: FloatingActionButton(
-                // onPressed: () {
-                  // Implement task adding functionality
-                // },
-                // child: const Icon(Icons.add),
-                // backgroundColor: Colors.black,
+              // onPressed: () {
+              // Implement task adding functionality
+              // },
+              // child: const Icon(Icons.add),
+              // backgroundColor: Colors.black,
               // ),
             );
-        }
-      }
-    );
+          }
+        });
   }
 
   Widget _buildDateRow() {
@@ -135,7 +135,7 @@ class CalendarPageState extends State<CalendarPage> {
     );
   }
 
-Widget _buildTimeGrid() {
+  Widget _buildTimeGrid() {
     return SizedBox(
       width: double.infinity,
       child: Row(
@@ -173,73 +173,73 @@ Widget _buildTimeGrid() {
     );
   }
 
-List<Widget> _buildTasks(BuildContext context) {
-  final List<Map<String, dynamic>> tasks = [
-    {'name': 'Gym', 'startHour': 9, 'duration': 1, 'day': 1},
-    {'name': 'Cricket', 'startHour': 10, 'duration': 2, 'day': 2},
-    {'name': 'Football', 'startHour': 11, 'duration': 2, 'day': 1},
-    {'name': 'Project Meeting', 'startHour': 9, 'duration': 3, 'day': 3},
-    {'name': 'Figma Design', 'startHour': 12, 'duration': 2, 'day': 4},
-    {'name': 'Notes', 'startHour': 13, 'duration': 1, 'day': 5},
-    {'name': 'App Making', 'startHour': 14, 'duration': 1, 'day': 5},
-    {'name': 'AP exam', 'startHour': 14, 'duration': 4, 'day': 1},
-  ];
+  List<Widget> _buildTasks(BuildContext context) {
+    final List<Map<String, dynamic>> tasks = [
+      {'name': 'Gym', 'startHour': 9, 'duration': 1, 'day': 1},
+      {'name': 'Cricket', 'startHour': 10, 'duration': 2, 'day': 2},
+      {'name': 'Football', 'startHour': 11, 'duration': 2, 'day': 1},
+      {'name': 'Project Meeting', 'startHour': 9, 'duration': 3, 'day': 3},
+      {'name': 'Figma Design', 'startHour': 12, 'duration': 2, 'day': 4},
+      {'name': 'Notes', 'startHour': 13, 'duration': 1, 'day': 5},
+      {'name': 'App Making', 'startHour': 14, 'duration': 1, 'day': 5},
+      {'name': 'AP exam', 'startHour': 14, 'duration': 4, 'day': 1},
+    ];
 
-  return tasks.map((task) {
-    task['color'] = _getRandomColor(); // Assign random color
-    return _buildTaskContainer(task, context);
-  }).toList();
-}
+    return tasks.map((task) {
+      task['color'] = _getRandomColor(); // Assign random color
+      return _buildTaskContainer(task, context);
+    }).toList();
+  }
+
   Widget _buildTaskContainer(Map<String, dynamic> task, BuildContext context) {
-  final taskStartIndex =
-      task['startHour'] - 9; // Normalize start hour to 0-based index
-  final screenWidth = MediaQuery.of(context).size.width;
-  final taskWidth =
-      (screenWidth - hourWidth) / daysInWeek; // Width of each task
-  final taskHeight = hourHeight * task['duration'];
-  final taskDay = task['day'] - 1; // Convert to 0-based index
+    final taskStartIndex =
+        task['startHour'] - 9; // Normalize start hour to 0-based index
+    final screenWidth = MediaQuery.of(context).size.width;
+    final taskWidth =
+        (screenWidth - hourWidth) / daysInWeek; // Width of each task
+    final taskHeight = hourHeight * task['duration'];
+    final taskDay = task['day'] - 1; // Convert to 0-based index
 
-  // Increase the width of each task container by reducing the right margin
-  final taskContainerWidth = taskWidth - 4; // Smaller right margin
+    // Increase the width of each task container by reducing the right margin
+    final taskContainerWidth = taskWidth - 4; // Smaller right margin
 
-  return Positioned(
-    top: taskStartIndex * hourHeight,
-    left: taskDay * taskWidth + hourWidth,
-    child: Container(
-      height: taskHeight,
-      width: taskContainerWidth,
-      margin: const EdgeInsets.only(
-          left: 5, top: 5, bottom: 5), // Adjusted margin
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: task['color'], // Use color directly from task map
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.black54),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 0,
-            blurRadius: 6,
-            offset: const Offset(0, 3),
+    return Positioned(
+      top: taskStartIndex * hourHeight,
+      left: taskDay * taskWidth + hourWidth,
+      child: Container(
+        height: taskHeight,
+        width: taskContainerWidth,
+        margin: const EdgeInsets.only(
+            left: 5, top: 5, bottom: 5), // Adjusted margin
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: task['color'], // Use color directly from task map
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black54),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            task['name'],
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          task['name'],
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   String _getDayOfWeek(int index) {
     final now = DateTime.now();
@@ -266,12 +266,10 @@ List<Widget> _buildTasks(BuildContext context) {
     }
   }
 
-
   String _getDayNumber(int index) {
     final now = DateTime.now();
     final firstDayOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final day = firstDayOfWeek.add(Duration(days: index));
     return day.day.toString();
   }
-  
 }

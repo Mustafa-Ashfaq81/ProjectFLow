@@ -558,6 +558,7 @@ packages:
     source: hosted
     version: "2.1.4"
   vm_service:
+<<<<<<< Updated upstream
     dependency: transitive
     description:
       name: vm_service
@@ -573,6 +574,23 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+=======
+    dependency: transitive
+    description:
+      name: vm_service
+      sha256: b3d56ff4341b8f182b96aceb2fa20e3dcb336b9f867bc0eafc0de10f1048e957
+      url: "https://pub.dev"
+    source: hosted
+    version: "13.0.0"
+  web:
+    dependency: "direct main"
+    description:
+      name: web
+      sha256: "4188706108906f002b3a293509234588823c8c979dc83304e229ff400c996b05"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
+>>>>>>> Stashed changes
 sdks:
   dart: ">=3.3.0 <4.0.0"
   flutter: ">=3.19.0"

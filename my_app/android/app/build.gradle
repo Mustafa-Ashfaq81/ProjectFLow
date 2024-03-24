@@ -60,11 +60,17 @@ if (flutterVersionName == null) {
     }
 
     signingConfigs {
+        // debug {
+        //     keyAlias 'androiddebugkey'
+        //     keyPassword 'android'
+        //     storeFile file('mykey.jks')
+        //     storePassword 'android'
+        // }
         debug {
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-            storeFile file('mykey.jks')
-            storePassword 'android'
+            storeFile file("../../debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
         }
         // release {
         //     keyAlias keystoreProperties['keyAlias']

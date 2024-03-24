@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_app/auth/views/register.dart';
 import 'package:my_app/components/image.dart';
 import 'package:my_app/models/usermodel.dart';
@@ -21,7 +22,8 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  var isLoggingIn = false;
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   void dispose() {
@@ -170,7 +172,11 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: _loginGmail,
+                  onTap: () {
+                    print("TIME TO LOGIN WITH GOOGLE");
+                    signInWithGoogle();
+                    // signOutFromGoogle();
+                  },
                   child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -215,18 +221,12 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) 
-    {
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill in all fields")),
       );
       return;
     }
-
-    setState(() {
-      isLoggingIn = true;
-    });
-    
 
     try {
       User? useracc = await _auth.loginacc(email, password);
@@ -282,48 +282,98 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void _loginGmail() async {
-    if(kIsWeb){
-      UserCredential? usercred = await _auth.signInWithGoogle();
-      print(usercred);
-      print("--------");
-      if (usercred != null) {
-        var username = usercred.user!.displayName;
-        final gmail = usercred.user!.email;
-      
-        //check if user is not created, create that user in db else just login
-        List<String> allemails = await getallEmails();
-        if (allemails.contains(gmail) == false) {
-          var allusernames = await getallUsers();
-          if (allusernames.contains(username) == true) {
-            //append some numbers to username such that it stays unique
-            int suffix = 1;
-            String newUsername = username!;
-            while (allusernames.contains(newUsername)) {
-              newUsername = '$username!_${suffix++}';
-            }
-            username = newUsername;
-          }
-          print("User is successfully created");
-          List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
-          try {
-            createUser(
-                UserModel(username: username, email: gmail, tasks: mappedtasks));
-          } catch (e) {
-            print("got-some-err-creating-user-model ---> $e");
-          }
-        }
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(
-                username: username!,
-              ),
-            ));
-       }
-    } else {
-      final u = await GoogleSignInAndroid.login();
-      print("got ... $u");
-    } 
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      // Trigger the authentication flow
+      print("HELLO GOOGLE");
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      print("GOOGLE USER: $googleUser");
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      print("GOOGLE AUTH: $googleAuth");
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      print("CREDENTIAL: $credential");
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      print("USER CREDENTIAL: $userCredential");
+
+      // Once signed in, return the UserCredential
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+    }
   }
+
+
+
+
+
+
+  Future<void> signOutFromGoogle() async{
+    print("LOGGING OUT");
+    await _googleSignIn.signOut();
+    await _auth.logout();
+    print("LOGGED OUT");
+  }
+
+
+  // void _loginGmail() async {
+  //   if(kIsWeb){
+  //     UserCredential? usercred = await _auth.signInWithGoogle();
+  //     print(usercred);
+  //     print("--------");
+  //     if (usercred != null) {
+  //       var username = usercred.user!.displayName;
+  //       final gmail = usercred.user!.email;
+
+  //       //check if user is not created, create that user in db else just login
+  //       List<String> allemails = await getallEmails();
+  //       if (allemails.contains(gmail) == false) {
+  //         var allusernames = await getallUsers();
+  //         if (allusernames.contains(username) == true) {
+  //           //append some numbers to username such that it stays unique
+  //           int suffix = 1;
+  //           String newUsername = username!;
+  //           while (allusernames.contains(newUsername)) {
+  //             newUsername = '$username!_${suffix++}';
+  //           }
+  //           username = newUsername;
+  //         }
+  //         print("User is successfully created");
+  //         List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
+  //         try {
+  //           createUser(
+  //               UserModel(username: username, email: gmail, tasks: mappedtasks));
+  //         } catch (e) {
+  //           print("got-some-err-creating-user-model ---> $e");
+  //         }
+  //       }
+  //       Navigator.pushReplacement(
+  //           context,
+  //           MaterialPageRoute(
+  //             builder: (context) => HomePage(
+  //               username: username!,
+  //             ),
+  //           ));
+  //      }
+  //   } else {
+  //     try {
+  //     print("LOGGING WITH GOOGLE");
+  //     final u = await GoogleSignInAndroid.login();
+  //     print("LOGGED IN WITH GOOGLE");
+  //     print("USER: $u");
+  //     } catch (e) {
+  //       print("----------------------------");
+  //       print("EXCEPTION $e");
+  //     }
+  //   }
+  // }
 }
