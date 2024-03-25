@@ -178,3 +178,69 @@ The App uses **Firebase database** to efficiently manage its functionality as it
 
 
 
+
+## Screen Flow
+
+
+![Alt SignUp page screen](/my_app/Screenshots/SignUp.png "SignUp")
+
+   This is the Signup page. Users are required to put their credentials to register their account.
+
+<hr>
+
+![Alt Login page screen](/my_app/Screenshots/Login.png "Login")
+
+   This is the Login page. Users are prompted to log in by providing their username or email and password.
+
+<hr>
+
+![Alt HomePage page screen](/my_app/Screenshots/HomePage.png "HomePage")
+
+   This is the HomePage screen. Users can search for tasks, view completed and pending tasks.
+
+<hr>
+
+![Alt MyNotes page screen](/my_app/Screenshots/MyNotes.png "MyNotes")
+
+   This is the MyNotes page. It likely displays a collection of notes or written content. Users may utilize this page to manage their notes, search for existing notes and view the details of notes.
+
+<hr>
+
+![Alt AddTask page screen](/my_app/Screenshots/AddTask.png "AddTask")
+
+   This is the AddTask page. Users can utilize this page to add new tasks to their task list or schedule. It likely includes input fields for task details such as title, description, due date, priority, etc.
+
+<hr>
+
+![Alt Calendar page screen](/my_app/Screenshots/Calender.png "Calendar")
+
+   This is the Calendar page. It displays a calendar interface where users can view and manage their schedule, appointments, or events. Users can likely navigate through dates, add new events, and view existing ones.
+
+<hr>
+
+![Alt Collaborators page screen](/my_app/Screenshots/Collab.png "Collaborators Page")
+
+   This is the Collaborators page. It likely allows users to manage collaborators or team members for a project or task. Users may be able to add, remove, or edit collaborators' access and permissions.
+
+<hr>
+
+![Alt Settings page screen](/my_app/Screenshots/Settings.png "Settings Page")
+
+   This is the Settings page. Users can access and modify various settings related to their account or the application itself. This page may include options for account management, notification preferences, theme customization, etc.
+
+<hr>
+
+![Alt TaskDetails page screen](/my_app/Screenshots/TaskDetails.png "TaskDetails page")
+
+   This is the TaskDetails page. It likely displays detailed information about a specific task. Users may view task title, description, due date, priority, status, and any associated subtasks or notes.
+
+<hr>
+
+![Alt SubTaskDetails page screen](/my_app/Screenshots/SubTaskDetails.png "SubTaskDetails Page")
+
+ This is the SubTaskDetails page. It likely provides detailed information about a specific subtask associated with a main task. Users may view subtask title, description, due date, priority, and status within the context of the parent task.
+
+<hr>
+
+
+
