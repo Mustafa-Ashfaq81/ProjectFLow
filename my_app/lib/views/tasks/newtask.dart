@@ -6,6 +6,7 @@ import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
+import 'package:my_app/controllers/calendarapi.dart';
 import '../../common/toast.dart';
 
 class NewTaskPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
   _NewTaskPageState({required this.username});
 
   DateTime? _selectedDate;
+  final CalendarClient calendarClient = CalendarClient();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
@@ -382,22 +384,29 @@ Widget _buildCreateTaskButton() {
       ),
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          DateTime comparisonDate = DateTime.parse(_dateController.text);
-          DateTime today = DateTime.now();
-          bool isAfter = today.isAfter(comparisonDate);
-          if (!isAfter){
-            handleValidTaskSubmission(
-              context,
-              username,
-              headingController.text,
-              descController.text,
-              _dateController.text,
-              _startTimeController.text,
-              _endTimeController.text,
-              teamMembers,
-            );
+          var date = _dateController.text;
+          if(date==""){
+            showCustomError("There must be a deadline for this project");
           } else {
-            showCustomError("Deadline of Project selected should be atleast tomorrow");
+            DateTime comparisonDate = DateTime.parse(_dateController.text);
+            DateTime today = DateTime.now();
+            bool isAfter = today.isAfter(comparisonDate);
+            if (!isAfter){
+              handleValidTaskSubmission(
+                context,
+                username,
+                headingController.text,
+                descController.text,
+                _dateController.text,
+                _startTimeController.text,
+                _endTimeController.text,
+                teamMembers,
+                calendarClient
+              );
+            } else {
+              showCustomError("Deadline of Project selected should be atleast tomorrow");
+            }
+
           }
         } else  {
           showCustomError("Please fill in all required fields.");
@@ -409,7 +418,7 @@ Widget _buildCreateTaskButton() {
 }
 }
 
-Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, String date, String start_time, String end_time, List<Map<String, dynamic>> teamMembers)async{
+Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, String date, String start_time, String end_time, List<Map<String, dynamic>> teamMembers, CalendarClient calendarClient)async{
    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Form is valid and processing data'),duration: Duration(seconds: 2),));
     List<String> collaborators= [];
   for (Map<String, dynamic> item in teamMembers) {
@@ -422,6 +431,10 @@ Future<void> handleValidTaskSubmission(BuildContext context, String username, St
   print("$date ... $start_time ... $end_time...");
   await addTask(username, heading, desc, collaborators,date,start_time,end_time);
   showmsg(message: "Task has been added successfully!");
+  // if (start_time!="" && end_time!=""){
+    calendarClient.insert(heading,start_time,end_time,);
+    showmsg(message: "Event has been added to calendar successfully!");
+  // }
   Navigator.push(
     context,
     MaterialPageRoute(

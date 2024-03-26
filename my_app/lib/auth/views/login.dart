@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                         vertical: 15, horizontal: 30),
                     minimumSize: const Size(200, 50),
                   ),
-                  child: const Text(
+                  child: isLoggingIn ? CircularProgressIndicator() :const Text(
                     'Login',
                     style: TextStyle(fontSize: 18),
                   ),
@@ -279,6 +279,10 @@ class _LoginPageState extends State<LoginPage> {
         SnackBar(content: Text("Failed to log in. Please try again later.")),
       );
     }
+
+    setState(() {
+      isLoggingIn = false;
+    });
   }
   
   Future<void> _loginGmail(UserCredential usercred) async {
