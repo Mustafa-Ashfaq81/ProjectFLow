@@ -268,8 +268,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ScrollableWindow(row: completedtasks),
-            const Padding(
-              padding: EdgeInsets.only(left: 30.0, top: 20.0),
+            Center(
+             child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.0),
               child: Text(
                 'Ongoing Projects',
                 style: TextStyle(
@@ -278,6 +279,7 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+             ),
             ),
             inprogresstasks,
             const SizedBox(height: 20),

@@ -359,7 +359,7 @@ Future<void> editSubTask(String username, String subheading, String content, Str
   print("editing-done");
 }
 
-Future<List<Map<String,String>>> getdeadlines(String username) async{
+Future<List<Map<String,dynamic>>> getdeadlines(String username) async{
   final userCollection = FirebaseFirestore.instance.collection("users");
   final snapshot =
       await userCollection.where('username', isEqualTo: username).get();
