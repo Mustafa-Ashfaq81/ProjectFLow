@@ -62,12 +62,11 @@ class _ColabPageState extends State<ColabPage> {
               child: Column(
                 children: colabRequests.map((request) {
                   return ListTile(
-                    title: Text(request['task'],
+                    title: Text(request['task'].toString(),
                         style: TextStyle(color: Colors.black)),
                     subtitle: Text("From: ${request['sender']}",
-                        style: TextStyle(color: Colors.grey)),
-                    onTap: () 
-                    {
+                        style: TextStyle(color: const Color.fromARGB(255, 95, 92, 92))),
+                    onTap: () {
                       // Handle tap if needed, for example, to view request details
                     },
                   );
