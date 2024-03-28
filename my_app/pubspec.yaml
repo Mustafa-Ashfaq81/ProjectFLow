@@ -34,6 +34,7 @@ dependencies:
   googleapis_auth: ^1.5.1
   url_launcher: ^6.2.5
   flutter_alarm_clock: ^0.1.1
+  alarm: ^3.0.14
   #my dependencies ---------------------------------------------------------------------
 
 dev_dependencies:
@@ -66,6 +67,7 @@ flutter:
     - pictures/profile.png
     - pictures/my_app_logo.png
     - pictures/google-icon.png
+    - audios/alarm.mp3
 
 
 

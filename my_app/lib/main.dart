@@ -7,6 +7,7 @@ import 'package:my_app/auth/views/splashscreen.dart';
 import 'package:my_app/auth/views/start.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/components/image.dart';
 
 import 'package:my_app/views/home.dart';
 import 'package:my_app/views/calendar.dart';
@@ -18,6 +19,7 @@ import 'package:my_app/views/tasks/subtasks.dart';
 import 'package:my_app/views/tasks/newtask.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:alarm/alarm.dart';
 
 
 Future main() async {
@@ -40,6 +42,10 @@ Future main() async {
         projectId:projectId, 
       ),
   );
+
+  if(!kIsWeb){  //android
+    await Alarm.init(showDebugLogs: true);
+  }
 
   runApp(const MyApp());
 }
