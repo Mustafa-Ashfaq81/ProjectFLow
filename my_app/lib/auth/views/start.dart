@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/controllers/alarmapi.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
@@ -49,6 +50,16 @@ class StartPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20), // Adding some spacing
+            SizedBox(
+              width: 150,
+              child: ElevatedButton(
+                onPressed: () {
+                   Navigator.push( context, MaterialPageRoute(builder: (context) => const AlarmPage()),
+                    );
+                },
+                child: const Text('Alarm api'),
+              ),
+            ),
           ],
         ),
       ),
