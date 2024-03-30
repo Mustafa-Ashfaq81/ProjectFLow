@@ -29,7 +29,7 @@ dependencies:
   page_transition: ^2.1.0
   http: ^1.0.0
   google_sign_in: ^6.2.1
-  web: ^0.4.0
+  web: ^0.3.0
   googleapis: ^13.1.0
   googleapis_auth: ^1.5.1
   url_launcher: ^6.2.5
