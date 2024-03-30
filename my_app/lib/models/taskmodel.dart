@@ -271,6 +271,10 @@ Future<void> addTask(String username, String heading, String description,
     await doc.reference.update({'tasks': tasks});
     if (collaborators.isEmpty == false) {
       sendColabreq(collaborators, heading, username);
+       final tasknum  = (tasks.length-1).toString();
+       final room_id = "$username#$tasknum"; //users can not add # to their username if we will split on # later
+       await FirebaseFirestore.instance.collection('rooms').add({'room_id':room_id,'heading':heading,'members':[username]});
+       print("initialized unique_room_id is $room_id ");
     }
   } catch (e) {
     print("adding task err $e");

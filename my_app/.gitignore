@@ -44,3 +44,4 @@ app.*.map.json
 
 #my_addition
 .env
+/lib/server/node_modules/
