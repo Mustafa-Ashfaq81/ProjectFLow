@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/components/footer.dart';
+import 'package:my_app/views/settings/account_settings_page.dart';
+import 'package:my_app/views/settings/notifications_settings_page.dart';
+import 'package:my_app/views/settings/help_page.dart';
+import 'package:my_app/views/settings/about_us_page.dart';
 
 class SettingsPage extends StatefulWidget {
   final String username;
@@ -42,7 +47,14 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  print("Clicked");
+                  // Navigate to account settings page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AccountSettingsPage(username: widget.username),
+                    ),
+                  );
                 },
                 child: Row(
                   children: [
@@ -82,7 +94,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 titleSize: 16,
                 subtitleSize: 12,
                 onTap: () {
-                  print("Clicked");
+                  // Navigate to account settings page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AccountSettingsPage(username: widget.username),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 20),
@@ -93,7 +112,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 titleSize: 16,
                 subtitleSize: 12,
                 onTap: () {
-                  print("Clicked");
+                  // Navigate to notifications settings page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          NotificationsSettingsPage(username: widget.username),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 20),
@@ -117,7 +143,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 titleSize: 16,
                 subtitleSize: 12,
                 onTap: () {
-                  print("Clicked");
+                  // Navigate to help page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HelpPage(username: widget.username),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 20),
@@ -128,7 +160,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 titleSize: 16,
                 subtitleSize: 12,
                 onTap: () {
-                  print("Clicked");
+                  // Navigate to about us page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AboutUsPage(username: widget.username),
+                    ),
+                  );
                 },
               ),
             ],
@@ -145,7 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
             )
-          : null,
+          : Footer(index: 0, username: widget.username),
     );
   }
 
@@ -240,7 +279,7 @@ class BottomLogoutPopup extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -265,10 +304,3 @@ class BottomLogoutPopup extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
