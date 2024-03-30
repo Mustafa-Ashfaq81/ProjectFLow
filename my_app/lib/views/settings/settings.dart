@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/components/footer.dart';
 
 class SettingsPage extends StatefulWidget {
   final String username;
@@ -11,6 +10,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool _logoutClicked = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +104,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 titleSize: 16,
                 subtitleSize: 12,
                 onTap: () {
-                  print("Clicked");
+                  setState(() {
+                    _logoutClicked = true;
+                  });
                 },
               ),
               const SizedBox(height: 20),
@@ -132,7 +135,17 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      // bottomNavigationBar: Footer(index: idx, username: username), // Add your footer widget here
+      bottomNavigationBar: _logoutClicked
+          ? Center(
+              child: BottomLogoutPopup(
+                onClose: () {
+                  setState(() {
+                    _logoutClicked = false;
+                  });
+                },
+              ),
+            )
+          : null,
     );
   }
 
@@ -166,6 +179,88 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class BottomLogoutPopup extends StatelessWidget {
+  final VoidCallback onClose;
+
+  const BottomLogoutPopup({Key? key, required this.onClose}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onClose,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 238, 215, 174),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        width: 425,
+        height: 300,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 100,
+                height: 102,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0B8D5E),
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.black,
+                    size: 56,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 25),
+              Text(
+                'Logout Success',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'You have been logged out',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Container(
+                  width: 182,
+                  height: 56,
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'Sign In',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
