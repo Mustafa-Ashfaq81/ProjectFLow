@@ -394,7 +394,7 @@ Future<List<Map<String,dynamic>>> getdeadlines(String username) async{
 }
 
 List<Task> get_random_task() {
-  // We hardcoded random tasks for testing purposes.
+  // Tasks are hardcoded for now
   return [
     Task(
         heading: "t_one",
