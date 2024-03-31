@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, avoid_single_cascade_in_expression_statements
+// ignore_for_file: avoid_print, avoid_single_cascade_in_expression_statements, library_private_types_in_public_api, prefer_const_constructors
 
 import 'dart:io';
 
@@ -9,6 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const bool kIsWeb = bool.fromEnvironment('dart.library.js_util');
+
 
 
 
@@ -70,23 +71,82 @@ class _ImageSetterState extends State<ImageSetter> {
 
   Widget buildImage() {
     bool hasImage = imageUrl.isNotEmpty;
-    return Padding(
-      padding: const EdgeInsets.only(right: 15.0, top: 15.0),
-      child: Stack(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundImage: hasImage ? NetworkImage(imageUrl) : const AssetImage("pictures/profile.png") as ImageProvider,
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.visibility),
+                  title: Text('View Image'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _viewImage();
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.edit),
+                  title: Text('Change Image'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _pickImage();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(right: 15.0, top: 15.0),
+        child: Stack(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundImage: hasImage
+                  ? NetworkImage(imageUrl)
+                  : const AssetImage("pictures/profile.png") as ImageProvider,
+            ),
+            Positioned(
+              bottom: -4,
+              right: -4,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.8),
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsets.all(4),
+                child: Icon(
+                  Icons.photo_library,
+                  size: 16,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _viewImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text('View Image'),
           ),
-          Positioned(
-            bottom: -15,
-            right: -10,
-            child: IconButton(
-              icon: const Icon(Icons.photo_library),
-              onPressed: _pickImage,
+          body: Center(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.contain,
             ),
           ),
-        ],
+        ),
       ),
     );
   }
