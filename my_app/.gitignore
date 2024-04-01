@@ -43,5 +43,5 @@ app.*.map.json
 /android/app/release
 
 #my_addition
-.env
+# .env
 /lib/server/node_modules/
