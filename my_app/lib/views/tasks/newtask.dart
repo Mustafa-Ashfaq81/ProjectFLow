@@ -8,6 +8,7 @@ import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/controllers/calendarapi.dart';
 import '../../common/toast.dart';
+import 'package:my_app/utils/cache_util.dart';
 
 class NewTaskPage extends StatefulWidget {
   final String username;
@@ -32,19 +33,6 @@ class _NewTaskPageState extends State<NewTaskPage> {
   TextEditingController headingController = TextEditingController();
   List<Map<String, dynamic>> teamMembers = [];
 
-  void showCustomError(String message) {
-  final snackBar = SnackBar(
-    content: Text(message),
-    backgroundColor: Colors.redAccent,
-    action: SnackBarAction(
-      label: 'Dismiss',
-      onPressed: () {
-        // Some code to undo the change if needed.
-      },
-    ),
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
 
   @override
   void initState() {
@@ -382,34 +370,51 @@ Widget _buildCreateTaskButton() {
         backgroundColor: Colors.green,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       ),
-      onPressed: () {
+      onPressed: () async {
         if (_formKey.currentState!.validate()) {
           var date = _dateController.text;
-          if(date==""){
-            showCustomError("There must be a deadline for this project");
+          var start = _startTimeController.text;
+          var end = _endTimeController.text;
+          if( date==""){
+            showCustomError("There must be a deadline for this project",context);
           } else {
-            DateTime comparisonDate = DateTime.parse(_dateController.text);
-            DateTime today = DateTime.now();
-            bool isAfter = today.isAfter(comparisonDate);
-            if (!isAfter){
-              handleValidTaskSubmission(
-                context,
-                username,
-                headingController.text,
-                descController.text,
-                _dateController.text,
-                _startTimeController.text,
-                _endTimeController.text,
-                teamMembers,
-                calendarClient
-              );
-            } else {
-              showCustomError("Deadline of Project selected should be atleast tomorrow");
-            }
+            if( (start == "" && end != "") || (start != "" && end == "") ) {
+              showCustomError("There must be a start time for an end time and vice versa",context); 
+            } else{
 
+              DateTime comparisonDate = DateTime.parse(_dateController.text);
+              DateTime today = DateTime.now();
+              bool isAfter = today.isAfter(comparisonDate);
+              if (!isAfter){
+                var is_suitable_time = isSuitableTime(start,end);
+                if(is_suitable_time == false){
+                   showCustomError("You can only set a deadline that starts and ends in that day & end time must be greater than start time",context);
+                }
+                else {
+                  var isoverlap = await isOverlappingdeadline(date,start,end,username);
+                  if(isoverlap == true) {
+                    showCustomError("This deadline clashes with some other project",context);
+                  } else {  //no overlaps
+                    handleValidTaskSubmission(
+                      context,
+                      username,
+                      headingController.text,
+                      descController.text,
+                      _dateController.text,
+                      _startTimeController.text,
+                      _endTimeController.text,
+                      teamMembers,
+                      calendarClient
+                    );
+                  }
+                }
+              } else {
+                  showCustomError("Deadline of Project selected should be atleast tomorrow",context);
+            }
           }
+         }
         } else  {
-          showCustomError("Please fill in all required fields.");
+          showCustomError("Please fill in all required fields.",context);
         }
       },
       child: const Text('Create Task', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
@@ -442,3 +447,78 @@ Future<void> handleValidTaskSubmission(BuildContext context, String username, St
     ));
 }
 
+Future<bool> isOverlappingdeadline(String date, String start_time, String end_time, String username) async {
+
+  List<Map<String, dynamic>> deadlines = [];
+  List<Map<String, dynamic>>? cachedDeadlines =
+  CacheUtil.getData('deadlines_$username');
+  if (cachedDeadlines != null) {
+    deadlines = cachedDeadlines;
+  } else {
+    print('deadlines-cache-null');
+    deadlines = await getdeadlines(username);
+    CacheUtil.cacheData('deadlines_$username', deadlines);
+  }
+  // print("checking for overlap in $deadlines");
+  for (var deadline in deadlines) {
+    print("checking for deadline $deadline");
+    if (deadline['duedate'] == date){
+        if(isTimeInRange(deadline['start_time'], deadline['end_time'], start_time)) {return true;}
+        if(isTimeInRange(deadline['start_time'], deadline['end_time'], end_time)) {return true;}
+    }
+  }
+  return false;
+}
+
+bool isTimeInRange(String startTime, String endTime, String checkTime) {
+
+  var startTimeParsed = startTime.split(" ")[0].split(":");
+  var startTimeclk = startTime.split(" ")[1];
+  var startTimehr = int.parse(startTimeParsed[0]);
+  var startTimemin = int.parse(startTimeParsed[1]);
+
+  var endTimeParsed = endTime.split(" ")[0].split(":");
+  var endTimeclk = endTime.split(" ")[1];
+  var endTimehr = int.parse(endTimeParsed[0]);
+  var endTimemin = int.parse(endTimeParsed[1]);
+
+  var checkTimeParsed = checkTime.split(" ")[0].split(":");
+  var checkTimeclk = checkTime.split(" ")[1];
+  var checkTimehr = int.parse(checkTimeParsed[0]);
+  var checkTimemin = int.parse(checkTimeParsed[1]);
+
+  if(checkTimeclk == "PM"){checkTimehr += 12;}
+  if(startTimeclk == "PM"){startTimehr += 12;}
+  if(endTimeclk == "PM"){endTimehr += 12;}
+
+  print("start $startTimehr");
+  print("end $endTimehr");
+  print("check $checkTimehr");
+
+  final startTimeInMinutes = (startTimehr * 60) + startTimemin;
+  final endTimeInMinutes = (endTimehr * 60) + endTimemin;
+  final checkTimeInMinutes = (checkTimehr * 60) + checkTimemin;
+
+  return (checkTimeInMinutes >= startTimeInMinutes && checkTimeInMinutes < endTimeInMinutes) ||
+      (checkTimeInMinutes < startTimeInMinutes && endTimehr > startTimehr);
+
+}
+
+bool isSuitableTime(String startTime, String endTime){
+  var startTimeParsed = startTime.split(" ")[0].split(":");
+  var startTimeclk = startTime.split(" ")[1];
+  var startTimehr = int.parse(startTimeParsed[0]);
+  var startTimemin = int.parse(startTimeParsed[1]);
+
+  var endTimeParsed = endTime.split(" ")[0].split(":");
+  var endTimeclk = endTime.split(" ")[1];
+  var endTimehr = int.parse(endTimeParsed[0]);
+  var endTimemin = int.parse(endTimeParsed[1]);
+
+  if(startTimeclk == "PM"){startTimehr += 12;}
+  if(endTimeclk == "PM"){endTimehr += 12;}
+
+  if(startTimehr>endTimehr) {return false;}
+  if(startTimehr == endTimehr && startTimemin >= endTimemin) {return false;}
+  return true;
+}

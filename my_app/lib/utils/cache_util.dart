@@ -32,26 +32,6 @@ class TaskService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> fetchAndCacheNotesData(String username) async {
-    // var snapshot = await firestore.collection('users').get();
-    // List<Object> tasks =
-    //     snapshot.docs.where((doc) => doc['username'] == username).map((doc) {
-    //       final dynamic tsk = doc['tasks'];
-    //       return tsk is List<dynamic> ? tsk : [];
-    // }).toList();
-
-    // List<Map<String, dynamic>> allTasks = [];
-    // tasks.forEach((taskList) {
-    //   List<dynamic> itemList = taskList as List<dynamic>;
-    //   itemList.forEach((item) {
-    //     Map<String, dynamic> taskMap = item as Map<String, dynamic>;
-    //     allTasks.add({
-    //       'heading': taskMap['heading'],
-    //       'description': taskMap['description'],
-    //       'status': taskMap['status'],
-    //     });
-    //   });
-    // });
-
     try {
       // Cache the fetched tasks data for quick access later
       List<Map<String, dynamic>> tasks = await getAllTasks(username);
@@ -60,18 +40,25 @@ class TaskService {
       List<Map<String, dynamic>> allTasks = [];
       List<Map<String, dynamic>> completedProjects = [];
       List<Map<String, dynamic>> ongoingProjects = [];
+      List<Map<String, dynamic>> deadlines = [];
       List<String> headings = [];
 
       for(var task in tasks){
-        allTasks.add({'heading':task['heading'],
-        'description':task['description'],
-        'status' :task['status']
+        allTasks.add({
+          'heading':task['heading'],
+          'description':task['description'],
+          'status' :task['status']
         });
-      }
-
-      // for (var task in allTasks) { print(task);}
-      CacheUtil.cacheData('tasks_$username', allTasks.reversed.toList());
-
+        Map<String,String> deadline = {
+          'heading' : task['heading'],
+          'duedate': task['duedate'],
+          'start_time': task['start_time'],
+          'end_time': task['end_time'],
+        };
+        if(deadline['start_time'] != "" && deadline['end_time'] != "" ) {
+          deadlines.add(deadline);
+        }
+     }
 
       for (var task in allTasks) {
         String status = task["status"];
@@ -83,9 +70,14 @@ class TaskService {
         String heading = task['heading'];
         headings.add(heading);
       }
+
+      CacheUtil.cacheData('tasks_$username', allTasks.reversed.toList());
       CacheUtil.cacheData('ongoingProjects_$username', ongoingProjects.reversed.toList());
       CacheUtil.cacheData('completedProjects_$username', completedProjects.reversed.toList());
       CacheUtil.cacheData('headings_$username', headings);
+      CacheUtil.cacheData('deadlines_$username', deadlines);
+      print("notes,deadlines,headings,status-wise tasks HAVE BEEN fetched ... ");
+
     } catch (e) {
       print("got error while caching $e");
     }
@@ -107,46 +99,4 @@ class TaskService {
     // Cache the fetched colab requests for quick access later
     CacheUtil.cacheData('colabRequests_$username', colabRequests);
   }
-  // Future<void> fetchAndCacheOngoingProject(String username) async {
-  //   print("Fetching Ongoing Projects");
-  //   var snapshot = await FirebaseFirestore.instance.collection('users').get();
-  //   List<Map<String, dynamic>> ongoingProjects = [];
-
-  //   for (var doc in snapshot.docs.where((doc) => doc['username'] == username)) {
-  //     List<dynamic> tasksList = doc['tasks'] ?? [];
-  //     for (var task in tasksList) {
-  //       Map<String, dynamic> taskMap = task as Map<String, dynamic>;
-  //       if (taskMap['status'] == 'ongoing') {
-  //         ongoingProjects.add({
-  //           'heading': taskMap['heading'],
-  //           'description': taskMap['description'],
-  //           'status': taskMap['status'],
-  //         });
-  //       }
-  //     }
-  //   }
-
-  //   CacheUtil.cacheData('ongoingProjects_$username', ongoingProjects);
-  // }
-
-//   Future<void> fetchAndCacheCompletedProject(String username) async {
-//     print("Fetching Completed Projects");
-//     var snapshot = await FirebaseFirestore.instance.collection('users').get();
-//     List<Map<String, dynamic>> completedProjects = [];
-
-//     for (var doc in snapshot.docs.where((doc) => doc['username'] == username)) {
-//       List<dynamic> tasksList = doc['tasks'] ?? [];
-//       for (var task in tasksList) {
-//         Map<String, dynamic> taskMap = task as Map<String, dynamic>;
-//         if (taskMap['status'] == 'completed') {
-//           completedProjects.add({
-//             'heading': taskMap['heading'],
-//             'description': taskMap['description'],
-//             'status': taskMap['status'],
-//           });
-//         }
-//       }
-//     }
-//     CacheUtil.cacheData('completedProjects_$username', completedProjects);
-//   }
 }

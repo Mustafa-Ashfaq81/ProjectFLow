@@ -23,11 +23,8 @@ class FirebaseAuthService {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (credential.user != null) {
-        // String username = email.split('@')[0];
         await TaskService().fetchAndCacheNotesData(username);
         await TaskService().fetchAndCacheColabRequests(username);
-        // await TaskService().fetchAndCacheOngoingProject(username);
-        // await TaskService().fetchAndCacheCompletedProject(username);
       }
       return credential.user;
     } on FirebaseAuthException catch (e) {
@@ -46,25 +43,6 @@ class FirebaseAuthService {
     }
     return null;
   }
-
-  // Future<UserCredential?> signInWithGoogle() async {
-  //   try {
-  //     final GoogleSignInAccount? googleUser = await GoogleSignIn(
-  //             clientId: "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
-  //         .signIn();
-  //     final GoogleSignInAuthentication googleAuth =
-  //         await googleUser!.authentication;
-
-  //     final credential = GoogleAuthProvider.credential(
-  //       accessToken: googleAuth.accessToken,
-  //       idToken: googleAuth.idToken,
-  //     );
-  //     return await FirebaseAuth.instance.signInWithCredential(credential);
-  //   } catch (e) {
-  //     showerrormsg(message: "Some error occured with Google Sign In Api");
-  //     return null;
-  //   }
-  // }
 
     Future<UserCredential?> signInWithGoogle() async {
     try {
@@ -114,9 +92,24 @@ class FirebaseAuthService {
 
 
 
-// class GoogleSignInAndroid {
-//   static final _googleSignIn = GoogleSignIn(serverClientId: "12273615091-qjslsjmhbldn73ketig1haa50u17dl1i.apps.googleusercontent.com");
-//   static Future<GoogleSignInAccount?> login() => _googleSignIn.signIn();
-// }
+  // Future<UserCredential?> signInWithGoogle() async {
+  //   try {
+  //     final GoogleSignInAccount? googleUser = await GoogleSignIn(
+  //             clientId: "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
+  //         .signIn();
+  //     final GoogleSignInAuthentication googleAuth =
+  //         await googleUser!.authentication;
+
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+  //     return await FirebaseAuth.instance.signInWithCredential(credential);
+  //   } catch (e) {
+  //     showerrormsg(message: "Some error occured with Google Sign In Api");
+  //     return null;
+  //   }
+  // }
+
 
 

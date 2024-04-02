@@ -11,7 +11,6 @@ import 'package:my_app/components/scrollablewindow.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
-
 import '../utils/cache_util.dart';
 
 // enum data type for logout and settings

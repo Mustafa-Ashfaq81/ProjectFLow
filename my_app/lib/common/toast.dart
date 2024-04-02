@@ -24,3 +24,17 @@ void showmsg({required String message}) {
       textColor: const Color(0xfffefbfb),
       fontSize: 16.0);
 }
+
+void showCustomError(String message,BuildContext context) {
+  final snackBar = SnackBar(
+    content: Text(message),
+    backgroundColor: Colors.redAccent,
+    action: SnackBarAction(
+      label: 'Dismiss',
+      onPressed: () {
+        // Some code to undo the change if needed.
+      },
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}

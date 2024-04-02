@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/taskmodel.dart';
+import '../utils/cache_util.dart';
 
 const int daysInWeek = 5;
 const double hourHeight = 100;
@@ -44,7 +45,18 @@ class CalendarPageState extends State<CalendarPage> {
   }
 
   Future<void> atload() async {
-    deadlines = await getdeadlines(username);
+    List<Map<String, dynamic>>? cachedDeadlines =
+        CacheUtil.getData('deadlines_$username');
+    if (cachedDeadlines != null) {
+      deadlines = cachedDeadlines;
+    } else {
+      print('deadlines-cache-null');
+      deadlines = await getdeadlines(username);
+      CacheUtil.cacheData('deadlines_$username', deadlines);
+    }
+    deadlines = filterUpcomingTasks(deadlines);
+    print("filtered deadlines $deadlines");
+    
     //below array was for testing if it filters correctly or not
     // deadlines = [{"heading": "task10", "duedate": "2024-03-27", "start_time": "11:00 PM", "end_time": "6:00 PM"},
     // {"heading": "task10", "duedate": "2024-03-26", "start_time": "11:00 PM", "end_time": "6:00 PM"},
@@ -54,8 +66,6 @@ class CalendarPageState extends State<CalendarPage> {
     // {"heading": "task10", "duedate": "2024-03-30", "start_time": "11:00 PM", "end_time": "6:00 PM"},
     // {"heading": "task10", "duedate": "2024-04-01", "start_time": "11:00 PM", "end_time": "6:00 PM"},
     // {"heading": "task10", "duedate": "2024-04-02", "start_time": "11:00 PM", "end_time": "6:00 PM"}];
-    deadlines = filterUpcomingTasks(deadlines);
-    print("filtered deadlines $deadlines");
   }
 
   List<Map<String, dynamic>> filterUpcomingTasks(List<Map<String, dynamic>> tasks) { //only gets tasks within next 5 days

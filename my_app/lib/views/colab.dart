@@ -43,11 +43,9 @@ class _ColabPageState extends State<ColabPage> {
   Future<void> atload() async {
     List<Map<String, dynamic>>? cachedRequests =
         CacheUtil.getData('colabRequests_${widget.username}');
-    if (cachedRequests != null && cachedRequests.isNotEmpty) {
-      // Use cached data if available
+    if (cachedRequests != null && cachedRequests.isNotEmpty) { // Use cached data if available
         colabRequests = cachedRequests;
-    } else {
-      // Fetch and cache colab requests if not in cache
+    } else {  // Fetch and cache colab requests if not in cache
       await TaskService().fetchAndCacheColabRequests(widget.username);
       List<Map<String, dynamic>>? newlyFetchedRequests =
           CacheUtil.getData('colabRequests_${widget.username}');
@@ -55,13 +53,13 @@ class _ColabPageState extends State<ColabPage> {
           colabRequests = newlyFetchedRequests;
       }
     }
+    //fetch group chats / rooms for that user
     rooms = await fetchroomsforuser(widget.username);
     if (rooms.isNotEmpty){
       allrooms = rooms.fold('', (previousValue, element) {
         final heading = element['room_id'] as String;
         return previousValue.isEmpty ? heading : '$previousValue, $heading';
       });
-      // print("all_room_ids $allrooms ");
       handleSocket();
     }
   }
@@ -84,7 +82,7 @@ class _ColabPageState extends State<ColabPage> {
     _socket.onDisconnect((data) => print('Connection terminated'));
     _socket.onConnectError((data) { 
     print('Connect Error: $data');
-    showerrormsg(message: "Connection Error: $data");
+    showerrormsg(message: "Connection Error: The server probably isn't working as of now");
     _socket.disconnect();
     _socket.dispose();
     Navigator.push(
