@@ -47,30 +47,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     username = widget.username;
-    atload();
   }
-
-  Widget buildTasksList(List<Map<String, dynamic>> tasksData) {
-    List<Widget> taskWidgets = tasksData.map((task) {
-      return ListTile(
-        title: Text(task['heading']),
-        subtitle: Expanded(
-          child: Text(
-            task['description'],
-            style: const TextStyle(color: Colors.white70),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        onTap: () {
-          // Working as of now. No need to implement an OnTap Method for this particular Element
-        },
-      );
-    }).toList();
-
-    // Return the list of task widgets wrapped in a Column, ListView, etc.
-    return ListView(children: taskWidgets);
-  }
-
+  
   Future<void> atload() async {
     List<Map<String, dynamic>>? cachedOngoingProjects =
         CacheUtil.getData('ongoingProjects_$username');
@@ -78,24 +56,34 @@ class _HomePageState extends State<HomePage> {
     List<Map<String, dynamic>>? cachedCompletedProjects =
         CacheUtil.getData('completedProjects_$username');
 
-    if (cachedOngoingProjects != null) 
-    {
-      print("NULL: So fetching Ongoing Projects");
-      inprogresstasks = buildTasksList(cachedOngoingProjects);
-    } else {
-      inprogresstasks = fetchTasks("progress", username);
-    }
+    List<String>? cachedHeadings =
+        CacheUtil.getData('headings_$username');
+
 
     if (cachedCompletedProjects != null) {
-      completedtasks = buildTasksList(cachedCompletedProjects);
+      completedtasks = completedIdeasView(context,cachedCompletedProjects,username);
     } else {
-      completedtasks = fetchTasks("progress", username);
+      print('completed-tasks-cache-null');
+      completedtasks = fetchTasks("completed", username);
+      CacheUtil.cacheData('completedProjects_$username', completedtasks);
     }
 
-    completedtasks = fetchTasks("completed", username);
-    inprogresstasks = fetchTasks("progress", username);
+    if (cachedOngoingProjects != null)  {
+      inprogresstasks = inprogressIdeasView(context,cachedOngoingProjects,username);
+    } else {
+      print('progress-tasks-cache-null');
+      inprogresstasks = fetchTasks("progress", username);
+      CacheUtil.cacheData('ongoingProjects_$username', inprogresstasks);
+    }
+
+    if(cachedHeadings != null){
+      headings = cachedHeadings;
+    } else {
+      print('headings-cache-null');
+      headings = await getTaskHeadings(username);
+      CacheUtil.cacheData('headings_$username', headings);
+    }
     profilepic = ImageSetter(username: username);
-    headings = await getTaskHeadings(username);
   }
 
   @override
@@ -106,19 +94,27 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 50.0),
-              child: Text(
-                'My Tasks',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
+     return FutureBuilder(
+          future: atload(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator()); // Show loading page while fetching data
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else { 
+              return Scaffold(
+                appBar: PreferredSize(
+                  preferredSize: Size.fromHeight(kToolbarHeight),
+                  child: AppBar(
+                    title: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 50.0),
+                        child: Text(
+                          'My Tasks',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
           automaticallyImplyLeading: false,
           foregroundColor: Colors.white,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -288,5 +284,8 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: Footer(index: idx, username: username),
     );
+   }
   }
+ );
+ }
 }

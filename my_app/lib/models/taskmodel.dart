@@ -176,13 +176,18 @@ Future<Map<String, dynamic>> getTaskbyHeading(String taskheading, String usernam
 }
 
 Future<List<Map<String, dynamic>>> getAllTasks( String username) async{
-  final userCollection = FirebaseFirestore.instance.collection("users");
-  final snapshot =
-      await userCollection.where('username', isEqualTo: username).get();
-  final doc = snapshot.docs.first; 
-  List<dynamic> tasks = doc.data()['tasks'] ?? [];
-  List<Map<String, dynamic>> taskmap = tasks.cast<Map<String, dynamic>>();
-  return taskmap;
+  try{
+    final userCollection = FirebaseFirestore.instance.collection("users");
+    final snapshot =
+        await userCollection.where('username', isEqualTo: username).get();
+    final doc = snapshot.docs.first; 
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    List<Map<String, dynamic>> taskmap = tasks.cast<Map<String, dynamic>>();
+    return taskmap;
+  } catch(e){
+    print("getting all tasks err ... $e");
+    return [];
+  }
 
 }
 

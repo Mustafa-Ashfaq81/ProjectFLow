@@ -232,10 +232,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      User? useracc = await _auth.loginacc(email, password);
-
-      if (useracc != null) {
-        String user = "";
+      String user = "";
         print("User is successfully logging in");
         await FirebaseFirestore.instance
             .collection('users')
@@ -246,8 +243,10 @@ class _LoginPageState extends State<LoginPage> {
             //only one doc with that username
             user = doc['username'];
           }
-        });
+      });
+      User? useracc = await _auth.loginacc(email, password,user);
 
+      if (useracc != null) {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

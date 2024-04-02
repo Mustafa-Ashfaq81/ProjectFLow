@@ -35,13 +35,21 @@ class _AllTasksPageState extends State<AllTasksPage> {
   Future<void> atload() async {
     List<Map<String, dynamic>>? cachedAllTasks =
         CacheUtil.getData('tasks_$username');
+    List<String>? cachedHeadings =
+        CacheUtil.getData('headings_$username');
     if (cachedAllTasks != null) {
       alltasks = cachedAllTasks;
     } else {
-      headings = await getTaskHeadings(username);
+      print('progress-tasks-cache-null');
       alltasks = await getAllTasks(username);
-
       CacheUtil.cacheData('tasks_$username', alltasks);
+    }
+    if(cachedHeadings != null){
+      headings = cachedHeadings;
+    } else {
+      print('headings-cache-null');
+      headings = await getTaskHeadings(username);
+      CacheUtil.cacheData('headings_$username', headings);
     }
   }
 
@@ -104,75 +112,63 @@ class _AllTasksPageState extends State<AllTasksPage> {
         left: 10.0,
         bottom: 20.0,
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: queryController,
-              decoration: InputDecoration(
-                hintText: 'Search Notes',
-                hintStyle: const TextStyle(color: Color(0xFF000000)),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: const Color(0xFFFFFFFF),
-              ),
-              onChanged: (text) {
-                setState(() {
-                  currQuery = text;
+      child: GestureDetector(
+              onTap: () {
+                Future<String?> selectedTask = showSearch(
+                  context: context,
+                  delegate:
+                      SearchTasks(username: username, headings: headings)
+                          as SearchDelegate<String>,
+                );
+                selectedTask.then((taskheading) async {
+                  Map<String, dynamic> task =
+                      await getTaskbyHeading(taskheading!, username);
+                  if (taskheading != "") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            TaskDetailsPage(username: username, task: task),
+                      ),
+                    );
+                  }
                 });
-                if (currQuery != "") {
-                  Future<String?> selectedTask = showSearch(
-                    context: context,
-                    delegate:
-                        SearchTasks(username: username, headings: headings)
-                            as SearchDelegate<String>,
-                  );
-                  selectedTask.then((taskheading) async {
-                    Map<String, dynamic> task =
-                        await getTaskbyHeading(taskheading!, username);
-                    if (taskheading != "") {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              TaskDetailsPage(username: username, task: task),
-                        ),
-                      );
-                    }
-                  });
-                  queryController.clear();
-                }
               },
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              Future<String?> selectedTask = showSearch(
-                context: context,
-                delegate: SearchTasks(username: username, headings: headings)
-                    as SearchDelegate<String>,
-              );
-              selectedTask.then((taskheading) async {
-                Map<String, dynamic> task =
-                    await getTaskbyHeading(taskheading!, username);
-                if (taskheading != "") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          TaskDetailsPage(username: username, task: task),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: queryController,
+                        decoration: InputDecoration(
+                          hintText: 'Search Notes',
+                          hintStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            color: Color(0xFF000000),
+                            fontWeight: FontWeight.w600,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: 20,
+                          ),
+                        ),
+                        enabled: false,
+                      ),
                     ),
-                  );
-                }
-              });
-            },
-          ),
-        ],
-      ),
+                    IconButton(
+                      icon: const Icon(Icons.search),
+                      color: Colors.black45,
+                      onPressed: null,
+                    ),
+                  ],
+                ),
+              ),
+        ),
     );
   }
 

@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../common/toast.dart';
-import 'package:my_app/controllers/taskstatus.dart';
-import '../../controllers/colabrequests.dart';
+import 'package:my_app/utils/cache_util.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,20 +18,17 @@ class FirebaseAuthService {
     return null;
   }
 
-  Future<User?> loginacc(String email, String password) async {
+  Future<User?> loginacc(String email, String password, String username) async {
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (credential.user != null) {
-        String username = email.split('@')[0];
+        // String username = email.split('@')[0];
         await TaskService().fetchAndCacheNotesData(username);
-        await TaskService().fetchAndCacheOngoingProject(username);
-        await TaskService().fetchAndCacheCompletedProject(username);
-        await fetchAndCacheColabRequests(username);
-
-
+        await TaskService().fetchAndCacheColabRequests(username);
+        // await TaskService().fetchAndCacheOngoingProject(username);
+        // await TaskService().fetchAndCacheCompletedProject(username);
       }
-
       return credential.user;
     } on FirebaseAuthException catch (e) {
       showerrormsg(message: "${e.message}");

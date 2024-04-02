@@ -48,7 +48,7 @@ class _ColabPageState extends State<ColabPage> {
         colabRequests = cachedRequests;
     } else {
       // Fetch and cache colab requests if not in cache
-      await fetchAndCacheColabRequests(widget.username);
+      await TaskService().fetchAndCacheColabRequests(widget.username);
       List<Map<String, dynamic>>? newlyFetchedRequests =
           CacheUtil.getData('colabRequests_${widget.username}');
       if (newlyFetchedRequests != null) {

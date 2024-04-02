@@ -3,27 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/models/groupchatmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../utils/cache_util.dart';
+// import '../utils/cache_util.dart';
 // import 'package:my_app/views/colab.dart';
 
 
-
-Future<void> fetchAndCacheColabRequests(String username) async {
-  List<Map<String, dynamic>> colabRequests = [];
-  var snapshot = await FirebaseFirestore.instance.collection('colab').get();
-
-  snapshot.docs.forEach((doc) {
-    if ((doc.data()['req_recv'] as List<dynamic>).contains(username)) {
-      colabRequests.add({
-        'sender': doc.data()['req_sender'],
-        'task': doc.data()['req_task'],
-      });
-    }
-  });
-
-  // Cache the fetched colab requests for quick access later
-  CacheUtil.cacheData('colabRequests_$username', colabRequests);
-}
 
 List<Map<String, dynamic>> getRequests(
     String username, QuerySnapshot snapshot) {
