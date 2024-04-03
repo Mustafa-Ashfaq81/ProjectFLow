@@ -12,18 +12,18 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:alarm/alarm.dart';
 
 import 'package:my_app/auth/views/splashscreen.dart';
-// import 'package:my_app/auth/views/start.dart';
-// import 'package:my_app/auth/views/login.dart';
-// import 'package:my_app/auth/views/register.dart';
-// import 'package:my_app/views/home.dart';
+import 'package:my_app/auth/views/start.dart';
+import 'package:my_app/auth/views/login.dart';
+import 'package:my_app/auth/views/register.dart';
+import 'package:my_app/views/home.dart';
+import 'package:my_app/views/colab.dart';
+import 'package:my_app/views/calendar.dart';
+import 'package:my_app/views/settings/settings.dart';
+import 'package:my_app/views/tasks/task.dart';
+import 'package:my_app/views/tasks/notesPage.dart';
+import 'package:my_app/views/tasks/subtasks.dart';
+import 'package:my_app/views/tasks/newtask.dart';
 // import 'package:my_app/views/chatroom.dart';
-// import 'package:my_app/views/calendar.dart';
-// import 'package:my_app/views/colab.dart';
-// import 'package:my_app/views/settings/settings.dart';
-// import 'package:my_app/views/tasks/task.dart';
-// import 'package:my_app/views/tasks/notesPage.dart';
-// import 'package:my_app/views/tasks/subtasks.dart';
-// import 'package:my_app/views/tasks/newtask.dart';
 
 Future main() async {
 
@@ -76,38 +76,38 @@ class MyApp extends StatelessWidget {  // This widget is the root of our applica
     initialRoute: '/splash',
     // Project routes for the different screens
       routes: {
+        '/': (context) => const StartPage(),
         '/splash' : (context) => SplashScreen(), 
-        // '/': (context) => const StartPage(),
-        // '/login': (context) => const LoginPage(),
-        // '/register': (context) => const RegisterPage(),
-        // '/home': (context) => const HomePage(
-        //       username: "abz",
-        //     ),
-        //   '/colab': (context) => const ColabPage(
-        //       username: "abz",
-        //     ),
-        // '/calendar': (context) => const CalendarPage(
-        //       username: "abz",
-        //     ),
-        // '/settings': (context) => const SettingsPage(
-        //       username: "abz",
-        //     ),
-        // '/alltasks': (context) => const AllTasksPage(
-        //       username: "abz",
-        //     ),
-        //     '/newtask': (context) => const NewTaskPage(
-        //       username: "abz",
-        //     ),
-        // '/task': (context) => const TaskDetailsPage(
-        //       username: "abz",
-        //       task:{},
-        //     ),
-        //    '/subtasks': (context) => const SubTaskPage(
-        //       username: "abz",
-        //       subtasks: [],
-        //       subtaskIndex: -1,
-        //       taskheading: "zzz",
-        //     ),
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+        '/home': (context) => const HomePage(
+              username: "abz",
+            ),
+          '/colab': (context) => const ColabPage(
+              username: "abz",
+            ),
+        '/calendar': (context) => const CalendarPage(
+              username: "abz",
+            ),
+        '/settings': (context) => const SettingsPage(
+              username: "abz",
+            ),
+        '/alltasks': (context) => const AllTasksPage(
+              username: "abz",
+            ),
+            '/newtask': (context) => const NewTaskPage(
+              username: "abz",
+            ),
+        '/task': (context) => const TaskDetailsPage(
+              username: "abz",
+              task:{},
+            ),
+           '/subtasks': (context) => const SubTaskPage(
+              username: "abz",
+              subtasks: [],
+              subtaskIndex: -1,
+              taskheading: "zzz",
+            ),
         //      '/chat': (context) => const ChatPage(
         //       username: "abz",
         //       room:"not-sure",

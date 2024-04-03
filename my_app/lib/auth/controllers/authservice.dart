@@ -55,21 +55,21 @@ class FirebaseAuthService {
       } else{  //Android
          googleUser = await GoogleSignIn().signIn();
       }
-      print("GOOGLE USER: $googleUser");
+      // print("GOOGLE USER: $googleUser");
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =  await googleUser?.authentication;
-      print("GOOGLE AUTH: $googleAuth");
+      // print("GOOGLE AUTH: $googleAuth");
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      print("CREDENTIAL: $credential");
+      // print("CREDENTIAL: $credential");
 
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      print("USER CREDENTIAL: $userCredential");
+      // print("USER CREDENTIAL: $userCredential");
 
       // Once signed in, return the UserCredential
       return userCredential;
@@ -81,11 +81,10 @@ class FirebaseAuthService {
   }
 
   Future<void> signOutFromGoogle() async {
-    print("LOGGING OUT");
+    print("LOGGING OUT GMAIL");
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     await _googleSignIn.signOut();
-    await logout();
-    print("LOGGED OUT");
+    print("LOGGED OUT gmail");
   }
 
 }

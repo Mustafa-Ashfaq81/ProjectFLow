@@ -7,6 +7,7 @@ import 'package:my_app/auth/controllers/authservice.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
+import 'package:my_app/utils/cache_util.dart';
 import '../../common/toast.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -255,6 +256,8 @@ class _RegisterPageState extends State<RegisterPage> {
           try {
             createUser(
                 UserModel(username: name, email: email, tasks: mappedtasks));
+            await TaskService().fetchAndCacheNotesData(name);
+            await TaskService().fetchAndCacheColabRequests(name);
           } catch (e) {
             print("got-some-err-creating-user-model ---> $e");
           }

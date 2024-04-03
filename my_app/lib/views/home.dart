@@ -124,7 +124,12 @@ class _HomePageState extends State<HomePage> {
                   case MenuAction.logout:
                     final shouldLogout = await showLogOutDialog(context);
                     if (shouldLogout) {
-                      await _auth.logout();
+                      try{
+                        await _auth.logout();
+                      } catch(e){
+                        print("not a normal account $e");
+                        await _auth.signOutFromGoogle();
+                      }
                       Navigator.of(context)
                           .pushNamedAndRemoveUntil("/", (_) => false);
                     }

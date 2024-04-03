@@ -8,6 +8,7 @@ import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
+import 'package:my_app/utils/cache_util.dart';
 // import 'package:my_app/common/toast.dart';
 
 class LoginPage extends StatefulWidget {
@@ -308,9 +309,14 @@ class _LoginPageState extends State<LoginPage> {
       try {
         createUser(
             UserModel(username: username, email: gmail, tasks: mappedtasks));
+        await TaskService().fetchAndCacheNotesData(username!);
+        await TaskService().fetchAndCacheColabRequests(username);
       } catch (e) {
         print("got-some-err-creating-user-model ---> $e");
       }
+    } else {
+        await TaskService().fetchAndCacheNotesData(username!);
+        await TaskService().fetchAndCacheColabRequests(username);
     }
     Navigator.pushReplacement(
         context,

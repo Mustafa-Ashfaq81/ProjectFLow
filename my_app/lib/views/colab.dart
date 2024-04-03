@@ -25,11 +25,12 @@ class _ColabPageState extends State<ColabPage> {
   List<Map<String, dynamic>> colabRequests = [];
   List<Map<String, dynamic>> rooms = [];
   String allrooms = '';
-  late IO.Socket _socket;
+  IO.Socket _socket = IO.io('dummy_url'); //to avoid some errors
   late MessageProvider provider;
 
   @override
   void initState() {
+    provider = Provider.of<MessageProvider>(context, listen: false);
     super.initState();
   }
   
@@ -70,7 +71,6 @@ class _ColabPageState extends State<ColabPage> {
         var id = room['room_id'];
         ids.add(id);
     }
-    provider = Provider.of<MessageProvider>(context, listen: false);
     provider.setRoomIds(ids);
     
     _socket = IO.io(
