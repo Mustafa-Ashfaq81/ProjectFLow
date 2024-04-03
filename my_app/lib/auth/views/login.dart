@@ -287,8 +287,8 @@ class _LoginPageState extends State<LoginPage> {
   
   Future<void> _loginGmail(UserCredential usercred) async {
 
-    print(usercred);
-    print("--------");
+    // print(usercred);
+    // print("--------");
     var username = usercred.user!.displayName;
     final gmail = usercred.user!.email;
     //check if user is not created, create that user in db else just login

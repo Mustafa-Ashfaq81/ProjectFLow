@@ -38,7 +38,6 @@ io.on('connection', (socket) => {
     }
     messages.push(message)
     io.to(message.room).emit('message',message)
-    // io.emit('message', message)
   })
 
   socket.on('disconnect', ()=> {

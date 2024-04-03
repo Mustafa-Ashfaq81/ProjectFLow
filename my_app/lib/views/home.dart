@@ -1,8 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast, prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
-import 'package:my_app/auth/controllers/authservice.dart';
-import 'package:my_app/common/logoutdialog.dart';
 import 'package:my_app/controllers/taskstatus.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/components/image.dart';
@@ -15,7 +13,7 @@ import '../utils/cache_util.dart';
 
 // enum data type for logout and settings
 
-enum MenuAction { logout, settings }
+enum MenuAction { settings }
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -30,7 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final FirebaseAuthService _auth = FirebaseAuthService();
   TextEditingController querycontroller = TextEditingController();
 
   Widget completedtasks = const Text("loading-at-init-state");
@@ -121,19 +118,6 @@ class _HomePageState extends State<HomePage> {
             PopupMenuButton<MenuAction>(
               onSelected: (value) async {
                 switch (value) {
-                  case MenuAction.logout:
-                    final shouldLogout = await showLogOutDialog(context);
-                    if (shouldLogout) {
-                      try{
-                        await _auth.logout();
-                      } catch(e){
-                        print("not a normal account $e");
-                        await _auth.signOutFromGoogle();
-                      }
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil("/", (_) => false);
-                    }
-                    break;
                   case MenuAction.settings:
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
@@ -143,10 +127,10 @@ class _HomePageState extends State<HomePage> {
               },
               itemBuilder: (context) {
                 return [
-                  const PopupMenuItem<MenuAction>(
-                    value: MenuAction.logout,
-                    child: Text('Log out'),
-                  ),
+                  // const PopupMenuItem<MenuAction>(
+                  //   value: MenuAction.logout,
+                  //   child: Text('Log out'),
+                  // ),
                   const PopupMenuItem<MenuAction>(
                     value: MenuAction.settings,
                     child: Text('Settings'),

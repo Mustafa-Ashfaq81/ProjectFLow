@@ -85,14 +85,15 @@ class _ColabPageState extends State<ColabPage> {
     showerrormsg(message: "Connection Error: The server probably isn't working as of now");
     _socket.disconnect();
     _socket.dispose();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ColabPage(username: widget.username),
-      ));
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => ColabPage(username: widget.username),
+    //   ));
     });
    _socket.on('message', (data) { 
     if (data['sender'] != widget.username){
+          print("socket namespace: mayb use this to avoid duplicate msg err ...  ${_socket.nsp}");
           print("recv message client-side $data at ${widget.username}");
           provider.addNewMessage(Message.fromJson(data),data['room']); 
       }

@@ -381,16 +381,14 @@ Widget _buildCreateTaskButton() {
             if( (start == "" && end != "") || (start != "" && end == "") ) {
               showCustomError("There must be a start time for an end time and vice versa",context); 
             } else{
-
               DateTime comparisonDate = DateTime.parse(_dateController.text);
               DateTime today = DateTime.now();
               bool isAfter = today.isAfter(comparisonDate);
               if (!isAfter){
-                var is_suitable_time = isSuitableTime(start,end);
+                final is_suitable_time = isSuitableTime(start,end);
                 if(is_suitable_time == false){
                    showCustomError("You can only set a deadline that starts and ends in that day & end time must be greater than start time",context);
-                }
-                else {
+                } else {
                   var isoverlap = await isOverlappingdeadline(date,start,end,username);
                   if(isoverlap == true) {
                     showCustomError("This deadline clashes with some other project",context);
@@ -410,7 +408,7 @@ Widget _buildCreateTaskButton() {
                 }
               } else {
                   showCustomError("Deadline of Project selected should be atleast tomorrow",context);
-            }
+               }
           }
          }
         } else  {
@@ -448,6 +446,8 @@ Future<void> handleValidTaskSubmission(BuildContext context, String username, St
 }
 
 Future<bool> isOverlappingdeadline(String date, String start_time, String end_time, String username) async {
+
+  if(start_time == "" && end_time=="") {return false;} //default behaviour if no times given
 
   List<Map<String, dynamic>> deadlines = [];
   List<Map<String, dynamic>>? cachedDeadlines =
@@ -505,6 +505,9 @@ bool isTimeInRange(String startTime, String endTime, String checkTime) {
 }
 
 bool isSuitableTime(String startTime, String endTime){
+
+  if(startTime == "" && endTime=="") {return true;} //default behaviour if no times given
+
   var startTimeParsed = startTime.split(" ")[0].split(":");
   var startTimeclk = startTime.split(" ")[1];
   var startTimehr = int.parse(startTimeParsed[0]);

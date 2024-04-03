@@ -3,6 +3,8 @@ import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/settings/account_settings_page.dart';
 import 'package:my_app/views/settings/notifications_settings_page.dart';
 import 'package:my_app/views/settings/help_page.dart';
+import 'package:my_app/auth/controllers/authservice.dart';
+import 'package:my_app/common/logoutdialog.dart';
 import 'package:my_app/views/settings/about_us_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -16,6 +18,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _logoutClicked = false;
+  final FirebaseAuthService _auth = FirebaseAuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +133,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 titleSize: 16,
                 subtitleSize: 12,
                 onTap: () {
-                  setState(() {
+                  setState(() async{
                     _logoutClicked = true;
+                    final shouldLogout = await showLogOutDialog(context);
+                    if (shouldLogout) {
+                      try{
+                        await _auth.logout();
+                      } catch(e){
+                        print("not a normal account $e");
+                        await _auth.signOutFromGoogle();
+                      }
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil("/", (_) => false);
+                      }
                   });
                 },
               ),
