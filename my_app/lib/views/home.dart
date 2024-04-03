@@ -11,7 +11,7 @@ import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
 import '../utils/cache_util.dart';
 
-// enum data type for logout and settings
+// enum data type for settings
 
 enum MenuAction { settings }
 

@@ -307,14 +307,18 @@ class _LoginPageState extends State<LoginPage> {
       print("User is successfully created");
       List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
       try {
-        createUser(
-            UserModel(username: username, email: gmail, tasks: mappedtasks));
+        createUser(UserModel(username: username, email: gmail, tasks: mappedtasks));
         await TaskService().fetchAndCacheNotesData(username!);
         await TaskService().fetchAndCacheColabRequests(username);
       } catch (e) {
         print("got-some-err-creating-user-model ---> $e");
       }
     } else {
+        final userCollection = FirebaseFirestore.instance.collection("users");
+        final snapshot =
+          await userCollection.where('email', isEqualTo: gmail).get();
+        final doc = snapshot.docs.first; 
+        username = doc.data()['username'];
         await TaskService().fetchAndCacheNotesData(username!);
         await TaskService().fetchAndCacheColabRequests(username);
     }
@@ -324,6 +328,6 @@ class _LoginPageState extends State<LoginPage> {
           builder: (context) => HomePage(
             username: username!,
           ),
-        ));
+    ));
   }
 }

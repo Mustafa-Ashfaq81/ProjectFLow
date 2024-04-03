@@ -132,20 +132,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: 'Securely End Your Session',
                 titleSize: 16,
                 subtitleSize: 12,
-                onTap: () {
-                  setState(() async{
+                onTap: () async{
+                  final shouldLogout = await showLogOutDialog(context);
+                  if (shouldLogout) {
+                    try{
+                      await _auth.logout();
+                    } catch(e){
+                      print("not a normal account $e");
+                      await _auth.signOutFromGoogle();
+                    }
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil("/", (_) => false);
+                    }
+                  setState(() {
                     _logoutClicked = true;
-                    final shouldLogout = await showLogOutDialog(context);
-                    if (shouldLogout) {
-                      try{
-                        await _auth.logout();
-                      } catch(e){
-                        print("not a normal account $e");
-                        await _auth.signOutFromGoogle();
-                      }
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil("/", (_) => false);
-                      }
                   });
                 },
               ),
