@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/models/groupchatmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import '../utils/cache_util.dart';
+import '../utils/cache_util.dart';
 // import 'package:my_app/views/colab.dart';
 
 
@@ -62,8 +62,10 @@ Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String us
     await doc.reference.update({'tasks': tasks});
     updateColabinDatabase(username, task);
     print("accepted-req-successfully");
+    //update group chats and requests in cache
     await updaterooms(task,username);
-    print("group-chats-members-updated");
+    await TaskService().updateCachedRequests(username,task,"accept");
+    print("group-chats-&-cache-updated");
   } catch (e) {
     print("accepting req err $e");
   }
@@ -72,6 +74,7 @@ Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String us
 Future<void> rejectreq(BuildContext context,Map<String, dynamic> task, String username) async {
   try {
     updateColabinDatabase(username, task);
+    await TaskService().updateCachedRequests(username,task,"reject");
     print("rejected-req-successfully");
   } catch (error) {
     print("Error rejecting reqst: $error");

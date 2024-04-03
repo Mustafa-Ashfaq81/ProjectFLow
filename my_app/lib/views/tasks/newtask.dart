@@ -422,8 +422,8 @@ Widget _buildCreateTaskButton() {
 }
 
 Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, String date, String start_time, String end_time, List<Map<String, dynamic>> teamMembers, CalendarClient calendarClient)async{
-   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Form is valid and processing data'),duration: Duration(seconds: 2),));
-    List<String> collaborators= [];
+  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Form is valid and processing data'),duration: Duration(seconds: 2),));
+  List<String> collaborators= [];
   for (Map<String, dynamic> item in teamMembers) {
     if (item.containsKey('name')) {
       collaborators.add(item['name'] as String);
@@ -433,16 +433,16 @@ Future<void> handleValidTaskSubmission(BuildContext context, String username, St
   }
   print("$date ... $start_time ... $end_time...");
   await addTask(username, heading, desc, collaborators,date,start_time,end_time);
+  await TaskService().updateCachedNotes(username,heading,heading, desc,date,start_time,end_time,"add");
   showmsg(message: "Task has been added successfully!");
-  // if (start_time!="" && end_time!=""){
-    calendarClient.insert(heading,start_time,end_time,);
-    showmsg(message: "Event has been added to calendar successfully!");
-  // }
+  
+  calendarClient.insert(heading,start_time,end_time,);
+  // showmsg(message: "Event has been added to calendar successfully!");
   Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => HomePage(username: username),
-    ));
+  ));
 }
 
 Future<bool> isOverlappingdeadline(String date, String start_time, String end_time, String username) async {

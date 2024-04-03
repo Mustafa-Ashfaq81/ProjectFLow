@@ -99,4 +99,81 @@ class TaskService {
     // Cache the fetched colab requests for quick access later
     CacheUtil.cacheData('colabRequests_$username', colabRequests);
   }
+
+  Future<void> updateCachedRequests(String username, Map<String,dynamic> task, String update_type) async {
+    if(update_type=="accept"){
+
+    } else { //"reject"
+
+    }
+  }
+
+  Future<void> updateCachedNotes(String username, String heading, String originalheading, String description, String date, String start, String end, String update_type) async {
+
+    if(update_type == "add"){
+
+      List<Map<String, dynamic>> allTasks =  CacheUtil.getData('tasks_$username');
+      List<Map<String, dynamic>> ongoingProjects =  CacheUtil.getData('ongoingProjects_$username');
+      List<Map<String, dynamic>> deadlines =  CacheUtil.getData('deadlines_$username');
+      List<String> headings =  CacheUtil.getData('headings_$username');
+
+      allTasks.add({
+        'heading': heading,
+        'description': description,
+        'status' : 'progress'
+      });
+      ongoingProjects.add({
+        'heading': heading,
+        'description': description,
+        'status' : 'progress'
+      });
+
+      headings.add(heading);
+
+      if(start!="" && end!="") {
+        deadlines.add({
+        'heading' : heading,
+        'duedate': date,
+        'start_time': start,
+        'end_time': end,
+        });
+      }
+
+      CacheUtil.cacheData('tasks_$username', allTasks.reversed.toList());
+      CacheUtil.cacheData('ongoingProjects_$username', ongoingProjects.reversed.toList());
+      CacheUtil.cacheData('headings_$username', headings);
+      CacheUtil.cacheData('deadlines_$username', deadlines);
+
+    } else if(update_type == "delete") {
+
+      CacheUtil.removeData('tasks_$username');
+      CacheUtil.removeData('ongoingProjects_$username');
+      CacheUtil.removeData('completedProjects_$username');
+      CacheUtil.removeData('headings_$username');
+      CacheUtil.removeData('deadlines_$username');
+      await TaskService().fetchAndCacheNotesData(username);
+
+    } else if(update_type == "edit") {
+      
+        List<Map<String, dynamic>>? cachedAllTasks = CacheUtil.getData('tasks_$username');
+        if (cachedAllTasks != null) {
+          var index = cachedAllTasks.indexWhere((task) => task['heading'] == originalheading);
+          cachedAllTasks[index] = {...cachedAllTasks[index], "heading" : heading, "description":description};
+          CacheUtil.cacheData('tasks_$username', cachedAllTasks);
+        }
+        List<Map<String, dynamic>>? ongoingProjects= CacheUtil.getData('ongoingProjects_$username');
+        if (ongoingProjects != null) {
+          var index = ongoingProjects.indexWhere((task) => task['heading'] == originalheading);
+          ongoingProjects[index] = {...ongoingProjects[index], "heading" : heading, "description":description};
+          CacheUtil.cacheData('ongoingProjects_$username', ongoingProjects);
+        }
+        List<String>? headings = CacheUtil.getData('headings_$username');
+        if(headings!=null){
+          headings[headings.indexWhere((oldheading) => oldheading == originalheading)] = heading;
+          CacheUtil.cacheData('headings_$username', headings);
+        }
+    }
+
+   }
+
 }

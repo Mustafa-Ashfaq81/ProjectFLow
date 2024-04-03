@@ -78,6 +78,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     );
 
     await editTask(username, headingg, desc, mytask['heading']);
+    await TaskService().updateCachedNotes(username,headingg,mytask['heading'], desc,"date","start_time","end_time","edit");
     showmsg(message: "Task has been updated successfully!");
 
     List<Map<String, dynamic>>? cachedAllTasks =
@@ -100,19 +101,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
   void deleteProject() async {
     String headingg = _projectHeadingController.text;
     await deleteTask(username, headingg);
+    await TaskService().updateCachedNotes(username, headingg, headingg, "desc", "date", "start", "end", "delete");
     showmsg(message: "Task has been deleted successfully!");
-    CacheUtil.removeData('tasks_$username');
-    List<Map<String, dynamic>>? cachedAllTasks = CacheUtil.getData('tasks_$username');
-    if (cachedAllTasks != null) {
-      cachedAllTasks.removeWhere((task) => task['heading'] == headingg);
-       CacheUtil.cacheData('tasks_$username', cachedAllTasks);
-       }
-
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => HomePage(username: username),
-        )); // Go back to the previous screen with the list updated
+    )); // Go back to the previous screen with the list updated
   }
 
   AppBar _buildAppBar() {
