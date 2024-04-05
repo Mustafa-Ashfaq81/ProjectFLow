@@ -28,7 +28,8 @@ class MessageProvider extends ChangeNotifier {
 
   setRoomIds(List<String> ids) { 
     for(var id in ids){
-      _messages.add({'id':id,'messages':[]});
+      List<Message> empty = [];
+      _messages.add({'id':id,'messages':empty});
     }
   }
 
@@ -41,12 +42,28 @@ class MessageProvider extends ChangeNotifier {
   }
 
   addNewMessage(Message message, String id) {
-      for(var room_msg in _messages){
-        if(room_msg['id'] == id){
-          room_msg['messages'].add(message); 
-          notifyListeners();
-          return; 
+      // print("adding new message ${message.message} sent at ${message.sentAt} for room $id");
+      try{
+        for(var room_msg in _messages){
+          if(room_msg['id'] == id){
+            // print("match id $id");
+            final room_msgs = room_msg["messages"] as List<Message>;
+            if(room_msgs.isEmpty) {
+              room_msgs.add(message); 
+              room_msg['messages'] = room_msgs;
+            } else {
+              final lastmsg = room_msgs.last;
+              if(lastmsg.sentAt != message.sentAt && lastmsg.message != message.message){
+                room_msgs.add(message); 
+                room_msg['messages'] = room_msgs;
+              }
+            }
+          }
         }
+      } catch(e) {
+        print("ignore_this_exception_for_now $e");
       }
+      notifyListeners();
+      return; 
   }
 }
