@@ -93,8 +93,8 @@ class _ColabPageState extends State<ColabPage> {
     });
    _socket.on('message', (data) { 
     if (data['sender'] != widget.username){
-          print("socket namespace: mayb use this to avoid duplicate msg err ...  ${_socket.nsp}");
-          print("recv message client-side $data at ${widget.username}");
+          // print("socket namespace: mayb use this to avoid duplicate msg err ...  ${_socket.nsp}");
+          // print("recv message client-side $data at ${widget.username}");
           provider.addNewMessage(Message.fromJson(data),data['room']); 
       }
     });
