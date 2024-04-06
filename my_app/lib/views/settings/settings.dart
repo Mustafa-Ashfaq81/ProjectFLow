@@ -1,11 +1,14 @@
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/settings/account_settings_page.dart';
 import 'package:my_app/views/settings/notifications_settings_page.dart';
 import 'package:my_app/views/settings/help_page.dart';
+import 'package:my_app/views/settings/about_us_page.dart';
+import 'package:my_app/components/image.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
 import 'package:my_app/common/logoutdialog.dart';
-import 'package:my_app/views/settings/about_us_page.dart';
 
 class SettingsPage extends StatefulWidget {
   final String username;
@@ -61,10 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage('assets/user_image.png'),
-                    ),
+                    ImageSetter(username: widget.username),
                     const SizedBox(width: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,18 +132,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: 'Securely End Your Session',
                 titleSize: 16,
                 subtitleSize: 12,
-                onTap: () async{
+                onTap: () async {
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
-                    try{
+                    try {
                       await _auth.logout();
-                    } catch(e){
+                    } catch (e) {
                       print("not a normal account $e");
                       await _auth.signOutFromGoogle();
                     }
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil("/", (_) => false);
-                    }
+                  }
                   setState(() {
                     _logoutClicked = true;
                   });
@@ -293,7 +293,6 @@ class BottomLogoutPopup extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -306,7 +305,7 @@ class BottomLogoutPopup extends StatelessWidget {
                     'Sign In',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 ),
