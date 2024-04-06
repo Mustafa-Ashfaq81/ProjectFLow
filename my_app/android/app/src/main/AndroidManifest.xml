@@ -1,10 +1,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.my_app">
-<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
     <application
-        android:label="my_app"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+    android:label="my_app"
+    android:name="${applicationName}"
+    android:icon="@mipmap/ic_launcher"
+    tools:replace="android:label">
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,6 +37,16 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <!-- Handle the redirects from Google sign-in -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="com.example.my_app"
+                    android:host="oauth2redirect" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

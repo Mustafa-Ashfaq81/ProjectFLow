@@ -1,10 +1,29 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
+import 'package:my_app/views/settings/privacy.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:kommunicate_flutter/kommunicate_flutter.dart';
 
 class HelpPage extends StatelessWidget {
   final String username;
 
   const HelpPage({Key? key, required this.username}) : super(key: key);
+
+  void _showMindMateChat(BuildContext context) async {
+    try {
+      dynamic conversationObject = {
+        'appId':
+            '318ca4627d2288155b7b63aa7a622814e', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from Kommunicate dashboard.
+      };
+      dynamic result =
+          await KommunicateFlutterPlugin.buildConversation(conversationObject);
+      print("Conversation builder success : " + result.toString());
+    } on Exception catch (e) {
+      print("Conversation builder error occurred : " + e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +45,6 @@ class HelpPage extends StatelessWidget {
           },
         ),
       ),
-      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -37,10 +55,10 @@ class HelpPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _buildFAQItem(
               question: 'How do I create a new task?',
               answer:
@@ -49,68 +67,142 @@ class HelpPage extends StatelessWidget {
             _buildFAQItem(
               question: 'Can I collaborate with others on tasks?',
               answer:
-                  'Yes, you can collaborate with others by sharing tasks with them. Open the task details and tap on the "Share" button to invite collaborators.',
+                  'Yes, you can collaborate with others by sharing tasks with them. When you click on the + button to create a new task, you have a search button from which you can search your desired user and send them an invite to collaborate on your task',
             ),
             _buildFAQItem(
               question: 'How can I mark a task as completed?',
               answer:
                   'To mark a task as completed, simply tap on the checkbox next to the task in your task list. The task will be moved to the "Completed" section.',
             ),
-            const SizedBox(height: 24),
+            // const SizedBox(height: 5),
             const Text(
               'Contact Support',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'If you have any further questions or need assistance, please contact our support team:',
-              style: TextStyle(fontSize: 16, color: Colors.white),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Email: support@ideaenhancerapp.com',
-              style: TextStyle(fontSize: 16, color: Colors.white),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Phone: +1 (123) 456-7890',
-              style: TextStyle(fontSize: 16, color: Colors.white),
+            Row(
+              children: [
+                Image.asset(
+                  'pictures/whatsapp_icon.png',
+                  width: 40,
+                  height: 40,
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'WhatsApp Support',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Chat with us on WhatsApp',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                InkWell(
+                  onTap: () async {
+                    final String phoneNumber = '03077772929';
+                    final String url = 'https://wa.me/$phoneNumber';
+                    try {
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    } catch (e) {
+                      print('Error launching WhatsApp: $e');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Sorry, something went wrong. Please try again later.'),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 24),
+            const Text(
+              'Get instant help and support by chatting with our AI-powered chatbot, MindMate.',
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            const SizedBox(height: 8),
+
             const Text(
               'Privacy Policy',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 16),
             const Text(
               'Read our privacy policy to understand how we collect, use, and protect your personal information.',
-              style: TextStyle(fontSize: 16, color: Colors.white),
+              style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 8),
-            GestureDetector(
-              onTap: () {
-                // Navigate to privacy policy page
-                // Implement navigation to privacy policy page here
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PrivacyPage(username: username),
+                  ),
+                );
               },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               child: const Text(
                 'View Privacy Policy',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
+                  color: Colors.black,
                 ),
               ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showMindMateChat(context),
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.chat),
       ),
       bottomNavigationBar: Footer(index: 0, username: username),
     );
@@ -125,13 +217,13 @@ class HelpPage extends StatelessWidget {
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           answer,
-          style: const TextStyle(fontSize: 16, color: Colors.white),
+          style: const TextStyle(fontSize: 16, color: Colors.black),
         ),
         const SizedBox(height: 16),
       ],
