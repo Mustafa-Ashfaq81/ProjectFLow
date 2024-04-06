@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
 // import 'package:my_app/controllers/alarmapi.dart';
-import 'package:my_app/controllers/alarm2.dart';
+import 'package:my_app/controllers/alarmapi.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
