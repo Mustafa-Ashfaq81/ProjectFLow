@@ -67,7 +67,7 @@ class HelpPage extends StatelessWidget {
             _buildFAQItem(
               question: 'Can I collaborate with others on tasks?',
               answer:
-                  'Yes, you can collaborate with others by sharing tasks with them. When you click on the + button to create a new task, you have a search button from which you can search your desired user and send them an invite to collaborate on your task',
+                  'Yes, you can collaborate with others by sharing tasks with them using the search icon on the create task page.',
             ),
             _buildFAQItem(
               question: 'How can I mark a task as completed?',

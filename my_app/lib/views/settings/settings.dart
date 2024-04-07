@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/settings/account_settings_page.dart';
-import 'package:my_app/views/settings/notifications_settings_page.dart';
+// import 'package:my_app/views/settings/notifications_settings_page.dart';
 import 'package:my_app/views/settings/help_page.dart';
 import 'package:my_app/views/settings/about_us_page.dart';
 import 'package:my_app/components/image.dart';
@@ -43,7 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFFFFE6C9),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -73,17 +73,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           widget.username,
                           style: const TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          'User Bio',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
                       ],
                     ),
                   ],
@@ -107,24 +100,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              const SizedBox(height: 20),
-              _buildClickableSettingsItem(
-                icon: Icons.notifications,
-                title: 'Notifications',
-                subtitle: 'Message, group & call tones',
-                titleSize: 16,
-                subtitleSize: 12,
-                onTap: () {
-                  // Navigate to notifications settings page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          NotificationsSettingsPage(username: widget.username),
-                    ),
-                  );
-                },
-              ),
+              // const SizedBox(height: 20),
+              // _buildClickableSettingsItem(
+              //   icon: Icons.notifications,
+              //   title: 'Notifications',
+              //   subtitle: 'Message, group & call tones',
+              //   titleSize: 16,
+              //   subtitleSize: 12,
+              //   onTap: () {
+              //     // Navigate to notifications settings page
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) =>
+              //             NotificationsSettingsPage(username: widget.username),
+              //       ),
+              //     );
+              //   },
+              // ),
               const SizedBox(height: 20),
               _buildClickableSettingsItem(
                 icon: Icons.logout,
@@ -184,6 +177,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
+              const SizedBox(height: 40),
+              Center(
+                child: Image.asset(
+                  'pictures/my_app_logo1.png',
+                  width: 100,
+                  height: 100,
+                ),
+              ),
             ],
           ),
         ),
@@ -215,19 +216,19 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 32, color: Colors.white),
+          Icon(icon, size: 32, color: Colors.black),
           const SizedBox(width: 32),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: titleSize, color: Colors.white),
+                style: TextStyle(fontSize: titleSize, color: Colors.black),
               ),
               const SizedBox(height: 5),
               Text(
                 subtitle,
-                style: TextStyle(fontSize: subtitleSize, color: Colors.white),
+                style: TextStyle(fontSize: subtitleSize, color: Colors.black),
               ),
             ],
           ),
