@@ -10,9 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const bool kIsWeb = bool.fromEnvironment('dart.library.js_util');
 
-
-
-
 class ImageSetter extends StatefulWidget {
   final String username;
   const ImageSetter({Key? key, required this.username}) : super(key: key);
@@ -24,6 +21,7 @@ class ImageSetter extends StatefulWidget {
 class _ImageSetterState extends State<ImageSetter> {
   late FirebaseStorage _storage;
   String imageUrl = '';
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -39,23 +37,39 @@ class _ImageSetterState extends State<ImageSetter> {
   }
 
   void _startUpload(XFile selectedImage) async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       String filePath = 'images/${widget.username}.png';
       TaskSnapshot snapshot = kIsWeb
-          ? await _storage.ref().child(filePath).putData(await selectedImage.readAsBytes())
-          : await _storage.ref().child(filePath).putFile(File(selectedImage.path));
+          ? await _storage
+              .ref()
+              .child(filePath)
+              .putData(await selectedImage.readAsBytes())
+          : await _storage
+              .ref()
+              .child(filePath)
+              .putFile(File(selectedImage.path));
 
       imageUrl = await snapshot.ref.getDownloadURL();
       await SharedPreferences.getInstance()
-          ..setString('image_${widget.username}', imageUrl);
-      setState(() {});
+        ..setString('image_${widget.username}', imageUrl);
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       print("[ImageSetter] StartUpload: Uploading error $e");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   Future<void> _pickImage() async {
-    final XFile? selected = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final XFile? selected =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (selected != null) {
       _startUpload(selected);
     }
@@ -108,7 +122,8 @@ class _ImageSetterState extends State<ImageSetter> {
               radius: 24,
               backgroundImage: hasImage
                   ? NetworkImage(imageUrl)
-                  : const AssetImage("pictures/profile.png") as ImageProvider,
+                  : AssetImage("pictures/profile.png") as ImageProvider,
+              child: isLoading ? CircularProgressIndicator() : null,
             ),
             Positioned(
               bottom: -4,
@@ -153,6 +168,6 @@ class _ImageSetterState extends State<ImageSetter> {
 
   @override
   Widget build(BuildContext context) {
-    return imageUrl.isNotEmpty ? buildImage() : const Center(child: CircularProgressIndicator());
+    return buildImage();
   }
 }
