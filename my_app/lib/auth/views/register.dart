@@ -8,7 +8,7 @@ import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/utils/cache_util.dart';
-import '../../common/toast.dart';
+import 'package:my_app/common/toast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -232,7 +232,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // Password match validation
     if (password != pass) {
-      showerrormsg(message: "Passwords do not match \nIcon: \u{1F6A8}");
+      showerrormsg(message: "Passwords do not match \u{1F6A8}");
       return;
     }
     else 
@@ -244,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
       var allusernames = await getallUsers();
       if (allusernames.contains(name) == true) 
       {
-        showerrormsg(message: 'username already taken \nIcon: \u{1F6A8}');
+        showerrormsg(message: 'username already taken \u{1F6A8}');
       } 
 
       else 

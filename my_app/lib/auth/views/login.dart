@@ -289,6 +289,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // print(usercred);
     // print("--------");
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging in with Gmail ... '),duration: Duration(seconds: 3),));
     var username = usercred.user!.displayName;
     final gmail = usercred.user!.email;
     //check if user is not created, create that user in db else just login

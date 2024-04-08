@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:my_app/common/toast.dart';
 
 class UserModel {
   final String? username;
@@ -96,3 +98,59 @@ void deleteUserData(String username) async {
     print("err deleting data  ... $e");
   }
 }
+
+
+Future<String> updateUsername(String original_username,name) async {  //wont be used most probably as changing username would mean changing a lot of things
+  var allusernames = await getallUsers();
+  if (allusernames.contains(name) == true) {
+    showerrormsg(message: "This username has been taken already");
+    return original_username;
+  } 
+
+  final userCollection = FirebaseFirestore.instance.collection("users");
+  final snapshot =
+      await userCollection.where('username', isEqualTo: original_username).get();
+  final doc = snapshot.docs.first;
+  await doc.reference.update({'username': name});
+  showmsg(message: "Username has been updated successfully");
+  return name;
+}
+
+Future<void> updateUserInfo (String original_username, String email, String password, bool emailChanged, bool passwordChanged ) async{
+
+  // if(nameChanged) { final_username = await updateUsername(original_username,name); }
+
+    if(emailChanged) { 
+      try {
+        final userCollection = FirebaseFirestore.instance.collection("users");
+        final snapshot =
+            await userCollection.where('username', isEqualTo: original_username).get();
+        final doc = snapshot.docs.first;
+        await doc.reference.update({'email': email});
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          await user.verifyBeforeUpdateEmail(email); //email addresses should be verified
+        } 
+        showmsg(message: "Email has been updated successfully");
+      } catch (e) {
+          print("got error updating EMAIL ...  $e");
+          showerrormsg(message: "MUST verify on new email address before updating the email");
+      }   
+    } 
+
+    if(passwordChanged) {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        try {
+          await user.updatePassword(password);
+          showmsg(message: "Password has been changed successfully");
+        } catch (e) {
+          print("got error updating password ...  $e");
+          showerrormsg(message: "got some error updating the password");
+        }  
+      }
+    }
+
+  return;
+}
+

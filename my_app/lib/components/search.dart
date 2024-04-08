@@ -102,7 +102,7 @@ class SearchUsers extends SearchDelegate<String> {
   final List<String> users;
 
   SearchUsers({required this.username, required this.users}) {
-    print("username $username other-users $users");
+    // print("username $username other-users $users");
   }
 
   // APP Bar styling below according to our color scheme

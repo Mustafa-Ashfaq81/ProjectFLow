@@ -143,6 +143,7 @@ class _ColabPageState extends State<ColabPage> {
                                     children: [
                                       ElevatedButton(
                                           onPressed: () async {
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Accepting request and creating group chats ... '),duration: Duration(seconds: 4),));
                                             await acceptreq(context,request, widget.username);
                                             Navigator.push(
                                               context,
@@ -155,6 +156,7 @@ class _ColabPageState extends State<ColabPage> {
                                       const SizedBox(width: 10),
                                       ElevatedButton(
                                           onPressed: () async {
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Declining collaboration request ... '),duration: Duration(seconds: 3),));
                                             await rejectreq(context,request, widget.username);
                                             Navigator.push(
                                               context,
