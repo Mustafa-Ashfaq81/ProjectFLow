@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_const_constructors, deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // Ensure you have this import
 import 'package:my_app/components/footer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/models/usermodel.dart';
@@ -6,9 +9,13 @@ import 'package:my_app/common/toast.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   final String username;
+  final bool isGoogleSignedIn;
 
-  const AccountSettingsPage({Key? key, required this.username})
-      : super(key: key);
+  const AccountSettingsPage({
+    Key? key,
+    required this.username,
+    this.isGoogleSignedIn = false,
+  }) : super(key: key);
 
   @override
   _AccountSettingsPageState createState() => _AccountSettingsPageState();
@@ -37,9 +44,9 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
     print("isGmailLogin ... $isGmailLogin");
     super.initState();
-    username = widget.username;
-    // _nameController = TextEditingController(text: widget.username);
-    _emailController = TextEditingController(text: initialEmail);
+    _nameController = TextEditingController(
+        text: widget.username); // Assuming username is the name
+    _emailController = TextEditingController(text: 'email@example.com');
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
   }
@@ -57,52 +64,46 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple, // Updated for a more modern look
-        title: const Text('Account Settings'),
+        backgroundColor: Colors.black,
+        title: const Text(
+          'Account Settings',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      backgroundColor: Colors.grey[900], // Darker shade for better contrast
+      backgroundColor: const Color(0xFFFFE6C9),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionTitle('Profile Information'),
-            // _buildTextField(
-            //   controller: _nameController,
-            //   labelText: 'Name',
-            //   icon: Icons.person,
-            // ),
-            !isGmailLogin ? _buildTextField(
+            _buildTextField(
+              controller: _nameController,
+              labelText: 'Name',
+              icon: Icons.person,
+            ),
+            _buildTextField(
               controller: _emailController,
               labelText: 'Email',
               icon: Icons.email,
-            ) : Text(""),
-            !isGmailLogin ?_buildSectionTitle('Change Password') : Text(""),
-            !isGmailLogin ? _buildTextField(
+            ),
+            _buildSectionTitle('Change Password'),
+            _buildTextField(
               controller: _passwordController,
               labelText: 'New Password',
               icon: Icons.lock,
               obscureText: true,
-            ): Text(""),
-            !isGmailLogin ? _buildTextField(
+            ),
+            _buildTextField(
               controller: _confirmPasswordController,
               labelText: 'Confirm Password',
               icon: Icons.lock_outline,
               obscureText: true,
-            ): Text(""),
-            !isGmailLogin ? Text("") : const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0), 
-                  child: Text(
-                    'You can not change your username since you are logged in with a Gmail account.\nIn order to change your gmail, password or username, please visit Google`s official website.',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+            ),
             const SizedBox(height: 24),
             !isGmailLogin ? Center(
               child: ElevatedButton(
@@ -139,7 +140,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         child: Text(
           title,
           style: const TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+              color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
         ),
       );
 
@@ -152,13 +153,12 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     return TextField(
       controller: controller,
       obscureText: obscureText,
-      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        prefixIcon: icon != null ? Icon(icon, color: Colors.white70) : null,
+        prefixIcon: icon != null ? Icon(icon, color: Colors.black) : null,
         labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white70),
+        labelStyle: const TextStyle(color: Colors.black),
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white70),
+          borderSide: BorderSide(color: Colors.black),
         ),
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.deepPurple),

@@ -1,6 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/views/start.dart';
 import 'package:flame_splash_screen/flame_splash_screen.dart';
+// import 'package:audioplayers/audioplayers.dart';
+
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: FlameSplashScreen(
         theme: FlameSplashTheme(
           logoBuilder: (context) => Image.asset(
-            'pictures/my_app_logo.png',
+            'pictures/my_app_logo1.png',
             width: 200,
             height: 200,
           ),
@@ -45,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
         showBefore: (BuildContext context) {
           return const Text(
-            "Welcome to My App",
+            "Where Ideas Turn Into Reality",
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,

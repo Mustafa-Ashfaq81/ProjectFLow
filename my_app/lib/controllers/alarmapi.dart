@@ -1,4 +1,4 @@
-// ignore_for_file: sort_child_properties_last
+// ignore_for_file: sort_child_properties_last, avoid_print
 // import 'dart:convert';
 // import 'dart:io';
 import 'package:flutter/material.dart';

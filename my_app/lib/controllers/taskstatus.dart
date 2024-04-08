@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/models/taskmodel.dart';
@@ -64,76 +62,19 @@ Widget completedIdeasView(BuildContext context,
           child: Center(child: Text("No completed task yet")))
       : SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: 
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: headings
-                  .map(
-                    (task) => headings.indexOf(task) % 2 == 0
-                        ? Row(children: [
-                            Container(
-                              margin:
-                                  const EdgeInsets.only(left: 10.0, top: 10.0),
-                              height: 200.0,
-                              width: 200.0,
-                              decoration: BoxDecoration(
-                                color:
-                                    const Color(0xFFE16C00).withOpacity(0.48),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () async {
-                                    Map<String, dynamic> thistask =
-                                        await getTaskbyHeading(
-                                            task['heading'], username);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => TaskDetailsPage(
-                                            username: username, task: thistask),
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start, // Aligning heading to left
-                                      children: [
-                                        Text(
-                                          task['heading'],
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18.0,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                            height:
-                                                8.0), // Adding space between heading and description
-                                        Text(
-                                          task['description'],
-                                          style: const TextStyle(
-                                              color: Colors.white70,
-                                               overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ])
-                        : Container(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: headings
+                .map(
+                  (task) => headings.indexOf(task) % 2 == 0
+                      ? Row(children: [
+                          Container(
                             margin:
                                 const EdgeInsets.only(left: 10.0, top: 10.0),
                             height: 200.0,
                             width: 200.0,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF141310).withOpacity(0.85),
+                              color: const Color(0xFFE16C00).withOpacity(0.48),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Material(
@@ -147,16 +88,15 @@ Widget completedIdeasView(BuildContext context,
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => TaskDetailsPage(
-                                          username: username,
-                                          task:thistask), // Task data will be passed as parameters
+                                          username: username, task: thistask),
                                     ),
                                   );
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start, // Aligning heading to left
                                     children: [
                                       Text(
                                         task['heading'],
@@ -166,12 +106,14 @@ Widget completedIdeasView(BuildContext context,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      const SizedBox(height: 8.0),
+                                      const SizedBox(
+                                          height:
+                                              8.0), // Adding space between heading and description
                                       Text(
                                         task['description'],
                                         style: const TextStyle(
-                                            color: Colors.white70,
-                                            overflow: TextOverflow.ellipsis,
+                                          color: Colors.white70,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ],
@@ -180,8 +122,61 @@ Widget completedIdeasView(BuildContext context,
                               ),
                             ),
                           ),
-                  )
-                  .toList(),
+                        ])
+                      : Container(
+                          margin: const EdgeInsets.only(left: 10.0, top: 10.0),
+                          height: 200.0,
+                          width: 200.0,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF141310).withOpacity(0.85),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () async {
+                                Map<String, dynamic> thistask =
+                                    await getTaskbyHeading(
+                                        task['heading'], username);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TaskDetailsPage(
+                                        username: username,
+                                        task:
+                                            thistask), // Task data will be passed as parameters
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      task['heading'],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      task['description'],
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                )
+                .toList(),
           ));
 }
 
@@ -189,10 +184,12 @@ Widget inprogressIdeasView(BuildContext context,
     List<Map<String, dynamic>> headings, String username) {
   return headings.isEmpty
       ? const Padding(
-          padding: EdgeInsets.only(top: 10.0,),
+          padding: EdgeInsets.only(
+            top: 10.0,
+          ),
           child: Center(child: Text("No task in progress")))
       : Padding(
-          padding: const EdgeInsets.only(left:30.0,right:30.0),
+          padding: const EdgeInsets.only(left: 1.0, right: 30.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: headings

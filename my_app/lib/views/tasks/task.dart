@@ -78,19 +78,21 @@ class _TaskPageState extends State<TaskDetailsPage> {
     );
 
     await editTask(username, headingg, desc, mytask['heading']);
-    await TaskService().updateCachedNotes(username,headingg,mytask['heading'], desc,"date","start_time","end_time","edit");
+    await TaskService().updateCachedNotes(username, headingg, mytask['heading'],
+        desc, "date", "start_time", "end_time", "edit");
     showmsg(message: "Task has been updated successfully!");
 
     List<Map<String, dynamic>>? cachedAllTasks =
-    CacheUtil.getData('tasks_$username');
+        CacheUtil.getData('tasks_$username');
     if (cachedAllTasks != null) {
-      int index = cachedAllTasks.indexWhere((task) => task['heading'] == mytask['heading']);
-       if (index != -1) {
+      int index = cachedAllTasks
+          .indexWhere((task) => task['heading'] == mytask['heading']);
+      if (index != -1) {
         cachedAllTasks[index]['heading'] = headingg; // Update the heading
         cachedAllTasks[index]['description'] = desc; // Update the description
         CacheUtil.cacheData('tasks_$username', cachedAllTasks);
-        }
-        }
+      }
+    }
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -101,13 +103,14 @@ class _TaskPageState extends State<TaskDetailsPage> {
   void deleteProject() async {
     String headingg = _projectHeadingController.text;
     await deleteTask(username, headingg);
-    await TaskService().updateCachedNotes(username, headingg, headingg, "desc", "date", "start", "end", "delete");
+    await TaskService().updateCachedNotes(
+        username, headingg, headingg, "desc", "date", "start", "end", "delete");
     showmsg(message: "Task has been deleted successfully!");
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => HomePage(username: username),
-    )); // Go back to the previous screen with the list updated
+        )); // Go back to the previous screen with the list updated
   }
 
   AppBar _buildAppBar() {
@@ -130,7 +133,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.of(context).pop(),
-        padding: EdgeInsets.only(left:10), // Adjust padding to move icon slightly to left
+        padding: EdgeInsets.only(
+            left: 10), // Adjust padding to move icon slightly to left
       ),
     );
   }
@@ -170,8 +174,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                                 context, deleteProject);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Color.fromARGB(255, 255, 215, 100),
+                            backgroundColor: Color.fromARGB(255, 255, 215, 100),
                           ),
                           icon: const Icon(Icons.delete, color: Colors.red),
                           label: const Text('Delete Task',
@@ -181,8 +184,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Color.fromARGB(255, 255, 215, 100),
+                            backgroundColor: Color.fromARGB(255, 255, 215, 100),
                           ),
                           child: const Text('Save Project Details',
                               style: TextStyle(color: Colors.black)),
@@ -202,29 +204,39 @@ class _TaskPageState extends State<TaskDetailsPage> {
   Widget _buildSubtasks(String username) {
     //show diff views dep on if subtasks are available
 
-    if (subtasks.isEmpty == true) {
-      List<Map<String, dynamic>> newsubtasks = [];
+    if (subtasks.isEmpty) {
       return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(children: [
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
             const Text(
-                "no subtasks for this task ... you might want to enhance your idea"),
-            SizedBox(
-              width: 150,
-              child: ElevatedButton(
-                onPressed: () async {
-                  newsubtasks = await gptapicall(_projectHeadingController.text,
-                      _projectDescriptionController.text);
-                  await addSubTasks(username, mytask['heading'], newsubtasks);
-                  //reload this page to see reflected changes ...
-                  setState(() {
-                    subtasks = newsubtasks;
-                  });
-                },
-                child: const Text('Enhance your project ideas (I AM A FOOTER)'),
+              "No subtasks for this task... you might want to enhance your idea",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                height: 1.5,
               ),
             ),
-          ]));
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: _showEnhanceConfirmationDialog,
+              icon: const Icon(Icons.auto_awesome),
+              label: const Text('Enhance your project ideas'),
+              style: ElevatedButton.styleFrom(
+                // primary: Colors.deepOrange,
+                // onPrimary: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 10.0),
+                textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                elevation: 4.0,
+              ),
+            ),
+          ],
+        ),
+      );
     }
     return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -466,6 +478,55 @@ class _TaskPageState extends State<TaskDetailsPage> {
     );
   }
 
+  Future<void> _showEnhanceConfirmationDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button to dismiss
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Enhancement'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('You can only use the enhance feature once.'),
+                Text(
+                    'Make sure your description and heading are adequately detailed.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () async {
+                // Call your enhance feature method here
+                Navigator.of(context).pop(); // Dismiss the dialog
+                await _enhanceProject();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _enhanceProject() async {
+    List<Map<String, dynamic>> newsubtasks = await gptapicall(
+      _projectHeadingController.text,
+      _projectDescriptionController.text,
+    );
+    await addSubTasks(username, mytask['heading'], newsubtasks);
+    setState(() {
+      subtasks = newsubtasks;
+    });
+    // Show a message or perform other actions after enhancing the project
+  }
+
   Widget _buildTaskMenu(String username) {
     // Assuming your tasks are fetched or defined here
     final List<String> tasks =
@@ -491,7 +552,9 @@ class _TaskPageState extends State<TaskDetailsPage> {
                 MaterialPageRoute(
                   builder: (context) => SubTaskPage(
                       username: username,
-                      taskheading: taskdetailschanged ? _projectHeadingController.text : mytask['heading'],
+                      taskheading: taskdetailschanged
+                          ? _projectHeadingController.text
+                          : mytask['heading'],
                       subtasks: subtasks,
                       subtaskIndex: index),
                 ),

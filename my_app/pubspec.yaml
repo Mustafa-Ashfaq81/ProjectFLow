@@ -47,6 +47,9 @@ dependencies:
   flame_splash_screen: ^0.3.0
   carousel_slider: ^4.2.1
   kommunicate_flutter: ^1.9.0
+  animated_text_kit: ^4.2.2
+  scribble: ^0.10.0+1
+  audioplayers: ^6.0.0
   #my dependencies ---------------------------------------------------------------------
 
 dev_dependencies:
@@ -83,7 +86,10 @@ flutter:
     - pictures/mustafa.png
     - pictures/my_app_logo.png
     - pictures/google-icon.png
+    - pictures/my_app_logo1.png
     - audios/alarm.mp3
+    - audios/chime1.mp3
+
     - pictures/
 
 

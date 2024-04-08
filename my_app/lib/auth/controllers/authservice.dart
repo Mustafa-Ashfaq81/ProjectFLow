@@ -69,7 +69,9 @@ class FirebaseAuthService {
       // print("CREDENTIAL: $credential");
 
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
       // print("USER CREDENTIAL: $userCredential");
+
 
       // Once signed in, return the UserCredential
       return userCredential;
