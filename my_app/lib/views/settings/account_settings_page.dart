@@ -94,7 +94,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 ),
                 child: const Text(
                   'Save Changes',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle( color: Colors.white, fontSize: 18),
                 ),
               ),
             ),

@@ -64,7 +64,7 @@ Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String us
     print("accepted-req-successfully");
     //update group chats and requests in cache
     await updaterooms(task,username);
-    await TaskService().updateCachedRequests(username,task,"accept");
+    await TaskService().updateCachedRequests(task,username);
     print("group-chats-&-cache-updated");
   } catch (e) {
     print("accepting req err $e");
@@ -74,7 +74,7 @@ Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String us
 Future<void> rejectreq(BuildContext context,Map<String, dynamic> task, String username) async {
   try {
     updateColabinDatabase(username, task);
-    await TaskService().updateCachedRequests(username,task,"reject");
+    await TaskService().updateCachedRequests(task,username);
     print("rejected-req-successfully");
   } catch (error) {
     print("Error rejecting reqst: $error");

@@ -137,9 +137,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil("/", (_) => false);
                   }
-                  setState(() {
-                    _logoutClicked = true;
-                  });
+                  // setState(() {
+                  //   _logoutClicked = true;
+                  // });
                 },
               ),
               const SizedBox(height: 20),

@@ -100,12 +100,22 @@ class TaskService {
     CacheUtil.cacheData('colabRequests_$username', colabRequests);
   }
 
-  Future<void> updateCachedRequests(String username, Map<String,dynamic> task, String update_type) async {
-    if(update_type=="accept"){
+  Future<void> updateCachedRequests(Map<String,dynamic> task, String username) async {
 
-    } else { //"reject"
+    final data = CacheUtil.getData('colabRequests_$username');
+    final sender = task['sender'];
+    final idx = (task['index'] ?? task['task']);
 
+    List<Map<String, String>> updatedData = [];
+
+    for (var item in data) {
+      if (item['sender'] != sender|| item['task'] != idx) {
+        updatedData.add(Map.from(item));      // This creates a copy
+      }
     }
+    CacheUtil.cacheData('colabRequests_$username', updatedData);
+    print("orig data $data, new dta $updatedData");
+    
   }
 
   Future<void> updateCachedNotes(String username, String heading, String originalheading, String description, String date, String start, String end, String update_type) async {
