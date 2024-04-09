@@ -10,6 +10,8 @@ import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/utils/cache_util.dart';
 import 'package:my_app/common/toast.dart';
 
+
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -25,6 +27,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  bool _obscureText = true;
+  bool _obscureConfirmPassword = true;
+
 
   bool isSigningUp = false;
 
@@ -115,24 +121,49 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(),
-                    ),
+                      obscureText: _obscureText,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
+                      ),
                       controller: _passwordController,
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(),
-                    ),
+                      obscureText: _obscureConfirmPassword,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureConfirmPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureConfirmPassword =
+                                  !_obscureConfirmPassword;
+                            });
+                          },
+                        ),
+                      ),
                       controller: _confirmPasswordController,
                     ),
                     const SizedBox(height: 20),
