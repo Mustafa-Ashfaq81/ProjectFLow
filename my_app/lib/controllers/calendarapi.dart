@@ -1,71 +1,75 @@
-import "package:googleapis_auth/auth_io.dart";
+// ignore_for_file: unused_import, avoid_print, unnecessary_const
+
+import 'dart:developer';
 import 'package:googleapis/calendar/v3.dart';
-import 'package:my_app/common/toast.dart';
-import 'package:my_app/components/image.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CalendarClient {
-  static final _scopes = [CalendarApi.calendarScope];
+  static const _scopes = const [CalendarApi.calendarScope];
 
-  void insert(title, startTime, endTime) async {
-    var _clientID;
-    if (kIsWeb){
-      _clientID = ClientId("12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com");
-    } else {    //android
-      _clientID = ClientId("12273615091-rjfklbbdqr6591ioa8lss1lk3eor2j67.apps.googleusercontent.com");
-    }
-    if (_clientID != null) {
-    await clientViaUserConsent(_clientID, _scopes, prompt).then((AuthClient client) {
+  Future<void> insert(String title, String startTime, String endTime) async {
+    var clientID = ClientId(
+        "1073810950980-50c8312c67hehvrllgnttp6hf3ltodlp.apps.googleusercontent.com",
+        "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"); // Client secret is null for installed apps
+
+    await clientViaUserConsent(clientID, _scopes, prompt)
+        .then((AuthClient client) {
       var calendar = CalendarApi(client);
-      print("got-cal");
-      calendar.calendarList.list().then((value) => print("VAL________$value"));
-      print("got-cal-2");
 
       String calendarId = "primary";
-      Event event = Event(); // Create object of event
+      Event event = Event();
 
       event.summary = title;
 
+      // Parse startTime
+      DateTime? startDateTime = parseDateTime(startTime);
+
       EventDateTime start = EventDateTime();
-      start.dateTime = startTime;
+      start.dateTime = startDateTime;
       start.timeZone = "GMT+05:00";
       event.start = start;
 
+      // Parse endTime
+      DateTime? endDateTime = parseDateTime(endTime);
+
       EventDateTime end = EventDateTime();
       end.timeZone = "GMT+05:00";
-      end.dateTime = endTime;
+      end.dateTime = endDateTime;
       event.end = end;
-      print("got-events");
-      try {
-        calendar.events.insert(event, calendarId).then((value) {
-          print("ADDEDD_________________${value.status}");
-          if (value.status == "confirmed") {
-            print('Event added in google calendar');
-          } else {
-            print("Unable to add event in google calendar");
-          }
-        });
-      } catch (e) {
-        print('Error creating event $e');
-      }
-    });
-    } else {
-      showerrormsg(message: "client-id-null");
-      print("null-client-id");
 
+      calendar.events.insert(event, calendarId).then((value) {
+        if (value.status == "confirmed") {
+          
+          print('Event added in google calendar');
+        } else {
+          print("Unable to add event in google calendar");
+        }
+      }).catchError((e) {
+        print('Error creating event $e');
+      });
+    }).catchError((e) {
+      print('Authorization failed: $e');
+    });
+  }
+
+  DateTime? parseDateTime(String timeString) {
+    try {
+      String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      String dateTimeString = "$currentDate $timeString";
+      return DateFormat('yyyy-MM-dd h:mm a').parse(dateTimeString);
+    } catch (e) {
+      print('Error parsing datetime: $e');
+      return null;
     }
   }
 
   void prompt(String url) async {
-    print("Please go to the following URL and grant access:  => $url");
-
-    if (!kIsWeb){ //android
-      if (await canLaunchUrl(Uri.parse(url))) {
-        await launchUrl(Uri.parse(url));
-      } else {
-        showerrormsg(message: "could not launch the url");
-        print('Could not launch $url');
-      }
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }

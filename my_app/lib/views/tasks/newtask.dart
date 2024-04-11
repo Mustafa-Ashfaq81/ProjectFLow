@@ -1,14 +1,21 @@
-// ignore_for_file: prefer_const_constructors, no_logic_in_create_state, use_build_context_synchronously, avoid_print
+// ignore_for_file: prefer_const_constructors, no_logic_in_create_state, use_build_context_synchronously, avoid_print, unused_import, non_constant_identifier_names, unused_field
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/controllers/calendarapi.dart';
+import 'package:my_app/controllers/alarmapi.dart';
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
+import 'package:my_app/audio/native_audio_player.dart';
 import '../../common/toast.dart';
 import 'package:my_app/utils/cache_util.dart';
+import 'package:my_app/utils/file_util.dart';
 
 class NewTaskPage extends StatefulWidget {
   final String username;
@@ -32,7 +39,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
   TextEditingController descController = TextEditingController();
   TextEditingController headingController = TextEditingController();
   List<Map<String, dynamic>> teamMembers = [];
-
+  bool _isAlarmEnabled = false;
+  DateTime? _selectedAlarmTime;
+  AlarmSettings? alarmSettings;
 
   @override
   void initState() {
@@ -70,15 +79,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
   }
 
   AppBar _buildAppBar() {
-   return AppBar(
-    centerTitle: true, // Aligns the title to the center
-    backgroundColor: Colors.black,
-    automaticallyImplyLeading: false,
-    title: Text('Create New Task',
-      style: TextStyle(color: Colors.white), // Set text color to white
-    ),
-  );
-}
+    return AppBar(
+      centerTitle: true, // Aligns the title to the center
+      backgroundColor: Colors.black,
+      automaticallyImplyLeading: false,
+      title: Text(
+        'Create New Task',
+        style: TextStyle(color: Colors.white), // Set text color to white
+      ),
+    );
+  }
 
   Widget _buildBody() {
     return SingleChildScrollView(
@@ -124,6 +134,24 @@ class _NewTaskPageState extends State<NewTaskPage> {
               _buildSectionTitle('Time & Date'),
               const SizedBox(height: 10),
               _buildTimeAndDateSection(),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _isAlarmEnabled,
+                    onChanged: (value) {
+                      setState(() {
+                        _isAlarmEnabled = value!;
+                      });
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Enable alarm functionality',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               const SizedBox(height: 30),
               _buildCreateTaskButton(),
             ],
@@ -161,7 +189,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
       child: TextFormField(
         controller: controller,
         maxLength: maxLines == 1 ? 50 : 500,
-        keyboardType: maxLines == 1 ? TextInputType.text : TextInputType.multiline,
+        keyboardType:
+            maxLines == 1 ? TextInputType.text : TextInputType.multiline,
         maxLines: maxLines,
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -183,7 +212,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
         children: [
           Row(
             children: teamMembers
-                .map((member) => _buildTeamMember(member["name"], member["color"]))
+                .map((member) =>
+                    _buildTeamMember(member["name"], member["color"]))
                 .toList(),
           ),
           IconButton(
@@ -198,13 +228,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
               }
               Future<String?> selectedUsername = showSearch(
                 context: context,
-                delegate: SearchUsers(username: widget.username, users: otherusers)
-                    as SearchDelegate<String>,
+                delegate:
+                    SearchUsers(username: widget.username, users: otherusers)
+                        as SearchDelegate<String>,
               );
               selectedUsername.then((username) {
                 if (username != "") {
                   setState(() {
-                    teamMembers.add({"name": username, "color": Colors.yellow[100]});
+                    teamMembers
+                        .add({"name": username, "color": Colors.yellow[100]});
                   });
                 }
               });
@@ -359,71 +391,120 @@ class _NewTaskPageState extends State<NewTaskPage> {
     }
   }
 
-Widget _buildCreateTaskButton() {
-  return Container(
-    width: double.infinity,
-    height: 50.0,
-    decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
-    child: TextButton(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.green,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      ),
-      onPressed: () async {
-        if (_formKey.currentState!.validate()) {
-          var date = _dateController.text;
-          var start = _startTimeController.text;
-          var end = _endTimeController.text;
-          if( date==""){
-            showCustomError("There must be a deadline for this project",context);
-          } else {
-            if( (start == "" && end != "") || (start != "" && end == "") ) {
-              showCustomError("There must be a start time for an end time and vice versa",context); 
-            } else{
-              DateTime comparisonDate = DateTime.parse(_dateController.text);
-              DateTime today = DateTime.now();
-              bool isAfter = today.isAfter(comparisonDate);
-              if (!isAfter){
-                final is_suitable_time = isSuitableTime(start,end);
-                if(is_suitable_time == false){
-                   showCustomError("You can only set a deadline that starts and ends in that day & end time must be greater than start time",context);
+  Widget _buildCreateTaskButton() {
+    return Container(
+      width: double.infinity,
+      height: 50.0,
+      decoration: BoxDecoration(
+          color: Colors.green, borderRadius: BorderRadius.circular(12.0)),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.green,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        ),
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            var date = _dateController.text;
+            var start = _startTimeController.text;
+            var end = _endTimeController.text;
+            if (date == "") {
+              showCustomError(
+                  "There must be a deadline for this project", context);
+            } else {
+              if ((start == "" && end != "") || (start != "" && end == "")) {
+                showCustomError(
+                    "There must be a start time for an end time and vice versa",
+                    context);
+              } else {
+                // DateTime comparisonDate = DateTime.parse(_dateController.text);
+                // DateTime today = DateTime.now();
+                // bool isAfter = today.isAfter(comparisonDate);
+                // if (!isAfter)
+                // {
+                final is_suitable_time = isSuitableTime(start, end);
+                if (is_suitable_time == false) {
+                  showCustomError(
+                      "You can only set a deadline that starts and ends in that day & end time must be greater than start time",
+                      context);
                 } else {
-                  var isoverlap = await isOverlappingdeadline(date,start,end,username);
-                  if(isoverlap == true) {
-                    showCustomError("This deadline clashes with some other project",context);
-                  } else {  //no overlaps
+                  var isoverlap =
+                      await isOverlappingdeadline(date, start, end, username);
+                  if (isoverlap == true) {
+                    showCustomError(
+                        "This deadline clashes with some other project",
+                        context);
+                  } else {
+                    //no overlaps
                     handleValidTaskSubmission(
-                      context,
-                      username,
-                      headingController.text,
-                      descController.text,
-                      _dateController.text,
-                      _startTimeController.text,
-                      _endTimeController.text,
-                      teamMembers,
-                      calendarClient
-                    );
+                        context,
+                        username,
+                        headingController.text,
+                        descController.text,
+                        _dateController.text,
+                        _startTimeController.text,
+                        _endTimeController.text,
+                        teamMembers,
+                        calendarClient,
+                        _isAlarmEnabled);
                   }
                 }
-              } else {
-                  showCustomError("Deadline of Project selected should be atleast tomorrow",context);
-               }
+                // }
+                // else
+                // {
+                //   showCustomError(
+                //       "Deadline of Project selected should be atleast tomorrow",
+                //       context);
+                // }
+              }
+            }
+          } else {
+            showCustomError("Please fill in all required fields.", context);
           }
-         }
-        } else  {
-          showCustomError("Please fill in all required fields.",context);
-        }
-      },
-      child: const Text('Create Task', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-    ),
-  );
-}
+        },
+        child: const Text('Create Task',
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
 }
 
-Future<void> handleValidTaskSubmission(BuildContext context, String username, String heading, String desc, String date, String start_time, String end_time, List<Map<String, dynamic>> teamMembers, CalendarClient calendarClient)async{
-  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Form is valid and processing data'),duration: Duration(seconds: 2),));
-  List<String> collaborators= [];
+Future<void> setAlarm(alarmSettings) async {
+  try {
+    print("Copying asset to temporary file");
+    final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
+    print("Asset copied to: ${tempFile.path}");
+
+    final updatedAlarmSettings = alarmSettings.copyWith(
+      assetAudioPath: tempFile.path,
+    );
+
+    await Alarm.set(alarmSettings: updatedAlarmSettings);
+  } catch (e) {
+    print("Error setting alarm: $e");
+  }
+}
+
+Future<void> handleValidTaskSubmission(
+    BuildContext context,
+    String username,
+    String heading,
+    String desc,
+    String date,
+    String start_time,
+    String end_time,
+    List<Map<String, dynamic>> teamMembers,
+    CalendarClient calendarClient,
+    bool isAlarmEnabled) async {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('Form is valid and processing data'),
+      duration: Duration(seconds: 2),
+    ),
+  );
+
+  List<String> collaborators = [];
   for (Map<String, dynamic> item in teamMembers) {
     if (item.containsKey('name')) {
       collaborators.add(item['name'] as String);
@@ -431,27 +512,130 @@ Future<void> handleValidTaskSubmission(BuildContext context, String username, St
       print("TEAM-MEMBERS missing 'name' key: $item");
     }
   }
+
   print("$date ... $start_time ... $end_time...");
-  await addTask(username, heading, desc, collaborators,date,start_time,end_time);
-  await TaskService().updateCachedNotes(username,heading,heading, desc,date,start_time,end_time,"add");
+  await addTask(
+      username, heading, desc, collaborators, date, start_time, end_time);
+  await TaskService().updateCachedNotes(
+      username, heading, heading, desc, date, start_time, end_time, "add");
   showmsg(message: "Task has been added successfully!");
-  
-  calendarClient.insert(heading,start_time,end_time,);
+
+  calendarClient.insert(heading, start_time, end_time);
   // showmsg(message: "Event has been added to calendar successfully!");
+
+  if (isAlarmEnabled) 
+  {
+    print("END time: $end_time");
+
+    final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(
+      DateFormat('yyyy-MM-dd h:mm a').parse('$date $end_time'),
+    );
+
+
+    final alarmSettings = AlarmSettings(
+      id: 42,
+      dateTime: DateTime.parse(formattedDateTime),
+      assetAudioPath: 'audios/alarm.mp3',
+      loopAudio: true,
+      vibrate: true,
+      volume: 0.8,
+      fadeDuration: 3.0,
+      notificationTitle: 'Task Reminder',
+      notificationBody: 'Your task "$heading" has ended.',
+      enableNotificationOnKill: true,
+    );
+
+    await setAlarm(alarmSettings);
+  }
+
+
+
   Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => HomePage(username: username),
-  ));
+    ),
+  );
 }
 
-Future<bool> isOverlappingdeadline(String date, String start_time, String end_time, String username) async {
 
-  if(start_time == "" && end_time=="") {return false;} //default behaviour if no times given
+
+void playSound(AlarmSettings alarmSettings) async {
+  try {
+    print("Copying asset to temporary file");
+    final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
+    print("Asset copied to: ${tempFile.path}");
+
+    final updatedAlarmSettings = alarmSettings.copyWith(
+      assetAudioPath: tempFile.path,
+    );
+
+    await NativeAudioPlayer.playAudio(tempFile.path);
+
+    await Alarm.set(alarmSettings: updatedAlarmSettings);
+
+    // Create a notification channel
+    const channelId = 'alarm_channel';
+    const channelName = 'Alarm Channel';
+    const channelDescription = 'Channel for alarm notifications';
+
+    final notificationChannel = AndroidNotificationChannel(
+      channelId,
+      channelName,
+      description: channelDescription,
+      importance: Importance.high,
+    );
+
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(notificationChannel);
+
+    // Create a notification with a "Stop Alarm" action button
+    const notificationId = 0;
+    const notificationTitle = 'Alarm';
+    const notificationBody = 'Tap to stop the alarm';
+
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      channelId,
+      channelName,
+      channelDescription: channelDescription,
+      importance: Importance.high,
+      priority: Priority.high,
+      fullScreenIntent: true,
+      actions: [
+        AndroidNotificationAction(
+          'stop_alarm',
+          'Stop Alarm',
+          icon: DrawableResourceAndroidBitmap('ic_stop'),
+        ),
+      ],
+    );
+
+    final platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      notificationId,
+      notificationTitle,
+      notificationBody,
+      platformChannelSpecifics,
+    );
+  } catch (e) {
+    print("Error playing alarm sound: $e");
+  }
+}
+
+Future<bool> isOverlappingdeadline(
+    String date, String start_time, String end_time, String username) async {
+  if (start_time == "" && end_time == "") {
+    return false;
+  } //default behaviour if no times given
 
   List<Map<String, dynamic>> deadlines = [];
   List<Map<String, dynamic>>? cachedDeadlines =
-  CacheUtil.getData('deadlines_$username');
+      CacheUtil.getData('deadlines_$username');
   if (cachedDeadlines != null) {
     deadlines = cachedDeadlines;
   } else {
@@ -462,16 +646,21 @@ Future<bool> isOverlappingdeadline(String date, String start_time, String end_ti
   // print("checking for overlap in $deadlines");
   for (var deadline in deadlines) {
     print("checking for deadline $deadline");
-    if (deadline['duedate'] == date){
-        if(isTimeInRange(deadline['start_time'], deadline['end_time'], start_time)) {return true;}
-        if(isTimeInRange(deadline['start_time'], deadline['end_time'], end_time)) {return true;}
+    if (deadline['duedate'] == date) {
+      if (isTimeInRange(
+          deadline['start_time'], deadline['end_time'], start_time)) {
+        return true;
+      }
+      if (isTimeInRange(
+          deadline['start_time'], deadline['end_time'], end_time)) {
+        return true;
+      }
     }
   }
   return false;
 }
 
 bool isTimeInRange(String startTime, String endTime, String checkTime) {
-
   var startTimeParsed = startTime.split(" ")[0].split(":");
   var startTimeclk = startTime.split(" ")[1];
   var startTimehr = int.parse(startTimeParsed[0]);
@@ -487,9 +676,15 @@ bool isTimeInRange(String startTime, String endTime, String checkTime) {
   var checkTimehr = int.parse(checkTimeParsed[0]);
   var checkTimemin = int.parse(checkTimeParsed[1]);
 
-  if(checkTimeclk == "PM"){checkTimehr += 12;}
-  if(startTimeclk == "PM"){startTimehr += 12;}
-  if(endTimeclk == "PM"){endTimehr += 12;}
+  if (checkTimeclk == "PM") {
+    checkTimehr += 12;
+  }
+  if (startTimeclk == "PM") {
+    startTimehr += 12;
+  }
+  if (endTimeclk == "PM") {
+    endTimehr += 12;
+  }
 
   print("start $startTimehr");
   print("end $endTimehr");
@@ -499,14 +694,15 @@ bool isTimeInRange(String startTime, String endTime, String checkTime) {
   final endTimeInMinutes = (endTimehr * 60) + endTimemin;
   final checkTimeInMinutes = (checkTimehr * 60) + checkTimemin;
 
-  return (checkTimeInMinutes >= startTimeInMinutes && checkTimeInMinutes < endTimeInMinutes) ||
+  return (checkTimeInMinutes >= startTimeInMinutes &&
+          checkTimeInMinutes < endTimeInMinutes) ||
       (checkTimeInMinutes < startTimeInMinutes && endTimehr > startTimehr);
-
 }
 
-bool isSuitableTime(String startTime, String endTime){
-
-  if(startTime == "" && endTime=="") {return true;} //default behaviour if no times given
+bool isSuitableTime(String startTime, String endTime) {
+  if (startTime == "" && endTime == "") {
+    return true;
+  } //default behaviour if no times given
 
   var startTimeParsed = startTime.split(" ")[0].split(":");
   var startTimeclk = startTime.split(" ")[1];
@@ -518,10 +714,18 @@ bool isSuitableTime(String startTime, String endTime){
   var endTimehr = int.parse(endTimeParsed[0]);
   var endTimemin = int.parse(endTimeParsed[1]);
 
-  if(startTimeclk == "PM"){startTimehr += 12;}
-  if(endTimeclk == "PM"){endTimehr += 12;}
+  if (startTimeclk == "PM") {
+    startTimehr += 12;
+  }
+  if (endTimeclk == "PM") {
+    endTimehr += 12;
+  }
 
-  if(startTimehr>endTimehr) {return false;}
-  if(startTimehr == endTimehr && startTimemin >= endTimemin) {return false;}
+  if (startTimehr > endTimehr) {
+    return false;
+  }
+  if (startTimehr == endTimehr && startTimemin >= endTimemin) {
+    return false;
+  }
   return true;
 }
