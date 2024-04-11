@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state
 
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
@@ -17,7 +17,6 @@ class TaskDetailsPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  // ignore: no_logic_in_create_state
   State<TaskDetailsPage> createState() =>
       _TaskPageState(username: username, mytask: task);
 }
@@ -180,7 +179,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                           label: const Text('Delete Task',
                               style: TextStyle(color: Colors.black)),
                         ),
-                        const SizedBox(width: 215),
+                        const SizedBox(width: 35),
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(
@@ -191,7 +190,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
                     _buildSubtasks(username),
                   ],
                 ),
@@ -211,10 +210,11 @@ class _TaskPageState extends State<TaskDetailsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
-              "No subtasks for this task... you might want to enhance your idea",
+              "This task currently has no subtasks. Let's add more depth to your project with some creative ideas!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 height: 1.5,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 20),
@@ -415,7 +415,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(width: 200),
+        const SizedBox(width: 150),
         SizedBox(
           width: 20, // Width of the circle
           height: 20, // Height of the circle
