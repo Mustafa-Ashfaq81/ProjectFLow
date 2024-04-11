@@ -54,6 +54,43 @@ class CalendarClient {
     });
   }
 
+  Future<void> delete(String calendarId, String eventId) async {
+    var clientID = ClientId(
+        "1073810950980-50c8312c67hehvrllgnttp6hf3ltodlp.apps.googleusercontent.com",
+        "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");
+
+    await clientViaUserConsent(clientID, _scopes, prompt)
+        .then((AuthClient client) {
+      var calendar = CalendarApi(client);
+      String calendarId = "primary";
+
+      calendar.events.delete(calendarId, eventId).then((value) {
+        print('Event deleted from Google Calendar');
+      }).catchError((e) {
+        print('Error deleting event: $e');
+      });
+    }).catchError((e) {
+      print('Authorization failed: $e');
+    });
+  }
+
+  Future<List<Event>> getEvents() async {
+    var clientID = ClientId("1073810950980-50c8312c67hehvrllgnttp6hf3ltodlp.apps.googleusercontent.com", "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");
+    List<Event> events = [];
+
+    try {
+      var client = await clientViaUserConsent(clientID, _scopes, prompt);
+      var calendar = CalendarApi(client);
+      String calendarId = "primary";
+      var eventsResult = await calendar.events.list(calendarId);
+      events = eventsResult.items!;
+      return events;
+    } catch (e) {
+      print('Error fetching events: $e');
+      return events;
+    }
+  }
+
   DateTime? parseDateTime(String timeString) {
     try {
       String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());

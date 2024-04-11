@@ -9,6 +9,7 @@ import 'package:my_app/controllers/gptapi.dart';
 import 'package:my_app/views/loadingscreens/loadingtask.dart';
 import '../../common/toast.dart';
 import 'package:my_app/utils/cache_util.dart'; // Ensure this is correctly imported
+import 'package:my_app/controllers/calendarapi.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   final String username;
@@ -33,6 +34,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
   final FocusNode _headingFocus = FocusNode();
   final FocusNode _descriptionFocus = FocusNode();
   var taskdetailschanged = false;
+  final CalendarClient calendarClient = CalendarClient();
 
   @override
   void initState() {
@@ -99,17 +101,52 @@ class _TaskPageState extends State<TaskDetailsPage> {
         ));
   }
 
-  void deleteProject() async {
+ void deleteProject(Function onCompletion) async {
     String headingg = _projectHeadingController.text;
+
+    // Delete the task from the local app data
     await deleteTask(username, headingg);
     await TaskService().updateCachedNotes(
         username, headingg, headingg, "desc", "date", "start", "end", "delete");
-    showmsg(message: "Task has been deleted successfully!");
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(username: username),
-        )); // Go back to the previous screen with the list updated
+
+    // Get the event ID of the task you want to delete from Google Calendar
+    String? eventId = await getEventId(headingg);
+
+    if (eventId != null) {
+      // Delete the event from Google Calendar
+      await calendarClient.delete("primary", eventId);
+
+      showmsg(message: "Task has been deleted successfully!");
+      onCompletion();
+
+      // Refresh the UI by calling setState
+      setState(() {});
+    } else {
+      showmsg(message: "Event not found in Google Calendar");
+    }
+  }
+
+  void onDeletionComplete() 
+  {
+    setState(() {});
+    Navigator.pop(context); 
+  }
+
+  
+
+
+  Future<String?> getEventId(String eventTitle) async {
+    // Retrieve the list of events from Google Calendar
+    var events = await calendarClient.getEvents();
+
+    // Find the event with the matching title
+    for (var event in events) {
+      if (event.summary == eventTitle) {
+        return event.id;
+      }
+    }
+
+    return null; // Event not found
   }
 
   AppBar _buildAppBar() {
@@ -170,8 +207,12 @@ class _TaskPageState extends State<TaskDetailsPage> {
                         ElevatedButton.icon(
                           onPressed: () {
                             showDeleteConfirmationDialog(
-                                context, deleteProject);
+                              context,
+                              () => deleteProject(
+                                  onDeletionComplete), 
+                            );
                           },
+
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 255, 215, 100),
                           ),
