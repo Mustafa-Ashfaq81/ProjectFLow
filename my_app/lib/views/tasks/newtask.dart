@@ -189,7 +189,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       backgroundColor: Colors.black,
       automaticallyImplyLeading: false,
       title: Text(
-        'Create New Task',
+        'Create New Project',
         style: TextStyle(color: Colors.white), // Set text color to white
       ),
     );
@@ -204,29 +204,29 @@ class _NewTaskPageState extends State<NewTaskPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle('Task Title'),
+              _buildSectionTitle('Project Title'),
               const SizedBox(height: 10),
               _buildTextInputField(
-                hint: 'Enter task title',
+                hint: 'Enter title',
                 maxLines: 1,
                 controller: headingController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a task title';
+                    return 'Please enter a project title';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 20),
-              _buildSectionTitle('Task Details'),
+              _buildSectionTitle('Project Details'),
               const SizedBox(height: 10),
               _buildTextInputField(
-                hint: 'Enter task details',
+                hint: 'Enter details',
                 maxLines: null,
                 controller: descController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter task details';
+                    return 'Please enter project details';
                   }
                   return null;
                 },
@@ -287,7 +287,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       width: 400.0,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFFE6C9), //Colors.white,
         borderRadius: BorderRadius.circular(12.0),
         border: Border.all(color: Colors.grey, width: 1.0),
       ),
@@ -467,7 +467,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
         height: 40.0,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFFE6C9), //Colors.white,
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(color: Colors.grey, width: 1.0),
         ),
@@ -588,7 +588,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
             showCustomError("Please fill in all required fields.", context);
           }
         },
-        child: const Text('Create Task',
+        child: const Text('Create Project',
             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       ),
     );

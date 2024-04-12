@@ -220,10 +220,10 @@ class _TaskPageState extends State<TaskDetailsPage> {
                             backgroundColor: Color.fromARGB(255, 255, 215, 100),
                           ),
                           icon: const Icon(Icons.delete, color: Colors.red),
-                          label: const Text('Delete Task',
+                          label: const Text('Delete Project',
                               style: TextStyle(color: Colors.black)),
                         ),
-                        const SizedBox(width: 55),
+                        const SizedBox(width: 46),
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(
