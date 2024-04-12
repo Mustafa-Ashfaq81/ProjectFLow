@@ -1,8 +1,10 @@
-// ignore_for_file: prefer_const_constructors, no_logic_in_create_state, use_build_context_synchronously, avoid_print, unused_import, non_constant_identifier_names, unused_field
+// ignore_for_file: prefer_const_constructors, no_logic_in_create_state, use_build_context_synchronously, avoid_print, unused_import, non_constant_identifier_names, unused_field, unused_element
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:my_app/utils/notification_plugin.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/components/footer.dart';
@@ -19,6 +21,7 @@ import 'package:my_app/utils/file_util.dart';
 
 class NewTaskPage extends StatefulWidget {
   final String username;
+
   const NewTaskPage({Key? key, required this.username}) : super(key: key);
 
   @override
@@ -42,6 +45,108 @@ class _NewTaskPageState extends State<NewTaskPage> {
   bool _isAlarmEnabled = false;
   DateTime? _selectedAlarmTime;
   AlarmSettings? alarmSettings;
+
+ void onDidReceiveNotificationResponse(
+      NotificationResponse notificationResponse) async {
+    final String? payload = notificationResponse.payload;
+    if (payload == 'stop_alarm') {
+      await NativeAudioPlayer.stopAudio();
+      await Alarm.stop(alarmSettings!.id);
+      await flutterLocalNotificationsPlugin
+          .cancel(notificationResponse.id!); 
+    }
+  }
+
+  Future<void> playAlarmSound() async {
+    if (_selectedAlarmTime == null) {
+      print("No alarm time selected");
+      return;
+    }
+
+
+    alarmSettings = AlarmSettings(
+      id: 42,
+      dateTime: _selectedAlarmTime!,
+      assetAudioPath: 'audios/alarm.mp3',
+      loopAudio: true,
+      vibrate: true,
+      volume: 0.8,
+      fadeDuration: 3.0,
+      notificationTitle: 'Alarm Title',
+      notificationBody: 'Alarm Body',
+      enableNotificationOnKill: true,
+    );
+
+    try {
+      // Copy the asset to a temporary file
+      debugPrint("Copying asset to temporary file");
+      final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
+      debugPrint("Asset copied to: ${tempFile.path}");
+
+      // Update the AlarmSettings to use the temporary file path
+      final updatedAlarmSettings = alarmSettings!.copyWith(
+        assetAudioPath: tempFile.path,
+      );
+
+      // Set the alarm with the updated AlarmSettings
+      await Alarm.set(alarmSettings: updatedAlarmSettings);
+      debugPrint("Alarm set successfully");
+
+      // Create a notification channel
+      const channelId = 'alarm_channel';
+      const channelName = 'Alarm Channel';
+      const channelDescription = 'Channel for alarm notifications';
+
+      final notificationChannel = AndroidNotificationChannel(
+        channelId,
+        channelName,
+        description: channelDescription,
+        importance: Importance.high,
+      );
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(notificationChannel);
+      debugPrint("Notification channel created");
+
+      // Create a notification with a "Stop Alarm" action button
+      const notificationId = 42; // Use a unique notification ID
+      const notificationTitle = 'Alarm';
+      const notificationBody = 'Tap to stop the alarm';
+
+      final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        channelId,
+        channelName,
+        channelDescription: channelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        fullScreenIntent: true,
+        icon: 'ic_stop',
+        actions: [
+          AndroidNotificationAction(
+            'stop_alarm',
+            'Stop Alarm',
+            icon: DrawableResourceAndroidBitmap('@drawable/ic_stop'),
+          ),
+        ],
+      );
+
+      final platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+
+      await flutterLocalNotificationsPlugin.show(
+        notificationId,
+        notificationTitle,
+        notificationBody,
+        platformChannelSpecifics,
+        payload: 'stop_alarm',
+      );
+      debugPrint("Notification shown");
+    } catch (e) {
+      debugPrint("Error setting alarm: $e");
+    }
+  }
 
   @override
   void initState() {
@@ -205,6 +310,18 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
   }
 
+  Future<String> getProfilePictureUrl(String username) async {
+    String filePath = 'images/user_profile_pictures/$username.jpg';
+    try {
+      String downloadUrl =
+          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print("Failed to fetch profile picture URL: $e");
+      return 'pictures/profile.png'; // Return a default profile picture URL if fetching fails
+    }
+  }
+
   Widget _buildTeamMembersRow() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -213,7 +330,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
           Row(
             children: teamMembers
                 .map((member) =>
-                    _buildTeamMember(member["name"], member["color"]))
+                                      _buildTeamMember(
+                    member["name"], member["color"], member["picture"]))
+
                 .toList(),
           ),
           IconButton(
@@ -232,11 +351,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
                     SearchUsers(username: widget.username, users: otherusers)
                         as SearchDelegate<String>,
               );
-              selectedUsername.then((username) {
-                if (username != "") {
+              selectedUsername.then((username) async {
+                if (username != null && username != "") {
+                  String profilePicUrl = await getProfilePictureUrl(username);
                   setState(() {
-                    teamMembers
-                        .add({"name": username, "color": Colors.yellow[100]});
+                    teamMembers.add({
+                      "name": username,
+                      "picture": profilePicUrl,
+                      "color": Colors.yellow[100]
+                    });
                   });
                 }
               });
@@ -247,7 +370,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
   }
 
-  Widget _buildTeamMember(String name, Color color) {
+  Widget _buildTeamMember(String name, Color color, String pictureUrl) {
     return Container(
       height: 40.0,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -260,7 +383,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(Icons.person_outline, color: Colors.grey),
+          Image.network(pictureUrl,
+              width: 30, height: 30), // Display the profile picture
           const SizedBox(width: 8),
           Text(name),
           const SizedBox(width: 8),
@@ -276,6 +400,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       ),
     );
   }
+
 
   Widget _buildTimeAndDateSection() {
     return Column(
@@ -468,264 +593,195 @@ class _NewTaskPageState extends State<NewTaskPage> {
       ),
     );
   }
-}
 
-Future<void> setAlarm(alarmSettings) async {
-  try {
-    print("Copying asset to temporary file");
-    final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
-    print("Asset copied to: ${tempFile.path}");
+  Future<void> setAlarm(alarmSettings) async {
+    try {
+      print("Copying asset to temporary file");
+      final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
+      print("Asset copied to: ${tempFile.path}");
 
-    final updatedAlarmSettings = alarmSettings.copyWith(
-      assetAudioPath: tempFile.path,
+      final updatedAlarmSettings = alarmSettings.copyWith(
+        assetAudioPath: tempFile.path,
+      );
+
+      await Alarm.set(alarmSettings: updatedAlarmSettings);
+    } catch (e) {
+      print("Error setting alarm: $e");
+    }
+  }
+
+  Future<void> handleValidTaskSubmission(
+      BuildContext context,
+      String username,
+      String heading,
+      String desc,
+      String date,
+      String start_time,
+      String end_time,
+      List<Map<String, dynamic>> teamMembers,
+      CalendarClient calendarClient,
+      bool isAlarmEnabled) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Form is valid and processing data'),
+        duration: Duration(seconds: 2),
+      ),
     );
 
-    await Alarm.set(alarmSettings: updatedAlarmSettings);
-  } catch (e) {
-    print("Error setting alarm: $e");
+    List<String> collaborators = [];
+    for (Map<String, dynamic> item in teamMembers) {
+      if (item.containsKey('name')) {
+        collaborators.add(item['name'] as String);
+      } else {
+        print("TEAM-MEMBERS missing 'name' key: $item");
+      }
+    }
+
+    print("$date ... $start_time ... $end_time...");
+    await addTask(
+        username, heading, desc, collaborators, date, start_time, end_time);
+    await TaskService().updateCachedNotes(
+        username, heading, heading, desc, date, start_time, end_time, "add");
+    showmsg(message: "Task has been added successfully!");
+
+    calendarClient.insert(heading, start_time, end_time);
+    // showmsg(message: "Event has been added to calendar successfully!");
+
+    if (isAlarmEnabled) {
+      print("END time: $end_time");
+
+      final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(
+        DateFormat('yyyy-MM-dd h:mm a').parse('$date $end_time'),
+      );
+
+      final alarmSettings = AlarmSettings(
+        id: 42,
+        dateTime: DateTime.parse(formattedDateTime),
+        assetAudioPath: 'audios/alarm.mp3',
+        loopAudio: true,
+        vibrate: true,
+        volume: 0.8,
+        fadeDuration: 3.0,
+        notificationTitle: 'Task Reminder',
+        notificationBody: 'Your task "$heading" has ended.',
+        enableNotificationOnKill: true,
+      );
+
+      await setAlarm(alarmSettings);
+
+      await playAlarmSound();
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(username: username),
+      ),
+    );
   }
-}
 
-Future<void> handleValidTaskSubmission(
-    BuildContext context,
-    String username,
-    String heading,
-    String desc,
-    String date,
-    String start_time,
-    String end_time,
-    List<Map<String, dynamic>> teamMembers,
-    CalendarClient calendarClient,
-    bool isAlarmEnabled) async {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text('Form is valid and processing data'),
-      duration: Duration(seconds: 2),
-    ),
-  );
+  Future<bool> isOverlappingdeadline(
+      String date, String start_time, String end_time, String username) async {
+    if (start_time == "" && end_time == "") {
+      return false;
+    } //default behaviour if no times given
 
-  List<String> collaborators = [];
-  for (Map<String, dynamic> item in teamMembers) {
-    if (item.containsKey('name')) {
-      collaborators.add(item['name'] as String);
+    List<Map<String, dynamic>> deadlines = [];
+    List<Map<String, dynamic>>? cachedDeadlines =
+        CacheUtil.getData('deadlines_$username');
+    if (cachedDeadlines != null) {
+      deadlines = cachedDeadlines;
     } else {
-      print("TEAM-MEMBERS missing 'name' key: $item");
+      print('deadlines-cache-null');
+      deadlines = await getdeadlines(username);
+      CacheUtil.cacheData('deadlines_$username', deadlines);
     }
-  }
-
-  print("$date ... $start_time ... $end_time...");
-  await addTask(
-      username, heading, desc, collaborators, date, start_time, end_time);
-  await TaskService().updateCachedNotes(
-      username, heading, heading, desc, date, start_time, end_time, "add");
-  showmsg(message: "Task has been added successfully!");
-
-  calendarClient.insert(heading, start_time, end_time);
-  // showmsg(message: "Event has been added to calendar successfully!");
-
-  if (isAlarmEnabled) 
-  {
-    print("END time: $end_time");
-
-    final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(
-      DateFormat('yyyy-MM-dd h:mm a').parse('$date $end_time'),
-    );
-
-
-    final alarmSettings = AlarmSettings(
-      id: 42,
-      dateTime: DateTime.parse(formattedDateTime),
-      assetAudioPath: 'audios/alarm.mp3',
-      loopAudio: true,
-      vibrate: true,
-      volume: 0.8,
-      fadeDuration: 3.0,
-      notificationTitle: 'Task Reminder',
-      notificationBody: 'Your task "$heading" has ended.',
-      enableNotificationOnKill: true,
-    );
-
-    await setAlarm(alarmSettings);
-  }
-
-
-
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => HomePage(username: username),
-    ),
-  );
-}
-
-
-
-void playSound(AlarmSettings alarmSettings) async {
-  try {
-    print("Copying asset to temporary file");
-    final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
-    print("Asset copied to: ${tempFile.path}");
-
-    final updatedAlarmSettings = alarmSettings.copyWith(
-      assetAudioPath: tempFile.path,
-    );
-
-    await NativeAudioPlayer.playAudio(tempFile.path);
-
-    await Alarm.set(alarmSettings: updatedAlarmSettings);
-
-    // Create a notification channel
-    const channelId = 'alarm_channel';
-    const channelName = 'Alarm Channel';
-    const channelDescription = 'Channel for alarm notifications';
-
-    final notificationChannel = AndroidNotificationChannel(
-      channelId,
-      channelName,
-      description: channelDescription,
-      importance: Importance.high,
-    );
-
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(notificationChannel);
-
-    // Create a notification with a "Stop Alarm" action button
-    const notificationId = 0;
-    const notificationTitle = 'Alarm';
-    const notificationBody = 'Tap to stop the alarm';
-
-    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      channelId,
-      channelName,
-      channelDescription: channelDescription,
-      importance: Importance.high,
-      priority: Priority.high,
-      fullScreenIntent: true,
-      actions: [
-        AndroidNotificationAction(
-          'stop_alarm',
-          'Stop Alarm',
-          icon: DrawableResourceAndroidBitmap('ic_stop'),
-        ),
-      ],
-    );
-
-    final platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.show(
-      notificationId,
-      notificationTitle,
-      notificationBody,
-      platformChannelSpecifics,
-    );
-  } catch (e) {
-    print("Error playing alarm sound: $e");
-  }
-}
-
-Future<bool> isOverlappingdeadline(
-    String date, String start_time, String end_time, String username) async {
-  if (start_time == "" && end_time == "") {
+    // print("checking for overlap in $deadlines");
+    for (var deadline in deadlines) {
+      print("checking for deadline $deadline");
+      if (deadline['duedate'] == date) {
+        if (isTimeInRange(
+            deadline['start_time'], deadline['end_time'], start_time)) {
+          return true;
+        }
+        if (isTimeInRange(
+            deadline['start_time'], deadline['end_time'], end_time)) {
+          return true;
+        }
+      }
+    }
     return false;
-  } //default behaviour if no times given
-
-  List<Map<String, dynamic>> deadlines = [];
-  List<Map<String, dynamic>>? cachedDeadlines =
-      CacheUtil.getData('deadlines_$username');
-  if (cachedDeadlines != null) {
-    deadlines = cachedDeadlines;
-  } else {
-    print('deadlines-cache-null');
-    deadlines = await getdeadlines(username);
-    CacheUtil.cacheData('deadlines_$username', deadlines);
   }
-  // print("checking for overlap in $deadlines");
-  for (var deadline in deadlines) {
-    print("checking for deadline $deadline");
-    if (deadline['duedate'] == date) {
-      if (isTimeInRange(
-          deadline['start_time'], deadline['end_time'], start_time)) {
-        return true;
-      }
-      if (isTimeInRange(
-          deadline['start_time'], deadline['end_time'], end_time)) {
-        return true;
-      }
+
+  bool isTimeInRange(String startTime, String endTime, String checkTime) {
+    var startTimeParsed = startTime.split(" ")[0].split(":");
+    var startTimeclk = startTime.split(" ")[1];
+    var startTimehr = int.parse(startTimeParsed[0]);
+    var startTimemin = int.parse(startTimeParsed[1]);
+
+    var endTimeParsed = endTime.split(" ")[0].split(":");
+    var endTimeclk = endTime.split(" ")[1];
+    var endTimehr = int.parse(endTimeParsed[0]);
+    var endTimemin = int.parse(endTimeParsed[1]);
+
+    var checkTimeParsed = checkTime.split(" ")[0].split(":");
+    var checkTimeclk = checkTime.split(" ")[1];
+    var checkTimehr = int.parse(checkTimeParsed[0]);
+    var checkTimemin = int.parse(checkTimeParsed[1]);
+
+    if (checkTimeclk == "PM") {
+      checkTimehr += 12;
     }
-  }
-  return false;
-}
+    if (startTimeclk == "PM") {
+      startTimehr += 12;
+    }
+    if (endTimeclk == "PM") {
+      endTimehr += 12;
+    }
 
-bool isTimeInRange(String startTime, String endTime, String checkTime) {
-  var startTimeParsed = startTime.split(" ")[0].split(":");
-  var startTimeclk = startTime.split(" ")[1];
-  var startTimehr = int.parse(startTimeParsed[0]);
-  var startTimemin = int.parse(startTimeParsed[1]);
+    print("start $startTimehr");
+    print("end $endTimehr");
+    print("check $checkTimehr");
 
-  var endTimeParsed = endTime.split(" ")[0].split(":");
-  var endTimeclk = endTime.split(" ")[1];
-  var endTimehr = int.parse(endTimeParsed[0]);
-  var endTimemin = int.parse(endTimeParsed[1]);
+    final startTimeInMinutes = (startTimehr * 60) + startTimemin;
+    final endTimeInMinutes = (endTimehr * 60) + endTimemin;
+    final checkTimeInMinutes = (checkTimehr * 60) + checkTimemin;
 
-  var checkTimeParsed = checkTime.split(" ")[0].split(":");
-  var checkTimeclk = checkTime.split(" ")[1];
-  var checkTimehr = int.parse(checkTimeParsed[0]);
-  var checkTimemin = int.parse(checkTimeParsed[1]);
-
-  if (checkTimeclk == "PM") {
-    checkTimehr += 12;
-  }
-  if (startTimeclk == "PM") {
-    startTimehr += 12;
-  }
-  if (endTimeclk == "PM") {
-    endTimehr += 12;
+    return (checkTimeInMinutes >= startTimeInMinutes &&
+            checkTimeInMinutes < endTimeInMinutes) ||
+        (checkTimeInMinutes < startTimeInMinutes && endTimehr > startTimehr);
   }
 
-  print("start $startTimehr");
-  print("end $endTimehr");
-  print("check $checkTimehr");
+  bool isSuitableTime(String startTime, String endTime) {
+    if (startTime == "" && endTime == "") {
+      return true;
+    } //default behaviour if no times given
 
-  final startTimeInMinutes = (startTimehr * 60) + startTimemin;
-  final endTimeInMinutes = (endTimehr * 60) + endTimemin;
-  final checkTimeInMinutes = (checkTimehr * 60) + checkTimemin;
+    var startTimeParsed = startTime.split(" ")[0].split(":");
+    var startTimeclk = startTime.split(" ")[1];
+    var startTimehr = int.parse(startTimeParsed[0]);
+    var startTimemin = int.parse(startTimeParsed[1]);
 
-  return (checkTimeInMinutes >= startTimeInMinutes &&
-          checkTimeInMinutes < endTimeInMinutes) ||
-      (checkTimeInMinutes < startTimeInMinutes && endTimehr > startTimehr);
-}
+    var endTimeParsed = endTime.split(" ")[0].split(":");
+    var endTimeclk = endTime.split(" ")[1];
+    var endTimehr = int.parse(endTimeParsed[0]);
+    var endTimemin = int.parse(endTimeParsed[1]);
 
-bool isSuitableTime(String startTime, String endTime) {
-  if (startTime == "" && endTime == "") {
+    if (startTimeclk == "PM") {
+      startTimehr += 12;
+    }
+    if (endTimeclk == "PM") {
+      endTimehr += 12;
+    }
+
+    if (startTimehr > endTimehr) {
+      return false;
+    }
+    if (startTimehr == endTimehr && startTimemin >= endTimemin) {
+      return false;
+    }
     return true;
-  } //default behaviour if no times given
-
-  var startTimeParsed = startTime.split(" ")[0].split(":");
-  var startTimeclk = startTime.split(" ")[1];
-  var startTimehr = int.parse(startTimeParsed[0]);
-  var startTimemin = int.parse(startTimeParsed[1]);
-
-  var endTimeParsed = endTime.split(" ")[0].split(":");
-  var endTimeclk = endTime.split(" ")[1];
-  var endTimehr = int.parse(endTimeParsed[0]);
-  var endTimemin = int.parse(endTimeParsed[1]);
-
-  if (startTimeclk == "PM") {
-    startTimehr += 12;
   }
-  if (endTimeclk == "PM") {
-    endTimehr += 12;
-  }
+  
 
-  if (startTimehr > endTimehr) {
-    return false;
-  }
-  if (startTimehr == endTimehr && startTimemin >= endTimemin) {
-    return false;
-  }
-  return true;
 }

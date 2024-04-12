@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class SearchTasks extends SearchDelegate<String> {
   final String username;
@@ -15,7 +16,7 @@ class SearchTasks extends SearchDelegate<String> {
     return super.appBarTheme(context).copyWith(
           textTheme: const TextTheme(
             titleLarge: TextStyle(
-              color: Color(0xff000000), 
+              color: Color(0xff000000),
             ),
           ),
         );
@@ -54,12 +55,12 @@ class SearchTasks extends SearchDelegate<String> {
           itemCount: res.length,
           itemBuilder: (context, index) {
             var result = res[index];
-             return ListTile(
-            title: Text(result),
-            onTap: () {
-              close(context, result);
-            },
-          );
+            return ListTile(
+              title: Text(result),
+              onTap: () {
+                close(context, result);
+              },
+            );
           });
     } else {
       return const Center(
@@ -82,12 +83,12 @@ class SearchTasks extends SearchDelegate<String> {
           itemCount: res.length,
           itemBuilder: (context, index) {
             var result = res[index];
-             return ListTile(
-            title: Text(result),
-            onTap: () {
-              close(context, result);
-            },
-          );
+            return ListTile(
+              title: Text(result),
+              onTap: () {
+                close(context, result);
+              },
+            );
           });
     } else {
       return const Center(
@@ -112,12 +113,11 @@ class SearchUsers extends SearchDelegate<String> {
     return super.appBarTheme(context).copyWith(
           textTheme: const TextTheme(
             titleLarge: TextStyle(
-              color: Color(0xff000000), 
+              color: Color(0xff000000),
             ),
           ),
         );
   }
-
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -139,6 +139,18 @@ class SearchUsers extends SearchDelegate<String> {
         icon: const Icon(Icons.arrow_back));
   }
 
+  Future<String> getProfilePictureUrl(String username) async {
+    String filePath = 'images/user_profile_pictures/$username.jpg';
+    try {
+      String downloadUrl =
+          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print("Failed to fetch profile picture URL: $e");
+      return 'pictures/profile.png'; // Return a default profile picture URL if fetching fails
+    }
+  }
+
   @override
   Widget buildResults(BuildContext context) {
     List<String> res = [];
@@ -152,10 +164,31 @@ class SearchUsers extends SearchDelegate<String> {
         itemCount: res.length,
         itemBuilder: (context, index) {
           var result = res[index];
-          return ListTile(
-            title: Text(result),
-            onTap: () {
-              close(context, result);
+          return FutureBuilder<String>(
+            future: getProfilePictureUrl(result),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return ListTile(
+                  leading: CircularProgressIndicator(),
+                  title: Text(result),
+                );
+              } else if (snapshot.hasError) {
+                return ListTile(
+                  leading: Icon(Icons.error),
+                  title: Text(result),
+                );
+              } else {
+                final profilePicUrl = snapshot.data!;
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(profilePicUrl),
+                  ),
+                  title: Text(result),
+                  onTap: () {
+                    close(context, result);
+                  },
+                );
+              }
             },
           );
         },
@@ -181,10 +214,31 @@ class SearchUsers extends SearchDelegate<String> {
         itemCount: res.length,
         itemBuilder: (context, index) {
           var result = res[index];
-          return ListTile(
-            title: Text(result),
-            onTap: () {
-              close(context, result);
+          return FutureBuilder<String>(
+            future: getProfilePictureUrl(result),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return ListTile(
+                  leading: CircularProgressIndicator(),
+                  title: Text(result),
+                );
+              } else if (snapshot.hasError) {
+                return ListTile(
+                  leading: Icon(Icons.error),
+                  title: Text(result),
+                );
+              } else {
+                final profilePicUrl = snapshot.data!;
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(profilePicUrl),
+                  ),
+                  title: Text(result),
+                  onTap: () {
+                    close(context, result);
+                  },
+                );
+              }
             },
           );
         },
