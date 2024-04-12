@@ -10,16 +10,22 @@ import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/utils/cache_util.dart';
 import 'package:my_app/common/toast.dart';
 
+// This file contains the RegisterPage widget which handles user registration
+// using FirebaseAuth. It provides UI for username, email, and password inputs and
+// handles their validation and submission.
 
+class RegisterPage extends StatefulWidget // A stateful widget that provides a user registration interface
+{ 
 
-class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage>  // State class for `RegisterPage` that handles user input and registration logic
+{ 
+
   final FirebaseAuthService _auth = FirebaseAuthService();
 
   final TextEditingController _emailController = TextEditingController();
@@ -31,11 +37,11 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _obscureText = true;
   bool _obscureConfirmPassword = true;
 
-
   bool isSigningUp = false;
 
   @override
-  void dispose() {
+  void dispose()  // Dispose controllers to free up resources when the widget is removed from the tree.
+  {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -44,17 +50,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  // Constructs the user interface for the registration page.
+  {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: 
-            Text('Register', 
-            textAlign: TextAlign.center, // Align text within the Text widget
-            style: TextStyle(
-              color: Colors.white, // Set text color to white
-            ),
-          )
-        ),
+        title: const Center(
+            child: Text(
+          'Register',
+          textAlign: TextAlign.center, 
+          style: TextStyle(
+            color: Colors.white, 
+          ),
+        )),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
       ),
@@ -101,22 +108,22 @@ class _RegisterPageState extends State<RegisterPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(),
-                    ),
+                      decoration: const InputDecoration(
+                        labelText: 'Username',
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: OutlineInputBorder(),
+                      ),
                       controller: _usernameController,
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(),
-                    ),
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: OutlineInputBorder(),
+                      ),
                       controller: _emailController,
                     ),
                     const SizedBox(height: 20),
@@ -182,7 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
-                      child: isSigningUp
+                        child: isSigningUp
                             ? const CircularProgressIndicator(
                                 color: Colors.white)
                             : const Text('Register',
@@ -220,11 +227,10 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       ),
-
     );
   }
 
-  void _register() async 
+  void _register() async  // Handles the user registration process by validating inputs and creating a new user account
   {
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -248,7 +254,8 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     // Email format validation
-    if (!emailRegex.hasMatch(email)) {
+    if (!emailRegex.hasMatch(email)) // Check if email follows standard email pattern.
+    {
       showerrormsg(message: "Please enter a valid email address");
       return;
     }
@@ -262,35 +269,39 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     // Password match validation
-    if (password != pass) {
+    if (password != pass) 
+    {
       showerrormsg(message: "Passwords do not match \u{1F6A8}");
       return;
-    }
+    } 
     else 
     {
       setState(() 
       {
-        isSigningUp = true;
+        isSigningUp = true; // Indicate that the registration process has started.
       });
       var allusernames = await getallUsers();
       if (allusernames.contains(name) == true) 
       {
         showerrormsg(message: 'username already taken \u{1F6A8}');
       } 
-
       else 
       {
         User? user = await _auth.registeracc(email, password);
-        if (user != null) {
+        if (user != null) 
+        {
           print("User is successfully created");
           List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
-          try {
+          try 
+          {
             createUser(
                 UserModel(username: name, email: email, tasks: mappedtasks));
             await TaskService().fetchAndCacheNotesData(name);
             await TaskService().fetchAndCacheColabRequests(name);
-          } catch (e) {
-            print("got-some-err-creating-user-model ---> $e");
+          } 
+          catch (e) 
+          {
+            print("An Error Occured While Creating the User Model. Error: ---> $e");
           }
           Navigator.pushReplacement(
               context,
@@ -299,12 +310,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   username: name,
                 ),
               ));
-        } else {
+        } 
+        else 
+        {
           print(" some error occurred ... has been TOASTED");
         }
       }
-      setState(() {
-        isSigningUp = false;
+      setState(() 
+      {
+        isSigningUp = false; // Indicate that the registration process has started.
       });
     }
   }
