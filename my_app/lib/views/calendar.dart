@@ -8,6 +8,8 @@ import '../utils/cache_util.dart';
 const int daysInWeek = 5;
 const double hourHeight = 100;
 const double hourWidth = 40;
+DateTime _startDate = DateTime.now();
+DateTime _endDate = DateTime.now().add(Duration(days: 5));
 
 class CalendarPage extends StatefulWidget 
 {
@@ -64,19 +66,17 @@ class CalendarPageState extends State<CalendarPage>
       deadlines = await getdeadlines(username);
       CacheUtil.cacheData('deadlines_$username', deadlines);
     }
-    deadlines = filterUpcomingTasks(deadlines);
+      deadlines = filterUpcomingTasks(deadlines, _startDate, _endDate);
 
   }
+//  upcomingTasks
 
-  List<Map<String, dynamic>> filterUpcomingTasks(List<Map<String, dynamic>> tasks) 
-  { 
-    final today = DateTime.now();
-    const lookAheadDays = 5;
-    List<Map<String, dynamic>> upcomingTasks = tasks.where((task) 
-    {
+  List<Map<String, dynamic>> filterUpcomingTasks(
+      List<Map<String, dynamic>> tasks, DateTime startDate, DateTime endDate) {
+    List<Map<String, dynamic>> upcomingTasks = tasks.where((task) {
       final dueDate = DateTime.parse(task['duedate'] as String);
-      return dueDate.isAfter(today.subtract(Duration(days: 1))) &&
-          dueDate.isBefore(today.add(Duration(days: lookAheadDays)));
+      return dueDate.isAfter(startDate.subtract(Duration(days: 1))) &&
+          dueDate.isBefore(endDate.add(Duration(days: 1)));
     }).toList();
 
     for(int i=0; i<upcomingTasks.length; i++)
@@ -93,6 +93,23 @@ class CalendarPageState extends State<CalendarPage>
     
     return upcomingTasks;
  }
+
+ void _selectDateRange() async {
+    final DateTimeRange? selectedRange = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2030),
+      initialDateRange: DateTimeRange(start: _startDate, end: _endDate),
+    );
+
+    if (selectedRange != null) {
+      setState(() {
+        _startDate = selectedRange.start;
+        _endDate = selectedRange.end;
+      });
+      await atload();
+    }
+  }
 
  int calculateDuration(String startTime, String endTime) 
  {
@@ -157,7 +174,7 @@ class CalendarPageState extends State<CalendarPage>
                                 Expanded(
                                   // Allow the text to expand horizontally
                                   child: Text(
-                                    "Your upcoming 5 days are free of tasks and subtasks. This opens up a window for creativity, relaxation, or catching up on things you've been putting off.",
+                                    "Your next 5 days are free of tasks and subtasks. This opens up a window for creativity, relaxation, or catching up on things you've been putting off.",
                                     textAlign: TextAlign
                                         .center, // Center align the text
                                     style:
@@ -177,6 +194,10 @@ class CalendarPageState extends State<CalendarPage>
                 ),
               ),
               bottomNavigationBar: Footer(index: idx, username: username),
+              floatingActionButton: FloatingActionButton(
+            onPressed: _selectDateRange,
+            child: Icon(Icons.date_range),
+              )
             );
           }
         });
@@ -323,9 +344,8 @@ class CalendarPageState extends State<CalendarPage>
 
   String _getDayOfWeek(int index) 
   {
-    final now = DateTime.now();
-    final todayWeekday = now.weekday; 
-    final adjustedWeekDay = (index + todayWeekday) % 7;
+      final adjustedWeekDay =
+        (_startDate.add(Duration(days: index)).weekday - 1) % 7;
 
     switch (adjustedWeekDay) 
     {
@@ -348,10 +368,8 @@ class CalendarPageState extends State<CalendarPage>
     }
   }
 
-  String _getDayNumber(int index) 
-  {
-    final now = DateTime.now();
-    final day = now.add(Duration(days: index));
+  String _getDayNumber(int index) {
+    final day = _startDate.add(Duration(days: index));
     return day.day.toString();
   }
 }
