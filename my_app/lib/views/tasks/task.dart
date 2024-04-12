@@ -193,12 +193,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
                     _buildSectionTitle('Project Heading'),
                     const SizedBox(height: 5),
                     _buildProjectHeadingInput(),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
                     _buildDuedateProjectTeam(),
                     const SizedBox(height: 10),
                     _buildProgressIndicatorWithText(),
                     const SizedBox(height: 10),
                     _buildSectionTitle('Project Notes'),
+                    const SizedBox(height: 5),
                     _buildProjectNotesInput(),
                     const SizedBox(height: 20),
                     // _buildProgressIndicatorWithText(), // Moved here
@@ -222,7 +223,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                           label: const Text('Delete Task',
                               style: TextStyle(color: Colors.black)),
                         ),
-                        const SizedBox(width: 35),
+                        const SizedBox(width: 55),
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(
@@ -323,7 +324,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.brown[50], // Beige color for the box
+        color: Color(0xFFFFE6C9), // Beige color for the box
         borderRadius: BorderRadius.circular(12.0),
         border: Border.all(color: Colors.brown[200]!), // Border color
       ),
