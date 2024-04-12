@@ -101,7 +101,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
         ));
   }
 
- void deleteProject(Function onCompletion) async {
+  void deleteProject(Function onCompletion) async {
     String headingg = _projectHeadingController.text;
 
     // Delete the task from the local app data
@@ -126,14 +126,10 @@ class _TaskPageState extends State<TaskDetailsPage> {
     }
   }
 
-  void onDeletionComplete() 
-  {
+  void onDeletionComplete() {
     setState(() {});
-    Navigator.pop(context); 
+    Navigator.pop(context);
   }
-
-  
-
 
   Future<String?> getEventId(String eventTitle) async {
     // Retrieve the list of events from Google Calendar
@@ -193,48 +189,17 @@ class _TaskPageState extends State<TaskDetailsPage> {
                     _buildSectionTitle('Project Heading'),
                     const SizedBox(height: 5),
                     _buildProjectHeadingInput(),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 20),
                     _buildDuedateProjectTeam(),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     _buildProgressIndicatorWithText(),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
                     _buildSectionTitle('Project Notes'),
                     const SizedBox(height: 5),
                     _buildProjectNotesInput(),
                     const SizedBox(height: 20),
-                    // _buildProgressIndicatorWithText(), // Moved here
-                    // const SizedBox(height: 20),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            showDeleteConfirmationDialog(
-                              context,
-                              () => deleteProject(
-                                  onDeletionComplete), 
-                            );
-                          },
-
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 255, 215, 100),
-                          ),
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          label: const Text('Delete Project',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                        const SizedBox(width: 46),
-                        ElevatedButton(
-                          onPressed: _saveProjectDetails,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 255, 215, 100),
-                          ),
-                          child: const Text('Save Project Details',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
+                    _buildSaveDeleteButtons(context, onDeletionComplete, deleteProject),
+                    const SizedBox(height: 20),
                     _buildSubtasks(username),
                   ],
                 ),
@@ -242,6 +207,43 @@ class _TaskPageState extends State<TaskDetailsPage> {
             );
           }
         });
+  }
+
+  Widget _buildSaveDeleteButtons(BuildContext context, Function onDeletionComplete, Function deleteProject) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () {
+            showDeleteConfirmationDialog(
+              context,
+              () => deleteProject(onDeletionComplete),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromARGB(255, 255, 215, 100),
+          ),
+          icon: const Icon(Icons.delete, color: Colors.black),
+          label: const Text('Delete Project',
+              style: TextStyle(color: Colors.black)),
+        ),
+        const SizedBox(width: 46),
+        ElevatedButton(
+          onPressed: _saveProjectDetails,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromARGB(255, 255, 215, 100),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.save, color: Colors.black),
+              SizedBox(width: 8),
+              Text('Save Project', style: TextStyle(color: Colors.black)),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildSubtasks(String username) {
@@ -335,7 +337,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
           hintText: 'Enter project description here',
           border: InputBorder.none, // Hide the default border of the TextField
         ),
-        style: TextStyle(fontSize: 16.0, color: Colors.brown[800]), // Text color
+        style:
+            TextStyle(fontSize: 16.0, color: Colors.brown[800]), // Text color
         maxLines: null,
         keyboardType: TextInputType.multiline,
         textInputAction: TextInputAction.done,
