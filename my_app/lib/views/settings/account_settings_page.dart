@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, deprecated_member_use
+// ignore_for_file: prefer_const_constructors, deprecated_member_use, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
@@ -6,8 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/common/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-
 
 class AccountSettingsPage extends StatefulWidget {
   final String username;
@@ -21,23 +19,27 @@ class AccountSettingsPage extends StatefulWidget {
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
   late TextEditingController _emailController;
+  late TextEditingController _oldPasswordController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
   var isGmailLogin = false;
   var passwordChanged = false;
   var emailChanged = false;
   var username = "";
-  final initialEmail = 'email@example.com';
 
   @override
   void initState() {
     super.initState();
     username = widget.username;
-    _emailController = TextEditingController(text: initialEmail);
+    _emailController = TextEditingController();
+    _oldPasswordController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
     checkGoogleSignIn();
+    getUserEmail();
+
   }
+
 
   Future<void> checkGoogleSignIn() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -54,9 +56,20 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
   }
 
+  Future<void> getUserEmail() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final email = user.email;
+      setState(() {
+        _emailController.text = email ?? '';
+      });
+    }
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
+    _oldPasswordController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -76,15 +89,16 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Account Settings',
-        style: TextStyle(color: Colors.white),
-      ),
+        title: const Text(
+          'Account Settings',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Color(0xFFFFE6C9),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -99,6 +113,14 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   )
                 : Container(),
             !isGmailLogin ? _buildSectionTitle('Change Password') : Container(),
+            !isGmailLogin
+                ? _buildTextField(
+                    controller: _oldPasswordController,
+                    labelText: 'Old Password',
+                    icon: Icons.lock,
+                    obscureText: true,
+                  )
+                : Container(),
             !isGmailLogin
                 ? _buildTextField(
                     controller: _passwordController,
@@ -123,7 +145,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                         Text(
                           'You are logged in with your Google account. To change your email, password, or username, please visit your Google account settings.',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
+                            fontSize: 16,
                           ),
                         ),
                         SizedBox(height: 16.0),
@@ -157,6 +180,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                           await updateUserInfo(
                               username,
                               _emailController.text,
+                              _oldPasswordController.text,
                               _passwordController.text,
                               emailChanged,
                               passwordChanged);
@@ -189,7 +213,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         child: Text(
           title,
           style: const TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+              color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),
         ),
       );
 
@@ -202,13 +226,14 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     return TextField(
       controller: controller,
       obscureText: obscureText,
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
-        prefixIcon: icon != null ? Icon(icon, color: Colors.white70) : null,
+        prefixIcon: icon != null ? Icon(icon, color: Colors.black) : null,
         labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white70),
+        labelStyle: const TextStyle(
+            color: Colors.black), // Set label text color to black
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white70),
+          borderSide: BorderSide(color: Colors.black),
         ),
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.deepPurple),
@@ -222,7 +247,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         _confirmPasswordController.text != "") {
       passwordChanged = true;
     }
-    if (_emailController.text != initialEmail) {
+    if (_emailController.text != FirebaseAuth.instance.currentUser?.email) {
       emailChanged = true;
     }
     if (passwordChanged == false && emailChanged == false) {
@@ -246,6 +271,11 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
 
     if (passwordChanged) {
+      if (_oldPasswordController.text.isEmpty) {
+        showerrormsg(message: "Please enter your old password");
+        return false;
+      }
+
       if (!passwordRegex.hasMatch(_passwordController.text)) {
         showerrormsg(
             message:
