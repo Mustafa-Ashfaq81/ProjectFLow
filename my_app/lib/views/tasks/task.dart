@@ -225,8 +225,10 @@ class _TaskPageState extends State<TaskDetailsPage> {
               backgroundColor: Color.fromARGB(255, 255, 215, 100),
             ),
             icon: const Icon(Icons.delete, color: Colors.black),
-            label: const Text('Delete Project',
-                style: TextStyle(color: Colors.black)),
+            label: Text('Delete Project',
+                style: TextStyle(color: Colors.black),
+                maxLines: 1, // Ensure text remains on a single line
+                overflow: TextOverflow.ellipsis), // Add ellipsis if text exceeds button width
           ),
         ),
         const SizedBox(width: 46),
@@ -259,7 +261,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
-              "This task currently has no subtasks. Let's add more depth to your project with some creative ideas!",
+              "This project currently has no tasks. Let's add more depth to your project with some creative ideas!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 height: 1.5,
@@ -291,7 +293,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildSectionTitle('All Subtasks'),
+            _buildSectionTitle('All Tasks'),
             const SizedBox(height: 20),
             _buildTaskMenu(username),
           ],
@@ -448,16 +450,6 @@ class _TaskPageState extends State<TaskDetailsPage> {
     );
   }
 
-  Widget _buildNormalText(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontFamily: 'Inter',
-        fontSize: 15.0,
-      ),
-    );
-  }
-
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
@@ -472,7 +464,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
   Widget _buildProgressIndicatorWithText() {
     // Customizable values
     double progress = 0.6; // 60%
-    Color progressColor = Colors.green; // Color of the progress indicator
+    Color progressColor = progress < 0.5 ? Colors.red : Colors.green; // Color of the progress indicator
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -498,43 +490,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
         const SizedBox(width: 5), // Space after the progress indicator
         Text(
           '${(progress * 100).toInt()}%', // The percentage text
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
+            fontWeight: FontWeight.bold, // Make percentage bold
+            color: progressColor, // Set color based on progress
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildFooterButton() {
-    return BottomAppBar(
-      color: Colors.black, // Set the background color of the footer
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SizedBox(
-          height: double.infinity, // Set the height of the button
-          width: double
-              .infinity, // Set the width of the button to match the width of the screen
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white, // Button background color
-              foregroundColor: Colors.black, // Text and icon color
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    8), // Adjust the border radius to match your design
-              ),
-              elevation: 0, // Removes shadow
-            ),
-            onPressed: () {
-              // Navigate to CreateSubTaskPage
-            },
-            child: const Text(
-              'Add Subtask',
-              style: TextStyle(fontSize: 16), // Set your text size here
-            ),
-          ),
-        ),
-      ),
     );
   }
 
