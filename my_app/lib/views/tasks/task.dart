@@ -213,19 +213,21 @@ class _TaskPageState extends State<TaskDetailsPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ElevatedButton.icon(
-          onPressed: () {
-            showDeleteConfirmationDialog(
-              context,
-              () => deleteProject(onDeletionComplete),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 255, 215, 100),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: () {
+              showDeleteConfirmationDialog(
+                context,
+                () => deleteProject(onDeletionComplete),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 255, 215, 100),
+            ),
+            icon: const Icon(Icons.delete, color: Colors.black),
+            label: const Text('Delete Project',
+                style: TextStyle(color: Colors.black)),
           ),
-          icon: const Icon(Icons.delete, color: Colors.black),
-          label: const Text('Delete Project',
-              style: TextStyle(color: Colors.black)),
         ),
         const SizedBox(width: 46),
         ElevatedButton(
@@ -245,6 +247,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
       ],
     );
   }
+
 
   Widget _buildSubtasks(String username) {
     //show diff views dep on if subtasks are available
