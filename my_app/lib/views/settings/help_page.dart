@@ -4,26 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/settings/privacy.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:kommunicate_flutter/kommunicate_flutter.dart';
+// import 'package:kommunicate_flutter/kommunicate_flutter.dart';
 
 class HelpPage extends StatelessWidget {
   final String username;
 
   const HelpPage({Key? key, required this.username}) : super(key: key);
 
-  void _showMindMateChat(BuildContext context) async {
-    try {
-      dynamic conversationObject = {
-        'appId':
-            '318ca4627d2288155b7b63aa7a622814e', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from Kommunicate dashboard.
-      };
-      dynamic result =
-          await KommunicateFlutterPlugin.buildConversation(conversationObject);
-      print("Conversation builder success : " + result.toString());
-    } on Exception catch (e) {
-      print("Conversation builder error occurred : " + e.toString());
-    }
-  }
+  // void _showMindMateChat(BuildContext context) async {
+  //   try {
+  //     dynamic conversationObject = {
+  //       'appId':
+  //           '318ca4627d2288155b7b63aa7a622814e', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from Kommunicate dashboard.
+  //     };
+  //     dynamic result =
+  //         await KommunicateFlutterPlugin.buildConversation(conversationObject);
+  //     print("Conversation builder success : " + result.toString());
+  //   } on Exception catch (e) {
+  //     print("Conversation builder error occurred : " + e.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -199,11 +199,14 @@ class HelpPage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showMindMateChat(context),
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.chat),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => _showMindMateChat(context),
+      //   backgroundColor: Colors.blue,
+      //   child: Icon(
+      //     Icons.chat,
+      //     size: 18, // Adjust the size as needed
+      //   ),
+      // ),
       bottomNavigationBar: Footer(index: 0, username: username),
     );
   }
