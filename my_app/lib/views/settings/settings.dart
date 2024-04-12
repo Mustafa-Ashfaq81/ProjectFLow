@@ -211,28 +211,34 @@ class _SettingsPageState extends State<SettingsPage> {
     required double subtitleSize,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 32, color: Colors.black),
-          const SizedBox(width: 32),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: titleSize, color: Colors.black),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 32, color: Colors.black),
+            const SizedBox(width: 32),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontSize: titleSize, color: Colors.black),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    subtitle,
+                    style:
+                        TextStyle(fontSize: subtitleSize, color: Colors.black),
+                  ),
+                ],
               ),
-              const SizedBox(height: 5),
-              Text(
-                subtitle,
-                style: TextStyle(fontSize: subtitleSize, color: Colors.black),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
