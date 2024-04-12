@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+
 
 class AboutUsPage extends StatelessWidget {
   final String username;
@@ -13,10 +16,12 @@ class AboutUsPage extends StatelessWidget {
       {
         'name': 'Adeen Ali Khan',
         'image': 'pictures/adeen.png',
+        'linkedin': 'https://www.linkedin.com/in/adeenalikhan29/',
       },
       {
         'name': 'Essa Shahid Arshad',
         'image': 'pictures/essa.png',
+        'linkedin': 'https://www.linkedin.com/in/essaarshad/',
       },
       {
         'name': 'Muhammad Hurraira Anwer',
@@ -25,10 +30,12 @@ class AboutUsPage extends StatelessWidget {
       {
         'name': 'Muhammad Mehdi Changezi',
         'image': 'pictures/mehdi.png',
+        'linkedin': 'https://www.linkedin.com/in/muhammad-mehdi-07a716255/',
       },
       {
         'name': 'Mustafa Ashfaq',
         'image': 'pictures/mustafa.png',
+        'linkedin': 'https://www.linkedin.com/in/mustafa-ashfaq-225608202/',
       },
     ];
 
@@ -88,7 +95,7 @@ class AboutUsPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Founded in 2022, Idea Enhancer App was born out of a passion for innovation and a desire to make idea management accessible to everyone. Our team of experienced developers and designers came together to create a powerful yet intuitive app that simplifies the process of capturing, organizing, and executing ideas.',
+              'Founded in 2024, Idea Enhancer App was born out of a passion for innovation and a desire to make idea management accessible to everyone. Our team of experienced developers and designers came together to create a powerful yet intuitive app that simplifies the process of capturing, organizing, and executing ideas.',
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 16),
@@ -101,11 +108,52 @@ class AboutUsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              '- Innovation: We believe in pushing boundaries and embracing new ideas to drive progress and growth.\n'
-              '- Collaboration: We foster a culture of teamwork and encourage open communication to achieve shared goals.\n'
-              '- User-Centric: We put our users at the center of everything we do, constantly striving to improve their experience.\n'
-              '- Simplicity: We aim to make complex processes simple and intuitive, enabling users to focus on what matters most.',
+          const Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: '- ',
+                  ),
+                  TextSpan(
+                    text: 'Innovation',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                      text:
+                          ': We believe in pushing boundaries and embracing new ideas to drive progress and growth.\n'),
+                  TextSpan(
+                    text: '- ',
+                  ),
+                  TextSpan(
+                    text: 'Collaboration',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                      text:
+                          ': We foster a culture of teamwork and encourage open communication to achieve shared goals.\n'),
+                  TextSpan(
+                    text: '- ',
+                  ),
+                  TextSpan(
+                    text: 'User-Centric',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                      text:
+                          ': We put our users at the center of everything we do, constantly striving to improve their experience.\n'),
+                  TextSpan(
+                    text: '- ',
+                  ),
+                  TextSpan(
+                    text: 'Simplicity',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text:
+                        ': We aim to make complex processes simple and intuitive, enabling users to focus on what matters most.',
+                  ),
+                ],
+              ),
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 16),
@@ -137,6 +185,7 @@ class AboutUsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
+
             CarouselSlider(
               items: teamMembers.map((member) {
                 return Builder(
@@ -146,9 +195,21 @@ class AboutUsPage extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: Column(
                         children: [
-                          CircleAvatar(
-                            radius: 60,
-                            backgroundImage: AssetImage(member['image']!),
+                          GestureDetector(
+                            onTap: () async {
+                              if (member['linkedin'] != null) {
+                                final url = member['linkedin']!;
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
+                              }
+                            },
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundImage: AssetImage(member['image']!),
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Text(
