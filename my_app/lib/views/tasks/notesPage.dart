@@ -172,53 +172,13 @@ class _AllTasksPageState extends State<AllTasksPage> {
     );
   }
 
-  // Widget buildTasksList() {
-  //   return FutureBuilder<void>(
-  //     future: atload(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.waiting) {
-  //         return Center(child: CircularProgressIndicator());
-  //       } else if (snapshot.hasError) {
-  //         return Center(child: Text('Error: ${snapshot.error}'));
-  //       } else {
-  //         List<Widget> taskWidgets = alltasks.map((task) {
-  //           return ListTile(
-  //             title: Text(task['heading']),
-  //             subtitle: Text(
-  //               task['description'],
-  //               style: const TextStyle(color: Colors.white70),
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //             onTap: () {
-  //               Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) =>
-  //                       TaskDetailsPage(username: username, task: task),
-  //                 ),
-  //               );
-  //             },
-  //           );
-  //         }).toList();
-
-  //         return ListView(children: taskWidgets);
-  //       }
-  //     },
-  //   );
-  // }
-
   Widget _buildNotesList() {
     final List<Map<String, dynamic>> notes = alltasks;
 
     // Define a list of colors
     final List<Color> colors = [
-      // Colors.transparent,
       const Color(0xFF141310).withOpacity(0.80),
       const Color(0xFFE16C00).withOpacity(0.41),
-      // Colors.pink[50]!,
-      // Colors.lightGreen[50]!,
-      // Colors.lightBlue[50]!,
-      // Add more colors as needed
     ];
 
     return ListView.builder(
@@ -226,6 +186,9 @@ class _AllTasksPageState extends State<AllTasksPage> {
       itemBuilder: (context, index) {
         // Using modulo (%) operator to cycle through the colors list if there are more notes than colors
         Color bgColor = colors[index % colors.length];
+
+        // Extracting the first line of the description
+        String firstLine = notes[index]['description'].split('\n').first;
 
         return Card(
           color: bgColor, // Using the bgColor for this note card
@@ -235,14 +198,14 @@ class _AllTasksPageState extends State<AllTasksPage> {
               notes[index]['heading'],
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: 18.0, // Increased font size for heading
                   // backgroundColor: Colors.white
                   color: Colors.white),
             ),
             subtitle: Text(
-              notes[index]['description'],
+              firstLine,
               style: const TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  // backgroundColor: Colors.white
+                  fontSize: 14.0, // Reduced font size for description
                   color: Colors.white),
             ),
             onTap: () {

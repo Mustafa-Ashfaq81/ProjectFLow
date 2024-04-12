@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 50.0),
                         child: Text(
-                          'My Tasks',
+                          'My Projects',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -258,7 +258,7 @@ class _HomePageState extends State<HomePage> {
             const Padding(
               padding: EdgeInsets.only(left: 30.0, top: 0.0),
               child: Text(
-                'Completed Tasks',
+                'Completed Projects',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 22,
