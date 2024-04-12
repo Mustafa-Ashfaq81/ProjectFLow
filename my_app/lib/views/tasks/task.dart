@@ -158,7 +158,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
           Padding(
             padding: EdgeInsets.only(right: 35.0), // Adjust the value as needed
             child: Text(
-              'Task Details',
+              'Project Details',
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -190,17 +190,20 @@ class _TaskPageState extends State<TaskDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 40),
-                    _buildDuedateProjectTeam(),
-                    const SizedBox(height: 30),
-                    _buildSectionTitle('Task Heading'),
+                    _buildSectionTitle('Project Heading'),
+                    const SizedBox(height: 5),
                     _buildProjectHeadingInput(),
+                    const SizedBox(height: 15),
+                    _buildDuedateProjectTeam(),
                     const SizedBox(height: 10),
-                    _buildSectionTitle('Task Description'),
-                    _buildProjectDescriptionInput(),
+                    _buildProgressIndicatorWithText(),
+                    const SizedBox(height: 10),
+                    _buildSectionTitle('Project Notes'),
+                    const SizedBox(height: 5),
+                    _buildProjectNotesInput(),
                     const SizedBox(height: 20),
-                    _buildProgressIndicatorWithText(), // Moved here
-                    const SizedBox(height: 20),
+                    // _buildProgressIndicatorWithText(), // Moved here
+                    // const SizedBox(height: 20),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -220,7 +223,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                           label: const Text('Delete Task',
                               style: TextStyle(color: Colors.black)),
                         ),
-                        const SizedBox(width: 35),
+                        const SizedBox(width: 55),
                         ElevatedButton(
                           onPressed: _saveProjectDetails,
                           style: ElevatedButton.styleFrom(
@@ -292,35 +295,54 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
 // Method to create the project heading input field
   Widget _buildProjectHeadingInput() {
-    return TextField(
+    return TextFormField(
       controller: _projectHeadingController,
       focusNode: _headingFocus,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: 'Enter project heading here',
+        hintStyle: TextStyle(color: Colors.grey[400]),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[500]!),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
       ),
-      onSubmitted: (_) {
-        FocusScope.of(context).requestFocus(
-            _descriptionFocus); // Move focus to the description field
+      style: TextStyle(fontSize: 18.0),
+      cursorColor: Colors.blue,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (_) {
+        _headingFocus.unfocus(); // Hide keyboard
+        FocusScope.of(context).requestFocus(_descriptionFocus);
       },
-      textInputAction:
-          TextInputAction.next, // Adds a "next" button to the keyboard
     );
   }
 
-  Widget _buildProjectDescriptionInput() {
-    return TextField(
-      controller: _projectDescriptionController,
-      focusNode: _descriptionFocus,
-      decoration: const InputDecoration(
-        hintText: 'Enter project description here',
+  Widget _buildProjectNotesInput() {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Color(0xFFFFE6C9), // Beige color for the box
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Colors.brown[200]!), // Border color
       ),
-      onSubmitted: (_) {
-        _descriptionFocus.unfocus();
-      },
-      maxLines: null,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction
-          .done, // Adds a "done" button to the keyboard for multiline input
+      child: TextField(
+        controller: _projectDescriptionController,
+        focusNode: _descriptionFocus,
+        decoration: InputDecoration(
+          hintText: 'Enter project description here',
+          border: InputBorder.none, // Hide the default border of the TextField
+        ),
+        style: TextStyle(fontSize: 16.0, color: Colors.brown[800]), // Text color
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.done,
+        onSubmitted: (_) {
+          _descriptionFocus.unfocus();
+        },
+      ),
     );
   }
 
@@ -456,7 +478,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(width: 150),
+        const SizedBox(width: 110),
         SizedBox(
           width: 20, // Width of the circle
           height: 20, // Height of the circle
