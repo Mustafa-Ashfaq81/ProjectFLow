@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/views/tasks/task.dart';
+import 'package:my_app/views/tasks/completedtask.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -87,8 +88,7 @@ Widget completedIdeasView(BuildContext context,
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => TaskDetailsPage(
-                                          username: username, task: thistask),
+                                      builder: (context) => CompletedTaskPage(username: username, task: thistask),
                                     ),
                                   );
                                 },
@@ -141,10 +141,7 @@ Widget completedIdeasView(BuildContext context,
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => TaskDetailsPage(
-                                        username: username,
-                                        task:
-                                            thistask), // Task data will be passed as parameters
+                                    builder: (context) => CompletedTaskPage(username: username, task: thistask), // Task data will be passed as parameters
                                   ),
                                 );
                               },

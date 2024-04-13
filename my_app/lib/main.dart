@@ -17,13 +17,14 @@ import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/views/colab.dart';
+// import 'package:my_app/views/chatroom.dart';
 import 'package:my_app/views/calendar.dart';
 import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
+import 'package:my_app/views/tasks/completedtask.dart';
+import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
-import 'package:my_app/views/tasks/newtask.dart';
-// import 'package:my_app/views/chatroom.dart';
 
 Future main() async {
 
@@ -102,6 +103,10 @@ class MyApp extends StatelessWidget {  // This widget is the root of our applica
               username: "abz",
               task:{},
             ),
+            '/completedtask': (context) => const CompletedTaskPage(
+              username: "abz",
+              task:{},
+            ),
            '/subtasks': (context) => const SubTaskPage(
               username: "abz",
               subtasks: [],
@@ -114,6 +119,7 @@ class MyApp extends StatelessWidget {  // This widget is the root of our applica
         //       socket: IO.io(),
         //       id: 'socket',
         //     ),
+
       },
       debugShowCheckedModeBanner: false, 
     ), 
