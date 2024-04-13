@@ -220,7 +220,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ElevatedButton.icon(
+        Expanded(
+          child: ElevatedButton.icon(
             onPressed: () {
               showDeleteConfirmationDialog(
                 context,
@@ -236,7 +237,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
                 maxLines: 1, // Ensure text remains on a single line
                 overflow: TextOverflow.ellipsis), // Add ellipsis if text exceeds button width
           ),
-        const SizedBox(width: 75),
+        ),
+        const SizedBox(width: 46),
         ElevatedButton(
           onPressed: () {
             _saveProjectDetails();
@@ -261,6 +263,52 @@ class _TaskPageState extends State<TaskDetailsPage> {
       ],
     );
   }
+
+  // Widget _buildSaveDeleteButtons(BuildContext context, Function onDeletionComplete, Function deleteProject) {
+  //   return Row(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       ElevatedButton.icon(
+  //           onPressed: () {
+  //             showDeleteConfirmationDialog(
+  //               context,
+  //               () => deleteProject(onDeletionComplete),
+  //             );
+  //           },
+  //           style: ElevatedButton.styleFrom(
+  //             backgroundColor: Color.fromARGB(255, 255, 215, 100),
+  //           ),
+  //           icon: const Icon(Icons.delete, color: Colors.black),
+  //           label: Text('Delete Project',
+  //               style: TextStyle(color: Colors.black),
+  //               maxLines: 1, // Ensure text remains on a single line
+  //               overflow: TextOverflow.ellipsis), // Add ellipsis if text exceeds button width
+  //         ),
+  //       const SizedBox(width: 75),
+  //       ElevatedButton(
+  //         onPressed: () {
+  //           _saveProjectDetails();
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => HomePage(username: username),
+  //                 ));
+  //         },
+  //         style: ElevatedButton.styleFrom(
+  //           backgroundColor: Color.fromARGB(255, 255, 215, 100),
+  //         ),
+  //         child: Row(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Icon(Icons.save, color: Colors.black),
+  //             SizedBox(width: 8),
+  //             Text('Save Project', style: TextStyle(color: Colors.black)),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
 
   Widget _buildSubtasks(String username) {
@@ -488,7 +536,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(width: 140),
+        const SizedBox(width: 165),
         SizedBox(
           width: 20, // Width of the circle
           height: 20, // Height of the circle
