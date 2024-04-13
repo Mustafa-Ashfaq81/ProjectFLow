@@ -310,17 +310,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
   }
 
-  Future<String> getProfilePictureUrl(String username) async {
-    String filePath = 'images/user_profile_pictures/$username.jpg';
-    try {
-      String downloadUrl =
-          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      print("Failed to fetch profile picture URL: $e");
-      return 'pictures/profile.png'; // Return a default profile picture URL if fetching fails
-    }
-  }
+
 
   Widget _buildTeamMembersRow() {
     return SingleChildScrollView(
@@ -330,9 +320,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
           Row(
             children: teamMembers
                 .map((member) =>
-                                      _buildTeamMember(
-                    member["name"], member["color"], member["picture"]))
-
+                    _buildTeamMember(member["name"], member["color"]))
                 .toList(),
           ),
           IconButton(
@@ -351,15 +339,11 @@ class _NewTaskPageState extends State<NewTaskPage> {
                     SearchUsers(username: widget.username, users: otherusers)
                         as SearchDelegate<String>,
               );
-              selectedUsername.then((username) async {
-                if (username != null && username != "") {
-                  String profilePicUrl = await getProfilePictureUrl(username);
+              selectedUsername.then((username) {
+                if (username != "") {
                   setState(() {
-                    teamMembers.add({
-                      "name": username,
-                      "picture": profilePicUrl,
-                      "color": Colors.yellow[100]
-                    });
+                    teamMembers
+                        .add({"name": username, "color": Colors.yellow[100]});
                   });
                 }
               });
@@ -370,7 +354,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
   }
 
-  Widget _buildTeamMember(String name, Color color, String pictureUrl) {
+
+  Widget _buildTeamMember(String name, Color color) {
     return Container(
       height: 40.0,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -383,8 +368,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.network(pictureUrl,
-              width: 30, height: 30), // Display the profile picture
+          const Icon(Icons.person_outline, color: Colors.grey),
           const SizedBox(width: 8),
           Text(name),
           const SizedBox(width: 8),

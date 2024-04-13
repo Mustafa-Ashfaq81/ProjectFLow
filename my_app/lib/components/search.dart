@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 /*
 
@@ -12,14 +11,19 @@ Allows users to quickly find tasks by typing queries which are matched against t
 
 */
 
-class SearchTasks extends SearchDelegate<String> {
+class SearchTasks extends SearchDelegate<String> 
+{
   final String username;
   final List<String> headings;
 
-  SearchTasks({required this.username, required this.headings});
+  SearchTasks({required this.username, required this.headings}) 
+  {
+    // print("headings $headings username $username");
+  }
 
   @override
-  ThemeData appBarTheme(BuildContext context) {
+  ThemeData appBarTheme(BuildContext context) 
+  {
     return super.appBarTheme(context).copyWith(
           textTheme: const TextTheme(
             titleLarge: TextStyle(
@@ -77,9 +81,7 @@ class SearchTasks extends SearchDelegate<String> {
   }
 
   @override
-  Widget buildSuggestions(BuildContext context) // Suggestions as user types, similar to buildResults 
-                                                // but may implement a more relaxed filter or special ranking.
-  {
+  Widget buildSuggestions(BuildContext context) {
     List<String> res = [];
     for (var title in headings) {
       if (title.toLowerCase().contains(query.toLowerCase())) {
@@ -111,7 +113,9 @@ class SearchUsers extends SearchDelegate<String> {
   final String username;
   final List<String> users;
 
-  SearchUsers({required this.username, required this.users});
+  SearchUsers({required this.username, required this.users}) {
+    // print("username $username other-users $users");
+  }
 
   // APP Bar styling below according to our color scheme
 
@@ -140,28 +144,14 @@ class SearchUsers extends SearchDelegate<String> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-        onPressed: () 
-        {
+        onPressed: () {
           close(context, "");
         },
         icon: const Icon(Icons.arrow_back));
   }
 
-  Future<String> getProfilePictureUrl(String username) async {
-    String filePath = 'images/user_profile_pictures/$username.jpg';
-    try {
-      String downloadUrl =
-          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      print("Failed to fetch profile picture URL: $e");
-      return 'pictures/profile.png'; // Return a default profile picture URL if fetching fails
-    }
-  }
-
   @override
-  Widget buildResults(BuildContext context) 
-  {
+  Widget buildResults(BuildContext context) {
     List<String> res = [];
     for (var user in users) {
       if (user.toLowerCase().contains(query.toLowerCase())) {
@@ -173,31 +163,10 @@ class SearchUsers extends SearchDelegate<String> {
         itemCount: res.length,
         itemBuilder: (context, index) {
           var result = res[index];
-          return FutureBuilder<String>(
-            future: getProfilePictureUrl(result),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile(
-                  leading: CircularProgressIndicator(),
-                  title: Text(result),
-                );
-              } else if (snapshot.hasError) {
-                return ListTile(
-                  leading: Icon(Icons.error),
-                  title: Text(result),
-                );
-              } else {
-                final profilePicUrl = snapshot.data!;
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(profilePicUrl),
-                  ),
-                  title: Text(result),
-                  onTap: () {
-                    close(context, result);
-                  },
-                );
-              }
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
             },
           );
         },
@@ -223,31 +192,10 @@ class SearchUsers extends SearchDelegate<String> {
         itemCount: res.length,
         itemBuilder: (context, index) {
           var result = res[index];
-          return FutureBuilder<String>(
-            future: getProfilePictureUrl(result),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile(
-                  leading: CircularProgressIndicator(),
-                  title: Text(result),
-                );
-              } else if (snapshot.hasError) {
-                return ListTile(
-                  leading: Icon(Icons.error),
-                  title: Text(result),
-                );
-              } else {
-                final profilePicUrl = snapshot.data!;
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(profilePicUrl),
-                  ),
-                  title: Text(result),
-                  onTap: () {
-                    close(context, result);
-                  },
-                );
-              }
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
             },
           );
         },
