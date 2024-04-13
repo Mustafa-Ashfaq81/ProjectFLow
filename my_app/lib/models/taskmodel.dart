@@ -63,7 +63,8 @@ List<Map<String, dynamic>> maptasks(List<Task> tasks) {
                 .map((subtask) => {
                       'content': subtask.content,
                       'subheading': subtask.subheading,
-                      'deadline' : subtask.deadline
+                      'deadline' : subtask.deadline,
+                      'progress' : subtask.progress
                           .toString(), 
                     })
                 .toList(),
