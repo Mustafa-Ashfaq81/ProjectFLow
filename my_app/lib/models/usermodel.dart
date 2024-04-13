@@ -4,7 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/common/toast.dart';
 
-class UserModel {
+/*
+
+  This file manages user data interactions with Firebase Firestore and Firebase Authentication.
+  It includes the UserModel class for data structure, and functions for creating, reading, updating,
+  and deleting user data. Additional functionalities include email and password updates with user re-authentication
+
+*/
+
+class UserModel  // Represents a user with their relevant details and tasks.
+{
   final String? username;
   final String? id;
   final String? email;
@@ -12,12 +21,16 @@ class UserModel {
 
   UserModel({this.id, this.username, this.email, this.tasks});
 
+    // Constructs a UserModel from a Firestore document snapshot
+
   factory UserModel.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot) 
+  {
     final data = snapshot.data()!;
     final tasksMap = data['tasks'] as List<Map<String, dynamic>>?;
 
-    if (tasksMap != null) {
+    if (tasksMap != null) 
+    {
 
       return UserModel(
         id: snapshot.id,
@@ -36,7 +49,8 @@ class UserModel {
   }
 
   static UserModel fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot) 
+  {
     return UserModel(
       username: snapshot['username'],
       email: snapshot['email'],
@@ -45,12 +59,16 @@ class UserModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() 
+  {
     return {"username": username, "email": email, "id": id, "tasks": tasks};
   }
 }
 
-Stream<List<UserModel>> readUser() {
+// Stream of UserModel list, watching for changes in Firestore 'users' collection
+
+Stream<List<UserModel>> readUser() 
+{
   final userCollection = FirebaseFirestore.instance.collection("users");
   return userCollection.snapshots().map((querySnapshot) => querySnapshot.docs
       .map(
@@ -59,21 +77,24 @@ Stream<List<UserModel>> readUser() {
       .toList());
 }
 
-Future<List<String>> getallUsers() async {
+Future<List<String>> getallUsers() async 
+{
   final QuerySnapshot<Map<String, dynamic>> snapshot =
       await FirebaseFirestore.instance.collection("users").get();
   // Here we extract names from User objects instead of returning the User objects themselves
   return snapshot.docs.map((doc) => doc['username'] as String).toList();
 }
 
-Future<List<String>> getallEmails() async {
+Future<List<String>> getallEmails() async 
+{
   final QuerySnapshot<Map<String, dynamic>> snapshot =
       await FirebaseFirestore.instance.collection("users").get();
   // Here we extract emails from User objects instead of returning the User objects themselves
   return snapshot.docs.map((doc) => doc['email'] as String).toList();
 }
 
-void createUser(UserModel userModel) {
+void createUser(UserModel userModel) 
+{
   final userCollection = FirebaseFirestore.instance.collection("users");
   String id = userCollection.doc().id;
 
@@ -87,22 +108,28 @@ void createUser(UserModel userModel) {
   userCollection.doc(id).set(newUser);
 }
 
-void deleteUserData(String username) async {
+void deleteUserData(String username) async 
+{
   final userCollection = FirebaseFirestore.instance.collection("users");
   final snapshot =
       await userCollection.where('username', isEqualTo: username).get();
   final doc = snapshot.docs.first;
-  try {
+  try 
+  {
     doc.reference.delete();
-  } catch (e) {
+  } 
+  catch (e) 
+  {
     print("err deleting data  ... $e");
   }
 }
 
 
-Future<String> updateUsername(String original_username,name) async {  //wont be used most probably as changing username would mean changing a lot of things
+Future<String> updateUsername(String original_username,name) async   // wont be used most probably as changing username would mean changing a lot of things
+{ 
   var allusernames = await getallUsers();
-  if (allusernames.contains(name) == true) {
+  if (allusernames.contains(name) == true) 
+  {
     showerrormsg(message: "This username has been taken already");
     return original_username;
   } 
@@ -122,9 +149,12 @@ Future<void> updateUserInfo(
     String oldPassword,
     String newPassword,
     bool emailChanged,
-    bool passwordChanged) async {
-  if (emailChanged) {
-    try {
+    bool passwordChanged) async 
+{
+  if (emailChanged) 
+  {
+    try 
+    {
       final userCollection = FirebaseFirestore.instance.collection("users");
       final snapshot = await userCollection
           .where('username', isEqualTo: original_username)
@@ -132,12 +162,15 @@ Future<void> updateUserInfo(
       final doc = snapshot.docs.first;
       await doc.reference.update({'email': email});
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
+      if (user != null) 
+      {
         await user.verifyBeforeUpdateEmail(
             email); //email addresses should be verified
       }
       showmsg(message: "Email has been updated successfully");
-    } catch (e) {
+    } 
+    catch (e) 
+    {
       print("got error updating EMAIL ...  $e");
       showerrormsg(
           message:
