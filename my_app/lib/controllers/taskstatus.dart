@@ -100,6 +100,7 @@ Widget completedIdeasView(BuildContext context,
                                     children: [
                                       Text(
                                         task['heading'],
+                                        maxLines: 1,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 18.0,
@@ -109,6 +110,7 @@ Widget completedIdeasView(BuildContext context,
                                       const SizedBox(height:8.0), // Adding space between heading and description
                                       Text(
                                         task['description'],
+                                        maxLines: 1,
                                         style: const TextStyle(
                                           color: Colors.white70,
                                           overflow: TextOverflow.ellipsis,
@@ -153,6 +155,7 @@ Widget completedIdeasView(BuildContext context,
                                   children: [
                                     Text(
                                       task['heading'],
+                                      maxLines: 1,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.0,
@@ -162,6 +165,7 @@ Widget completedIdeasView(BuildContext context,
                                     const SizedBox(height: 8.0),
                                     Text(
                                       task['description'],
+                                      maxLines: 1,
                                       style: const TextStyle(
                                         color: Colors.white70,
                                         overflow: TextOverflow.ellipsis,
@@ -223,6 +227,7 @@ Widget inprogressIdeasView(BuildContext context,
                                   children: [
                                     Text(
                                       task['heading'],
+                                      maxLines: 1,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.0,
@@ -233,6 +238,7 @@ Widget inprogressIdeasView(BuildContext context,
                                     Expanded(
                                       child: Text(
                                         task['description'],
+                                        maxLines: 1,
                                         style: const TextStyle(
                                             color: Colors.white70),
                                         overflow: TextOverflow.ellipsis,
@@ -274,6 +280,7 @@ Widget inprogressIdeasView(BuildContext context,
                                   children: [
                                     Text(
                                       task['heading'],
+                                      maxLines: 1,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.0,
@@ -284,6 +291,7 @@ Widget inprogressIdeasView(BuildContext context,
                                     Expanded(
                                       child: Text(
                                         task['description'],
+                                        maxLines: 1,
                                         style: const TextStyle(
                                             color: Colors.white70),
                                         overflow: TextOverflow.ellipsis,
