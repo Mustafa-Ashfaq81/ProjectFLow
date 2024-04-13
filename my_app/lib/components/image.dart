@@ -8,9 +8,18 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/*
+
+ This files contains the implementation of the ImageSetter class. Images are used to display profile pictures in the application
+ A StatefulWidget that allows users to upload and view profile images.
+ Uses Firebase Storage for storing images and SharedPreferences for caching image URLs
+
+*/
+
 const bool kIsWeb = bool.fromEnvironment('dart.library.js_util');
 
-class ImageSetter extends StatefulWidget {
+class ImageSetter extends StatefulWidget 
+{
   final String username;
   const ImageSetter({Key? key, required this.username}) : super(key: key);
 
@@ -18,26 +27,45 @@ class ImageSetter extends StatefulWidget {
   _ImageSetterState createState() => _ImageSetterState();
 }
 
-class _ImageSetterState extends State<ImageSetter> {
+class _ImageSetterState extends State<ImageSetter> 
+{
   late FirebaseStorage _storage;
   String imageUrl = '';
   bool isLoading = false;
 
   @override
-  void initState() {
+  void initState() 
+  {
     super.initState();
     initializeStorage();
   }
 
-  Future<void> initializeStorage() async {
+  /*
+
+  Firebase Storage is initialized with the bucket specified in the .env file
+  Initially an attempt is made to load a previously saved image URL from SharedPreferences
+
+  */
+
+  Future<void> initializeStorage() async 
+  {
     await dotenv.load();
     String imageBucket = dotenv.env['IMAGE_BUCKET']!;
     _storage = FirebaseStorage.instanceFor(bucket: imageBucket);
     loadSavedImageUrl();
   }
 
-  void _startUpload(XFile selectedImage) async {
-    setState(() {
+  /*
+
+  Upon successful upload, shared preferences are used to store the image URL
+  Shared preferences in app development allow developers to store small amounts of data in key-value pairs on a user's device
+
+  */
+
+  void _startUpload(XFile selectedImage) async 
+  {
+    setState(() 
+    {
       isLoading = true;
     });
 
@@ -56,47 +84,59 @@ class _ImageSetterState extends State<ImageSetter> {
       imageUrl = await snapshot.ref.getDownloadURL();
       await SharedPreferences.getInstance()
         ..setString('image_${widget.username}', imageUrl);
-      setState(() {
+      setState(() 
+      {
         isLoading = false;
       });
-    } catch (e) {
+    } 
+    catch (e) 
+    {
       print("[ImageSetter] StartUpload: Uploading error $e");
-      setState(() {
+      setState(() 
+      {
         isLoading = false;
       });
     }
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage() async 
+  {
     final XFile? selected =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (selected != null) {
+    if (selected != null) 
+    {
       _startUpload(selected);
     }
   }
 
-  Future<void> loadSavedImageUrl() async {
+  Future<void> loadSavedImageUrl() async 
+  {
     final prefs = await SharedPreferences.getInstance();
     final savedUrl = prefs.getString('image_${widget.username}');
-    if (savedUrl != null && savedUrl.isNotEmpty) {
+    if (savedUrl != null && savedUrl.isNotEmpty) 
+    {
       setState(() => imageUrl = savedUrl);
     }
   }
 
-  Widget buildImage() {
+  Widget buildImage() 
+  {
     bool hasImage = imageUrl.isNotEmpty;
     return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
+      onTap: () 
+      {
+        showModalBottomSheet(   // Includes a clickable image that opens a modal to view or change the image
           context: context,
-          builder: (BuildContext context) {
+          builder: (BuildContext context) 
+          {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
                   leading: Icon(Icons.visibility),
                   title: Text('View Image'),
-                  onTap: () {
+                  onTap: () 
+                  {
                     Navigator.pop(context);
                     _viewImage();
                   },
@@ -104,7 +144,8 @@ class _ImageSetterState extends State<ImageSetter> {
                 ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('Change Image'),
-                  onTap: () {
+                  onTap: () 
+                  {
                     Navigator.pop(context);
                     _pickImage();
                   },
@@ -147,7 +188,8 @@ class _ImageSetterState extends State<ImageSetter> {
     );
   }
 
-  void _viewImage() {
+  void _viewImage()    // Opens a full-screen view to display the uploaded or selected image.
+  {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -167,7 +209,8 @@ class _ImageSetterState extends State<ImageSetter> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return buildImage();
   }
 }

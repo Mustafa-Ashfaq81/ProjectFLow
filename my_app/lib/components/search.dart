@@ -1,15 +1,22 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
+/*
+
+This file contains the implementation of the SearchTasks class.  This class is responsible for handling user's search
+and has been used on the notes page as well as the home page
+SearchDelegate for searching through a list of task headings
+Allows users to quickly find tasks by typing queries which are matched against task titles
+
+*/
 
 class SearchTasks extends SearchDelegate<String> {
   final String username;
   final List<String> headings;
 
-  SearchTasks({required this.username, required this.headings}) {
-    // print("headings $headings username $username");
-  }
+  SearchTasks({required this.username, required this.headings});
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -70,7 +77,9 @@ class SearchTasks extends SearchDelegate<String> {
   }
 
   @override
-  Widget buildSuggestions(BuildContext context) {
+  Widget buildSuggestions(BuildContext context) // Suggestions as user types, similar to buildResults 
+                                                // but may implement a more relaxed filter or special ranking.
+  {
     List<String> res = [];
     for (var title in headings) {
       if (title.toLowerCase().contains(query.toLowerCase())) {
@@ -102,9 +111,7 @@ class SearchUsers extends SearchDelegate<String> {
   final String username;
   final List<String> users;
 
-  SearchUsers({required this.username, required this.users}) {
-    // print("username $username other-users $users");
-  }
+  SearchUsers({required this.username, required this.users});
 
   // APP Bar styling below according to our color scheme
 
@@ -133,7 +140,8 @@ class SearchUsers extends SearchDelegate<String> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-        onPressed: () {
+        onPressed: () 
+        {
           close(context, "");
         },
         icon: const Icon(Icons.arrow_back));
@@ -152,7 +160,8 @@ class SearchUsers extends SearchDelegate<String> {
   }
 
   @override
-  Widget buildResults(BuildContext context) {
+  Widget buildResults(BuildContext context) 
+  {
     List<String> res = [];
     for (var user in users) {
       if (user.toLowerCase().contains(query.toLowerCase())) {
