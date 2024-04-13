@@ -4,12 +4,19 @@ import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/models/groupchatmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/cache_util.dart';
-// import 'package:my_app/views/colab.dart';
 
+
+/*
+
+The files contains the implementation of collaboration requests. The user can accept or reject the requests
+A request is sent when a new project is created and the user wants to collaborate with other users
+
+*/
 
 
 List<Map<String, dynamic>> getRequests(
-    String username, QuerySnapshot snapshot) {
+    String username, QuerySnapshot snapshot) 
+    {
   List<Map<String, dynamic>> reqs = snapshot.docs
       .where((doc) => (doc['req_recv'] as List<dynamic>).contains(username))
       .map((doc) => {
@@ -44,8 +51,7 @@ Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String us
     List<dynamic> colaborators = updatedtask['collaborators'];
     List<String> colabz = colaborators.cast<String>();
     colabz.add(username);
-    updatedtask['collaborators'] = colabz;
-    //add collaborator(this user who accepted request) to sender's task
+    updatedtask['collaborators'] = colabz; // add collaborator(this user who accepted request) to sender's task
     var snapshot =
         await userCollection.where('username', isEqualTo: task['sender']).get();
     var doc = snapshot.docs.first;
@@ -53,154 +59,67 @@ Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String us
     tasks[task['index'] ?? task['task']] = updatedtask;
     await doc.reference.update({'tasks': tasks});
 
-    //add that task for user who accepted the colab request
     snapshot =
-        await userCollection.where('username', isEqualTo: username).get();
+        await userCollection.where('username', isEqualTo: username).get(); //add that task for user who accepted the colab request
     doc = snapshot.docs.first;
     tasks = doc.data()['tasks'];
     tasks.add(updatedtask);
     await doc.reference.update({'tasks': tasks});
     updateColabinDatabase(username, task);
     print("accepted-req-successfully");
-    //update group chats and requests in cache
-    await updaterooms(task,username);
+    await updaterooms(task,username);   //update group chats and requests in cache
     await TaskService().updateCachedRequests(task,username);
-    print("group-chats-&-cache-updated");
-  } catch (e) {
+  } 
+  catch (e) 
+  {
     print("accepting req err $e");
   }
 }
 
-Future<void> rejectreq(BuildContext context,Map<String, dynamic> task, String username) async {
-  try {
+Future<void> rejectreq(BuildContext context,Map<String, dynamic> task, String username) async 
+{
+  try 
+  {
     updateColabinDatabase(username, task);
     await TaskService().updateCachedRequests(task,username);
-    print("rejected-req-successfully");
-  } catch (error) {
+  } 
+  catch (error) 
+  {
     print("Error rejecting reqst: $error");
   }
 }
 
-Future<void> updateColabinDatabase(String username, Map<String,dynamic> task) async{
-  try{
+Future<void> updateColabinDatabase(String username, Map<String,dynamic> task) async
+{
+  try
+  {
     await FirebaseFirestore.instance
           .collection('colab')
           .where('req_sender', isEqualTo: task['sender'])
           .where('req_task', isEqualTo: task['index'])
           .get()
-          .then((querySnapshot) {
-        for (var doc in querySnapshot.docs) {
-          doc.reference.update({
+          .then((querySnapshot) 
+          {
+        for (var doc in querySnapshot.docs) 
+        {
+          doc.reference.update(
+          {
             'req_recv': FieldValue.arrayRemove([username])
-          }).then((value) {
-            // Check if 'usernames' is now empty and delete the record
-            doc.reference.get().then((docSnapshot) {
-              if (docSnapshot.get('req_recv').isEmpty) {
+          }).then((value) 
+          {
+            doc.reference.get().then((docSnapshot)  // Check if 'usernames' is now empty and delete the record
+            {
+              if (docSnapshot.get('req_recv').isEmpty) 
+              {
                 doc.reference.delete();
               }
             });
           });
         }
       });
-  } catch (e){
+  } 
+  catch (e)
+  {
     print("error at updating colab collection in db  $e");
   }
 }
-
-
-// Widget showRequests( BuildContext context,  List<Map<String, dynamic>> requests, String username) {
-//   return requests.isEmpty
-//       ? const Padding(
-//           padding: EdgeInsets.only(
-//             top: 10.0,
-//           ),
-//           child: Center(child: Text("No requests for collaboration yet")))
-//       : SingleChildScrollView(
-//           scrollDirection: Axis.horizontal,
-//           child: Padding(
-//             padding: const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0),
-//             child: Row(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: requests
-//                   .map((task) => requests.indexOf(task) % 2 == 0
-//                       ? Container(
-//                           margin: const EdgeInsets.only(left: 10.0, top: 10.0),
-//                           height: 200.0,
-//                           width: 200.0,
-//                           decoration: BoxDecoration(
-//                             color: const Color(0xFFE16C00).withOpacity(0.48),
-//                             borderRadius: BorderRadius.circular(5),
-//                           ),
-//                           child: Column( // Colums: for vertical alignment
-//                               children: [
-//                             Center(
-//                               child: Text(
-//                                 task['heading']!,
-//                                 textAlign: TextAlign.center,
-//                                 style: const TextStyle(
-//                                   color: Colors.white,
-//                                 ),
-//                               ),
-//                             ),
-//                             Text(
-//                               task['sender']!,
-//                               textAlign: TextAlign.center,
-//                               style: const TextStyle(
-//                                 color: Colors.white,
-//                               ),
-//                             ),
-//                             ElevatedButton(
-//                               onPressed: () {
-//                                 acceptreq(context,task, username);
-//                               },
-//                               child: const Text("Accept request"),
-//                             ),
-//                             ElevatedButton(
-//                               onPressed: () {
-//                                 rejectreq(context,task, username);
-//                               },
-//                               child: const Text("Decline request"),
-//                             )
-//                           ]))
-//                       : Container(
-//                           margin: const EdgeInsets.only(left: 10.0, top: 10.0),
-//                           height: 200.0,
-//                           width: 200.0,
-//                           decoration: BoxDecoration(
-//                             color: const Color(0xFF141310),
-//                             borderRadius: BorderRadius.circular(5),
-//                           ),
-//                           child: Column(children: [
-//                             Center(
-//                               child: Text(
-//                                 task['heading']!,
-//                                 textAlign: TextAlign.center,
-//                                 style: const TextStyle(
-//                                   color: Colors.white,
-//                                 ),
-//                               ),
-//                             ),
-//                             Text(
-//                               task['sender']!,
-//                               textAlign: TextAlign.center,
-//                               style: const TextStyle(
-//                                 color: Colors.white,
-//                               ),
-//                             ),
-//                             ElevatedButton(
-//                               onPressed: () {
-//                                 acceptreq(context,task, username);
-//                               },
-//                               child: const Text("Accept request"),
-//                             ),
-//                             ElevatedButton(
-//                               onPressed: () {
-//                                 rejectreq(context,task, username);
-//                               },
-//                               child: const Text("Decline request"),
-//                             )
-//                           ])))
-//                   .toList(),
-//             ),
-//           ));
-// }
