@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/common/deletedialog.dart';
+import 'package:my_app/common/completedialog.dart';
 import 'package:my_app/models/taskmodel.dart';
+import 'package:my_app/views/tasks/task.dart';
 
 class SubTaskPage extends StatefulWidget {
   final String username;
@@ -61,6 +63,18 @@ class _SubtaskPageState extends State<SubTaskPage> {
     Navigator.of(context).pop(); // Go back to the previous screen with the list updated
   }
 
+  void _completeSubTask() async{
+    // Remove the task from the global list
+    await completeSubtask(username, taskheading, widget.subtasks[subtaskIndex]['subheading']);
+     Map<String, dynamic> thisTask = await getTaskbyHeading(taskheading, username);
+     Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TaskDetailsPage(username: username, task: thisTask),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +132,7 @@ class _SubtaskPageState extends State<SubTaskPage> {
             label: const Text('Delete Subtask',
                 style: TextStyle(color: Colors.black)),
           ),
-          const SizedBox(width: 205),
+          const SizedBox(width: 105),
           ElevatedButton(
             onPressed: _saveTask,
             style: ElevatedButton.styleFrom(
@@ -130,6 +144,23 @@ class _SubtaskPageState extends State<SubTaskPage> {
           ),
         ],
       ),
+      const SizedBox(height: 50),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ElevatedButton.icon(
+            onPressed: ()  { showCompleteConfirmationDialog(context,_completeSubTask); },
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  Color.fromARGB(255, 255, 215, 100),
+            ),
+            icon: const Icon(Icons.done, color: Color.fromARGB(255, 0, 88, 3)),
+            label: const Text('Mark as Completed',
+                style: TextStyle(color: Colors.black)),
+          ),
+        ]
+      )
+
 
       // ElevatedButton(
       //   onPressed: _saveTask,

@@ -106,9 +106,7 @@ Widget completedIdeasView(BuildContext context,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      const SizedBox(
-                                          height:
-                                              8.0), // Adding space between heading and description
+                                      const SizedBox(height:8.0), // Adding space between heading and description
                                       Text(
                                         task['description'],
                                         style: const TextStyle(

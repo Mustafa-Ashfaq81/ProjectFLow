@@ -29,6 +29,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
   List<Map<String, dynamic>> teamMembers = [];
   List<dynamic> subtasks = [];
+  late double progress;
   late TextEditingController _projectHeadingController;
   late TextEditingController _projectDescriptionController;
   final FocusNode _headingFocus = FocusNode();
@@ -61,6 +62,17 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
   Future<void> atload() async {
     subtasks = await getSubTasks(username, mytask['heading']);
+    //fetching progress of task
+    if (subtasks.length>0) {
+      int completedCount = 0;
+      int totalCount = subtasks.length;
+      for (var subtask in subtasks) {
+        if (subtask['progress'] == 'completed') { completedCount++; }
+      }
+      progress =  totalCount == 0 ? 0.0 : completedCount / totalCount;
+    } else {  //default 0 progress if NO subtasks 
+      progress = 0.0;
+    }
     // print("subtasks ... $subtasks");
   }
 
@@ -94,11 +106,6 @@ class _TaskPageState extends State<TaskDetailsPage> {
         CacheUtil.cacheData('tasks_$username', cachedAllTasks);
       }
     }
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(username: username),
-        ));
   }
 
   void deleteProject(Function onCompletion) async {
@@ -213,8 +220,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: ElevatedButton.icon(
+        ElevatedButton.icon(
             onPressed: () {
               showDeleteConfirmationDialog(
                 context,
@@ -230,10 +236,16 @@ class _TaskPageState extends State<TaskDetailsPage> {
                 maxLines: 1, // Ensure text remains on a single line
                 overflow: TextOverflow.ellipsis), // Add ellipsis if text exceeds button width
           ),
-        ),
-        const SizedBox(width: 46),
+        const SizedBox(width: 75),
         ElevatedButton(
-          onPressed: _saveProjectDetails,
+          onPressed: () {
+            _saveProjectDetails();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(username: username),
+                  ));
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 255, 215, 100),
           ),
@@ -463,20 +475,20 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
   Widget _buildProgressIndicatorWithText() {
     // Customizable values
-    double progress = 0.6; // 60%
+    // double progress = 0.6; // 60%
     Color progressColor = progress < 0.5 ? Colors.red : Colors.green; // Color of the progress indicator
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         const Text(
-          'Project Progress',
+          'Progress',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(width: 110),
+        const SizedBox(width: 140),
         SizedBox(
           width: 20, // Width of the circle
           height: 20, // Height of the circle
@@ -547,6 +559,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
   Future<void> _enhanceProject() async {
+    _saveProjectDetails();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Sending call to OpenAi servers, this may take a few seconds ... '),
+        duration: Duration(seconds: 5),
+      ),
+    );
     List<Map<String, dynamic>> newsubtasks = await gptapicall(
       _projectHeadingController.text,
       _projectDescriptionController.text,
@@ -577,7 +596,6 @@ class _TaskPageState extends State<TaskDetailsPage> {
             ),
             trailing: const Icon(Icons.edit, color: Colors.blue),
             onTap: () async {
-              // Use async-await instead of then
               await Navigator.push(
                 context,
                 MaterialPageRoute(
