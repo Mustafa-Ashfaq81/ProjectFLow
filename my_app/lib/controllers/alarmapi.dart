@@ -1,67 +1,181 @@
-// ignore_for_file: sort_child_properties_last, avoid_print
-// import 'dart:convert';
-// import 'dart:io';
+// ignore_for_file: prefer_const_constructors, prefer_final_fields, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
-// import 'package:alarm/src/android_alarm.dart';
-// import 'package:path_provider/path_provider.dart';
 import 'package:my_app/audio/native_audio_player.dart';
-// import 'package:flutter/services.dart' show rootBundle;
 import '../utils/file_util.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AlarmPage extends StatefulWidget {
   const AlarmPage({Key? key}) : super(key: key);
+
   @override
   State<AlarmPage> createState() => _AlarmPageState();
 }
 
 class _AlarmPageState extends State<AlarmPage> {
+  DateTime? _selectedAlarmTime;
+  AlarmSettings? alarmSettings;
+  bool _isAlarmRinging = false;
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   @override
   void initState() {
     super.initState();
+    initializeNotifications();
   }
 
-  final alarmSettings = AlarmSettings(
-    id: 42,
-    dateTime: DateTime(2024, 3, 29, 18, 56), //yy-mm-dd-HOUR-MIN
-    assetAudioPath: 'audios/alarm.mp3',
+  Future<void> initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
+  }
 
-    loopAudio: true,
-    vibrate: true,
-    volume: 0.8,
-    fadeDuration: 3.0,
-    notificationTitle: 'This is the title',
-    notificationBody: 'This is the body',
-    enableNotificationOnKill: true,
-  );
-
-  Future<void> playAlarmSound() async {
-    try {
-      // Copy the asset to a temporary file
-      print("Copying asset to temporary file");
-      final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
-      print("Asset copied to: ${tempFile.path}");
-
-      // Update the AlarmSettings to use the temporary file path
-      final updatedAlarmSettings = alarmSettings.copyWith(
-        assetAudioPath: tempFile.path,
-      );
-
-      // Use the NativeAudioPlayer to play the audio from the temporary file
-      await NativeAudioPlayer.playAudio(tempFile.path);
-
-      // Set the alarm with the updated AlarmSettings
-      await Alarm.set(alarmSettings: updatedAlarmSettings);
-    } catch (e) {
-      print("Error playing alarm sound: $e");
+  void onDidReceiveNotificationResponse(
+      NotificationResponse notificationResponse) async {
+    final String? payload = notificationResponse.payload;
+    if (payload == 'stop_alarm') {
+      await NativeAudioPlayer.stopAudio();
+      await Alarm.stop(alarmSettings!.id);
+      await flutterLocalNotificationsPlugin
+          .cancel(notificationResponse.id!); // Cancel the notification
     }
   }
 
-  @override
-  void dispose() {
-    NativeAudioPlayer.dispose();
-    super.dispose();
+  Future<void> playAlarmSound() async {
+    if (_selectedAlarmTime == null) {
+      print("No alarm time selected");
+      return;
+    }
+
+    alarmSettings = AlarmSettings(
+      id: 42,
+      dateTime: _selectedAlarmTime!,
+      assetAudioPath: 'audios/alarm.mp3',
+      loopAudio: true,
+      vibrate: true,
+      volume: 0.8,
+      fadeDuration: 3.0,
+      notificationTitle: 'Alarm Title',
+      notificationBody: 'Alarm Body',
+      enableNotificationOnKill: true,
+    );
+
+    try {
+      // Copy the asset to a temporary file
+      debugPrint("Copying asset to temporary file");
+      final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
+      debugPrint("Asset copied to: ${tempFile.path}");
+
+      // Update the AlarmSettings to use the temporary file path
+      final updatedAlarmSettings = alarmSettings!.copyWith(
+        assetAudioPath: tempFile.path,
+      );
+
+      // Set the alarm with the updated AlarmSettings
+      await Alarm.set(alarmSettings: updatedAlarmSettings);
+      debugPrint("Alarm set successfully");
+
+      setState(() {
+        _isAlarmRinging = true;
+      });
+
+      // Create a notification channel
+      const channelId = 'alarm_channel';
+      const channelName = 'Alarm Channel';
+      const channelDescription = 'Channel for alarm notifications';
+
+      final notificationChannel = AndroidNotificationChannel(
+        channelId,
+        channelName,
+        description: channelDescription,
+        importance: Importance.high,
+      );
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(notificationChannel);
+      debugPrint("Notification channel created");
+
+      // Create a notification with a "Stop Alarm" action button
+      const notificationId = 42; // Use a unique notification ID
+      const notificationTitle = 'Alarm';
+      const notificationBody = 'Tap to stop the alarm';
+
+      final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        channelId,
+        channelName,
+        channelDescription: channelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        fullScreenIntent: true,
+        icon: 'ic_stop',
+        actions: [
+          AndroidNotificationAction(
+            'stop_alarm',
+            'Stop Alarm',
+            icon: DrawableResourceAndroidBitmap('@drawable/ic_stop'),
+          ),
+        ],
+      );
+
+      final platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+
+      await flutterLocalNotificationsPlugin.show(
+        notificationId,
+        notificationTitle,
+        notificationBody,
+        platformChannelSpecifics,
+        payload: 'stop_alarm',
+      );
+      debugPrint("Notification shown");
+    } catch (e) {
+      debugPrint("Error setting alarm: $e");
+    }
+  }
+
+  Future<void> _selectAlarmTime(BuildContext context) async {
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (selectedTime != null) {
+      setState(() {
+        _selectedAlarmTime = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+      });
+    }
+  }
+
+  Future<void> stopAlarm() async {
+    if (alarmSettings != null) {
+      await NativeAudioPlayer.stopAudio(); // Stop the sound
+      await Alarm.stop(alarmSettings!.id); // Cancel the scheduled alarm
+      await flutterLocalNotificationsPlugin
+          .cancel(alarmSettings!.id); // Optionally cancel the notification
+
+      setState(() {
+        _isAlarmRinging = false;
+      });
+    }
   }
 
   @override
@@ -69,66 +183,27 @@ class _AlarmPageState extends State<AlarmPage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter alarm clock example 2'),
+          title: const Text('Flutter Alarm Clock Example'),
         ),
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                margin: const EdgeInsets.all(25),
-                child: TextButton(
-                  child: const Text(
-                    'Create alarm at 23:59',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: playAlarmSound, // Updated to use the new method
-                ),
+              TextButton(
+                onPressed: () => _selectAlarmTime(context),
+                child:
+                    Text('Select Alarm Time', style: TextStyle(fontSize: 20)),
               ),
-              Container(
-                margin: const EdgeInsets.all(25),
-                child: TextButton(
-                  child: const Text(
-                    'Stop Alarm',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    NativeAudioPlayer.stopAudio(); // Call the stop method
-                    Alarm.stop(alarmSettings.id); // Cancel the scheduled alarm
-                  },
-                ),
+              TextButton(
+                onPressed: playAlarmSound,
+                child: Text('Set Alarm', style: TextStyle(fontSize: 20)),
               ),
-              // Container(
-              //   margin: const EdgeInsets.all(25),
-              //   child: const TextButton(
-              //     onPressed: FlutterAlarmClock.showAlarms,
-              //     child: Text(
-              //       'Show alarms',
-              //       style: TextStyle(fontSize: 20),
-              //     ),
-              //   ),
-              // ),
-              // Container(
-              //   margin: const EdgeInsets.all(25),
-              //   child: TextButton(
-              //     child: const Text(
-              //       'Create timer for 42 seconds',
-              //       style: TextStyle(fontSize: 20),
-              //     ),
-              //     onPressed: () {
-              //       FlutterAlarmClock.createTimer(length: 42);
-              //     },
-              //   ),
-              // ),
-              // Container(
-              //   margin: const EdgeInsets.all(25),
-              //   child: const TextButton(
-              //     onPressed: FlutterAlarmClock.showTimers,
-              //     child: Text(
-              //       'Show Timers',
-              //       style: TextStyle(fontSize: 20),
-              //     ),
-              //   ),
-              // ),
+              // Conditionally display the stop button based on the alarm state
+              if (_isAlarmRinging)
+                TextButton(
+                  onPressed: stopAlarm,
+                  child: Text('Stop Alarm', style: TextStyle(fontSize: 20)),
+                ),
             ],
           ),
         ),
