@@ -67,6 +67,7 @@ class CalendarPageState extends State<CalendarPage>
       CacheUtil.cacheData('deadlines_$username', deadlines);
     }
       deadlines = filterUpcomingTasks(deadlines, _startDate, _endDate);
+      print("filtered deadlines $deadlines");
 
   }
 //  upcomingTasks
@@ -87,7 +88,7 @@ class CalendarPageState extends State<CalendarPage>
       var starthr =  int.parse(task["start_time"].split(':')[0]);
       if(task['start_time'].contains('PM')) { starthr += 12; }      //24 hr clock
       task['startHour'] = starthr.toString();
-      task['day'] = (DateTime.parse(task['duedate']).weekday - DateTime.now().weekday + 1).toString();
+      task['day'] = (8 - ((DateTime.parse(task['duedate']).weekday - DateTime.now().weekday).abs())).toString();
       task['name'] = task['heading'];
     }
     
@@ -345,7 +346,7 @@ class CalendarPageState extends State<CalendarPage>
   String _getDayOfWeek(int index) 
   {
       final adjustedWeekDay =
-        (_startDate.add(Duration(days: index)).weekday - 1) % 7;
+        (_startDate.add(Duration(days: index)).weekday) % 7; //.weekday - 1
 
     switch (adjustedWeekDay) 
     {
@@ -368,7 +369,7 @@ class CalendarPageState extends State<CalendarPage>
     }
   }
 
-  String _getDayNumber(int index) {
+  String _getDayNumber(int index) { 
     final day = _startDate.add(Duration(days: index));
     return day.day.toString();
   }

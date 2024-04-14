@@ -58,7 +58,7 @@ class _CompletedTaskPageState extends State<CompletedTaskPage> {
                     const SizedBox(height: 5),
                     _buildProjectHeading(),
                     const SizedBox(height: 20),
-                    _buildSectionTitle('Project Notes'),
+                    _buildSectionTitle('Project Description'),
                     const SizedBox(height: 5),
                     _buildProjectNotes(),
                     const SizedBox(height: 20),
