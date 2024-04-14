@@ -1,18 +1,29 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
-class SearchTasks extends SearchDelegate<String> {
+/*
+
+This file contains the implementation of the SearchTasks class.  This class is responsible for handling user's search
+and has been used on the notes page as well as the home page
+SearchDelegate for searching through a list of task headings
+Allows users to quickly find tasks by typing queries which are matched against task titles
+
+*/
+
+class SearchTasks extends SearchDelegate<String> 
+{
   final String username;
   final List<String> headings;
 
-  SearchTasks({required this.username, required this.headings}) {
+  SearchTasks({required this.username, required this.headings}) 
+  {
     // print("headings $headings username $username");
   }
 
   @override
-  ThemeData appBarTheme(BuildContext context) {
+  ThemeData appBarTheme(BuildContext context) 
+  {
     return super.appBarTheme(context).copyWith(
           textTheme: const TextTheme(
             titleLarge: TextStyle(
@@ -139,18 +150,6 @@ class SearchUsers extends SearchDelegate<String> {
         icon: const Icon(Icons.arrow_back));
   }
 
-  Future<String> getProfilePictureUrl(String username) async {
-    String filePath = 'images/user_profile_pictures/$username.jpg';
-    try {
-      String downloadUrl =
-          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      print("Failed to fetch profile picture URL: $e");
-      return 'pictures/profile.png'; // Return a default profile picture URL if fetching fails
-    }
-  }
-
   @override
   Widget buildResults(BuildContext context) {
     List<String> res = [];
@@ -164,31 +163,10 @@ class SearchUsers extends SearchDelegate<String> {
         itemCount: res.length,
         itemBuilder: (context, index) {
           var result = res[index];
-          return FutureBuilder<String>(
-            future: getProfilePictureUrl(result),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile(
-                  leading: CircularProgressIndicator(),
-                  title: Text(result),
-                );
-              } else if (snapshot.hasError) {
-                return ListTile(
-                  leading: Icon(Icons.error),
-                  title: Text(result),
-                );
-              } else {
-                final profilePicUrl = snapshot.data!;
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(profilePicUrl),
-                  ),
-                  title: Text(result),
-                  onTap: () {
-                    close(context, result);
-                  },
-                );
-              }
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
             },
           );
         },
@@ -214,31 +192,10 @@ class SearchUsers extends SearchDelegate<String> {
         itemCount: res.length,
         itemBuilder: (context, index) {
           var result = res[index];
-          return FutureBuilder<String>(
-            future: getProfilePictureUrl(result),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile(
-                  leading: CircularProgressIndicator(),
-                  title: Text(result),
-                );
-              } else if (snapshot.hasError) {
-                return ListTile(
-                  leading: Icon(Icons.error),
-                  title: Text(result),
-                );
-              } else {
-                final profilePicUrl = snapshot.data!;
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(profilePicUrl),
-                  ),
-                  title: Text(result),
-                  onTap: () {
-                    close(context, result);
-                  },
-                );
-              }
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              close(context, result);
             },
           );
         },

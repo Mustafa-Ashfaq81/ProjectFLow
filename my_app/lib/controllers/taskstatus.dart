@@ -1,51 +1,77 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/views/tasks/completedtask.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Fetching the tasks by username from the database based on their stattus
+/*
 
-Widget fetchTasks(String status, String username) {
+  This file contains the definitions for fetching tasks from Firestore based on their status and user.
+  It includes widgets for displaying tasks either as 'completed' or 'in progress'.
+  These widgets dynamically create lists of tasks and display them using different styles and interactivity
+
+*/
+
+
+
+Widget fetchTasks(String status, String username) 
+{
   return FutureBuilder<QuerySnapshot>(
     future: FirebaseFirestore.instance.collection('users').get(),
     builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
+      if (snapshot.connectionState == ConnectionState.waiting) 
+      {
         return const Center(
           child: CircularProgressIndicator(),
         );
-      } else if (snapshot.hasError) {
+      } 
+      else if (snapshot.hasError) 
+      {
         return Text('Error: ${snapshot.error}');
-      } else {
+      } 
+      else 
+      {
         List<Object> tasks = snapshot.data!.docs
             .where((doc) => doc['username'] == username)
             .map((doc) {
           final dynamic tsk = doc['tasks'];
-          if (tsk is List<dynamic>) {
+          if (tsk is List<dynamic>) 
+          {
             return tsk;
-          } else if (tsk is String) {
+          } 
+          else if (tsk is String) 
+          {
             return tsk;
           }
           return '';
         }).toList();
 
         List<Map<String, dynamic>> headings = [];
-        for (var item in tasks) {
+        for (var item in tasks) 
+        {
           List<dynamic> itemList = item as List<dynamic>;
 
-          for (var nestedItem in itemList) {
+          for (var nestedItem in itemList) 
+          {
             Map<String, dynamic> itemMap = nestedItem as Map<String, dynamic>;
-            if (itemMap['status'] == status) {
-              headings.add({
+            if (itemMap['status'] == status) 
+            {
+              headings.add(
+              {
                 'heading': itemMap['heading'],
                 'description': itemMap['description'],
               });
             }
           }
         }
-        if (status == "completed") {
+        if (status == "completed") 
+        {
           return completedIdeasView(context, headings, username);
-        } else {
+        } 
+        else 
+        {
           return inprogressIdeasView(context, headings, username);
         }
       }
@@ -53,8 +79,9 @@ Widget fetchTasks(String status, String username) {
   );
 }
 
-Widget completedIdeasView(BuildContext context,
-    List<Map<String, dynamic>> headings, String username) {
+Widget completedIdeasView(BuildContext context, 
+    List<Map<String, dynamic>> headings, String username) 
+    {
   return headings.isEmpty
       ? const Padding(
           padding: EdgeInsets.only(
@@ -62,7 +89,7 @@ Widget completedIdeasView(BuildContext context,
           ),
           child: Center(child: Text("No completed task yet")))
       : SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+          scrollDirection: Axis.horizontal, /// Displays tasks in a horizontally scrollable list
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: headings
@@ -81,7 +108,8 @@ Widget completedIdeasView(BuildContext context,
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
-                                onTap: () async {
+                                onTap: () async 
+                                {
                                   Map<String, dynamic> thistask =
                                       await getTaskbyHeading(
                                           task['heading'], username);
@@ -179,8 +207,9 @@ Widget completedIdeasView(BuildContext context,
           ));
 }
 
-Widget inprogressIdeasView(BuildContext context,
-    List<Map<String, dynamic>> headings, String username) {
+Widget inprogressIdeasView(BuildContext context, // Uses similar mapping logic to 'completedIdeasView' but with different styling and data handling
+    List<Map<String, dynamic>> headings, String username) 
+    {
   return headings.isEmpty
       ? const Padding(
           padding: EdgeInsets.only(
@@ -205,7 +234,8 @@ Widget inprogressIdeasView(BuildContext context,
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () async {
+                              onTap: () async 
+                              {
                                 Map<String, dynamic> thistask =
                                     await getTaskbyHeading(
                                         task['heading'], username);
@@ -258,7 +288,8 @@ Widget inprogressIdeasView(BuildContext context,
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () async {
+                              onTap: () async 
+                              {
                                 Map<String, dynamic> thistask =
                                     await getTaskbyHeading(
                                         task['heading'], username);

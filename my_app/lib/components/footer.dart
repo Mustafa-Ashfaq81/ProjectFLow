@@ -6,7 +6,17 @@ import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/views/colab.dart';
 
-class Footer extends StatelessWidget {
+/*
+
+This files contains the implementation of the footer class. Footer is used to navigate between different pages in the application.
+You will be able to see the footer at the bottom of the screen in the application
+
+*/
+
+// The Main class wraps the `FooterMenu` widget, providing theme data specific to our app's design requirements
+
+class Footer extends StatelessWidget 
+{
   final int index;
   final String username;
 
@@ -14,7 +24,8 @@ class Footer extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return Theme(
       data: Theme.of(context).copyWith(
         canvasColor: Colors.black,
@@ -33,7 +44,15 @@ class Footer extends StatelessWidget {
   }
 }
 
-class FooterMenu extends StatefulWidget {
+/*
+
+The Footer Menu allows navigation between different parts of the application using a bottom bar
+Tracks the currently selected tab with [index] and adjusts the application's navigation stack
+
+*/
+
+class FooterMenu extends StatefulWidget 
+{
   final int index;
   final String username;
   const FooterMenu({super.key, required this.index, required this.username});
@@ -43,14 +62,20 @@ class FooterMenu extends StatefulWidget {
       _FooterMenuState(selectedIndex: index, username: username);
 }
 
-class _FooterMenuState extends State<FooterMenu> {
+class _FooterMenuState extends State<FooterMenu> 
+{
   int selectedIndex; // This tracks the selected index on the footer menu
   String username;
   _FooterMenuState({required this.selectedIndex, required this.username});
 
-  void _onItemTapped(int index) {
-    if (index != selectedIndex) {
-      switch (index) {
+   // Changes the application's page by navigating to new routes while preserving the user context
+   
+  void _onItemTapped(int index) 
+  {
+    if (index != selectedIndex) 
+    {
+      switch (index) 
+      {
         case 0:
           Navigator.pushReplacement(
             context,
@@ -94,14 +119,16 @@ class _FooterMenuState extends State<FooterMenu> {
         default:
           break;
       }
-      setState(() {
+      setState(() 
+      {
         selectedIndex = index;
       });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(

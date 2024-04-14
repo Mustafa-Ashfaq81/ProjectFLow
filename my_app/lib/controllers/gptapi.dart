@@ -1,17 +1,22 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:my_app/common/toast.dart';
 
+/*
+This file contains the implementation of the gptapicall function. 
+This function is used to call the OpenAI GPT-3 API to generate a 
+list of subtasks from a given task heading and description.
 
-Future<List<Map<String,dynamic>>> gptapicall(String taskheading, String taskdesc) async{
+*/
+
+
+
+Future<List<Map<String,dynamic>>> gptapicall(String taskheading, String taskdesc) async
+{
 
     const String apiKey = "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";
-    // const String heading = "Autonomous self driving robot";
-    // const String description = """
-    //     I want to create a self driving model / prototype on a DJI ROBOMASTER model, with 4 tyres, 
-    //     it would be using a camera, and sensors, it should be able to do good lane detection, obstacle avoidance, 
-    //     as well as go-to-goal behaviour,  it should be able to map its environment, and do other required things as well.
-    // """;
     const String deadline = "15th May 2024";
     final String prompt = """
         Think of yourself as a creative problem solver as well as an efficient project manager. 
@@ -33,11 +38,13 @@ Future<List<Map<String,dynamic>>> gptapicall(String taskheading, String taskdesc
     """;
     final response = await http.post(
       Uri.parse('https://api.openai.com/v1/chat/completions'),
-      headers: {
+      headers: 
+      {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $apiKey' 
       },
-      body: jsonEncode({
+      body: jsonEncode(
+        {
         "model":"gpt-3.5-turbo-0125",
         'messages': [
           {'role': 'system', 'content': prompt},
@@ -45,27 +52,29 @@ Future<List<Map<String,dynamic>>> gptapicall(String taskheading, String taskdesc
       })
     );
     try{
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200)
+       {
           final resp = response.body;
-          // print("response ... $resp");
           final Map<String, dynamic> res = jsonDecode(resp);
           final String result = res['choices'][0]['message']["content"];
-          // print("response ... $result");
           dynamic data = jsonDecode(result);
-          if (data is List) {  //  if data is a List
-            // Cast each element to Map<String, dynamic>
+          if (data is List) 
+          {  
             List<Map<String, dynamic>> listOfMaps = List<Map<String, dynamic>>.from(
                 data.map((element) => Map<String, dynamic>.from(element)));
-            // for (var dictionary in listOfMaps) { print(dictionary); }
             return listOfMaps;
           }
 
-      } else {
+      } 
+      else 
+      {
           showerrormsg(message: response.body);  
       }
-    } catch(e){
+    } 
+    catch(e)
+    {
         showerrormsg(message: e.toString());
     }
-    print("some-issue-occured-in-api-call");
+    print("An Error Occured in the API Call");
     return [];
   }
