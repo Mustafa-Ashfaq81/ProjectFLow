@@ -1,12 +1,26 @@
 // ignore_for_file: avoid_print, avoid_single_cascade_in_expression_statements, library_private_types_in_public_api, prefer_const_constructors
 
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+
+class ImageCodeException implements Exception {
+  final String message;
+
+  ImageCodeException(this.message);
+
+  @override
+  String toString() {
+    return 'ImageCodeException: $message';
+  }
+}
 
 /*
 
@@ -55,6 +69,45 @@ class _ImageSetterState extends State<ImageSetter>
     loadSavedImageUrl();
   }
 
+  Future<Uint8List> _getImageFuture() async 
+  {
+    try 
+    {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode == 200) 
+      {
+        final Uint8List bodyBytes = response.bodyBytes;
+        // We can add a simple check for the PNG file header as an example
+        // PNG files start with 0x89 0x50 0x4E 0x47 0x0D 0x0A 0x1A 0x0A
+        if (bodyBytes.length >= 8 &&
+            bodyBytes[0] == 0x89 &&
+            bodyBytes[1] == 0x50 &&
+            bodyBytes[2] == 0x4E &&
+            bodyBytes[3] == 0x47 &&
+            bodyBytes[4] == 0x0D &&
+            bodyBytes[5] == 0x0A &&
+            bodyBytes[6] == 0x1A &&
+            bodyBytes[7] == 0x0A) 
+            {
+          return bodyBytes;
+        } 
+        else 
+        {
+          throw ImageCodeException('Unsupported image format.');
+        }
+      } 
+      else 
+      {
+        throw ImageCodeException(
+            'Failed to load image: Server returned status code ${response.statusCode}');
+      }
+    } 
+    catch (e) 
+    {
+      throw ImageCodeException('Failed to load image: $e');
+    }
+  }
+
   /*
 
   Upon successful upload, shared preferences are used to store the image URL
@@ -99,15 +152,21 @@ class _ImageSetterState extends State<ImageSetter>
     }
   }
 
-  Future<void> _pickImage() async 
-  {
-    final XFile? selected =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (selected != null) 
-    {
-      _startUpload(selected);
+  Future<void> _pickImage() async {
+    try {
+      final XFile? selected =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (selected != null) {
+        _startUpload(selected);
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+      // Handle the error gracefully, e.g., show a snackbar or dialog to the user
     }
   }
+
+  
+
 
   Future<void> loadSavedImageUrl() async 
   {
@@ -188,8 +247,7 @@ class _ImageSetterState extends State<ImageSetter>
     );
   }
 
-  void _viewImage()    // Opens a full-screen view to display the uploaded or selected image.
-  {
+  void _viewImage() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -198,15 +256,34 @@ class _ImageSetterState extends State<ImageSetter>
             title: Text('View Image'),
           ),
           body: Center(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.contain,
+            child: FutureBuilder(
+              future: _getImageFuture(),
+              builder: (context, AsyncSnapshot<Uint8List> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } 
+                else if (snapshot.hasError) 
+                {
+                  // If there's an error, display the default image
+                  return Image.asset("pictures/profile.png",
+                      fit: BoxFit.contain);
+                } else if (snapshot.hasData) 
+                {
+                  return Image.memory(snapshot.data!, fit: BoxFit.contain);
+                } 
+                else 
+                {
+                  return Image.asset("pictures/profile.png",
+                      fit: BoxFit.contain);
+                }
+              },
             ),
           ),
         ),
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) 
