@@ -26,9 +26,27 @@ import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
 
+import 'dart:convert';
+import 'dart:io';
+
+Future<void> runNodeServer() async {
+  try{
+    final serverDirectory = Directory('/server');
+    final process = await Process.start('node', [serverDirectory.path + '/server.js']);
+    process.stdout.transform(utf8.decoder).listen((output) {
+      print('Node Server Output: $output');
+    });
+    process.stderr.transform(utf8.decoder).listen((error) {
+      print('Node Server Error: $error');
+    });
+  } catch(e) {print("err running node js server... $e");}
+}
+
+
 Future main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+  await runNodeServer(); //running nodeJs server 
 
   // .env file declared in our project directory for connection to the firebase database
 
