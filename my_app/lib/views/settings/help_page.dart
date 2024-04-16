@@ -10,21 +10,6 @@ class HelpPage extends StatelessWidget {
   final String username;
 
   const HelpPage({Key? key, required this.username}) : super(key: key);
-
-  // void _showMindMateChat(BuildContext context) async {
-  //   try {
-  //     dynamic conversationObject = {
-  //       'appId':
-  //           '318ca4627d2288155b7b63aa7a622814e', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from Kommunicate dashboard.
-  //     };
-  //     dynamic result =
-  //         await KommunicateFlutterPlugin.buildConversation(conversationObject);
-  //     print("Conversation builder success : " + result.toString());
-  //   } on Exception catch (e) {
-  //     print("Conversation builder error occurred : " + e.toString());
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,11 +132,6 @@ class HelpPage extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Get instant help and support by chatting with our AI-powered chatbot, MindMate.',
-              style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 8),
 
