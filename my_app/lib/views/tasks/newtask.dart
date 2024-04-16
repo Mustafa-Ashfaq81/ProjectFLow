@@ -29,7 +29,7 @@ class NewTaskPage extends StatefulWidget {
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
-  final int idx = 2;
+  final int idx = 1;
   String username;
   _NewTaskPageState({required this.username});
 

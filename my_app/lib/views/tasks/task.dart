@@ -205,7 +205,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                     const SizedBox(height: 5),
                     _buildProjectNotesInput(),
                     const SizedBox(height: 20),
-                    _buildSaveDeleteButtons(context, onDeletionComplete, deleteProject),
+                    _buildSaveButton(context),
                     const SizedBox(height: 20),
                     _buildSubtasks(username),
                   ],
@@ -216,29 +216,10 @@ class _TaskPageState extends State<TaskDetailsPage> {
         });
   }
 
-  Widget _buildSaveDeleteButtons(BuildContext context, Function onDeletionComplete, Function deleteProject) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildSaveButton(BuildContext context) {
+    return  Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () {
-              showDeleteConfirmationDialog(
-                context,
-                () => deleteProject(onDeletionComplete),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 255, 215, 100),
-            ),
-            icon: const Icon(Icons.delete, color: Colors.black),
-            label: Text('Delete Project',
-                style: TextStyle(color: Colors.black),
-                maxLines: 1, // Ensure text remains on a single line
-                overflow: TextOverflow.ellipsis), // Add ellipsis if text exceeds button width
-          ),
-        ),
-        const SizedBox(width: 46),
         ElevatedButton(
           onPressed: () {
             _saveProjectDetails();
@@ -259,7 +240,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
               Text('Save Project', style: TextStyle(color: Colors.black)),
             ],
           ),
-        ),
+        ), 
       ],
     );
   }
@@ -509,6 +490,18 @@ class _TaskPageState extends State<TaskDetailsPage> {
             color: progressColor, // Set color based on progress
           ),
         ),
+        const SizedBox(width: 15),
+        IconButton(
+          icon: const Icon(Icons.delete),
+          color: Colors.red,
+          onPressed: () {
+              showDeleteConfirmationDialog(
+                context,
+                () => deleteProject(onDeletionComplete),
+              );
+          },
+        )
+
       ],
     );
   }
