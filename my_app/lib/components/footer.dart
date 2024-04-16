@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, no_logic_in_create_state, non_constant_identifier_names
 import 'package:flutter/material.dart';
-import 'package:my_app/views/tasks/newtask.dart';
+import 'package:kommunicate_flutter/kommunicate_flutter.dart';
 import 'package:my_app/views/calendar.dart';
 import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/home.dart';
@@ -70,7 +70,7 @@ class _FooterMenuState extends State<FooterMenu>
 
    // Changes the application's page by navigating to new routes while preserving the user context
    
-  void _onItemTapped(int index) 
+  void _onItemTapped(int index)  async
   {
     if (index != selectedIndex) 
     {
@@ -93,12 +93,17 @@ class _FooterMenuState extends State<FooterMenu>
           );
           break;
         case 2:
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NewTaskPage(username: username),
-            ),
-          );
+          try {
+            dynamic conversationObject = {
+              'appId':
+                  '318ca4627d2288155b7b63aa7a622814e', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from Kommunicate dashboard.
+            };
+            dynamic result =
+                await KommunicateFlutterPlugin.buildConversation(conversationObject);
+            print("Conversation builder success : " + result.toString());
+          } on Exception catch (e) {
+            print("Conversation builder error occurred : " + e.toString());
+          }
           break;
         case 3:
           Navigator.pushReplacement(
@@ -136,12 +141,12 @@ class _FooterMenuState extends State<FooterMenu>
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.text_snippet),
+          icon: Icon(Icons.notes_sharp),
           label: 'Notes',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.add),
-          label: 'Add',
+          icon: Icon(Icons.question_answer),
+          label: 'Chatbot',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),

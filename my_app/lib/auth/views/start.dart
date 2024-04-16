@@ -67,7 +67,7 @@ class StartPage extends StatelessWidget  /// A stateless widget that displays th
                    Navigator.push( context, MaterialPageRoute(builder: (context) => const AlarmPage()),
                     );
                 },
-                child: const Text('Alarm api 2 '),
+                child: const Text('Alarm api'),
               ),
             ),
           ],

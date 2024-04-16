@@ -1,7 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast, prefer_const_constructors, sort_child_properties_last, unused_element, prefer_interpolation_to_compose_strings
 
 import 'package:flutter/material.dart';
-import 'package:kommunicate_flutter/kommunicate_flutter.dart';
+import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/controllers/taskstatus.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/components/image.dart';
@@ -28,19 +28,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-void _showMindMateChat(BuildContext context) async {
-  try {
-    dynamic conversationObject = {
-      'appId':
-          '318ca4627d2288155b7b63aa7a622814e', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from Kommunicate dashboard.
-    };
-    dynamic result =
-        await KommunicateFlutterPlugin.buildConversation(conversationObject);
-    print("Conversation builder success : " + result.toString());
-  } on Exception catch (e) {
-    print("Conversation builder error occurred : " + e.toString());
-  }
-}
+
 
 class _HomePageState extends State<HomePage> {
   TextEditingController querycontroller = TextEditingController();
@@ -96,6 +84,7 @@ class _HomePageState extends State<HomePage> {
     }
     profilepic = ImageSetter(username: username);
   }
+
 
   @override
   void dispose() {
@@ -255,18 +244,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 30.0, top: 0.0),
-              child: Text(
-                'Completed Projects',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            ScrollableWindow(row: completedtasks),
             Center(
              child: Padding(
               padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -281,17 +258,38 @@ class _HomePageState extends State<HomePage> {
              ),
             ),
             inprogresstasks,
+            Center(
+             child: Padding(
+              padding:EdgeInsets.symmetric(vertical: 20.0),
+              child: Text(
+                'Completed Projects',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+             ),
+            ),
+            ScrollableWindow(row: completedtasks),
             const SizedBox(height: 20),
           ],
         ),
         
       ),
       floatingActionButton: FloatingActionButton(
-                onPressed: () => _showMindMateChat(context),
+                onPressed: () {
+                   Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewTaskPage(username: username),
+                      ),
+                  );
+                },
                 backgroundColor: Colors.blue,
                 child: Icon(
-                  Icons.chat,
-                  size: 18, // Adjust the size as needed
+                  Icons.add,
+                  size: 15, // Adjust the size as needed
                 ),
               ),
       bottomNavigationBar: Footer(index: idx, username: username),
