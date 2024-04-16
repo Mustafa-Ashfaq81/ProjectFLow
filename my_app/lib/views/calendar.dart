@@ -84,12 +84,16 @@ class CalendarPageState extends State<CalendarPage>
     {
       var task = upcomingTasks[i];
       task['duration'] = calculateDuration(task["start_time"], task["end_time"]).toString();
-      // print("durationnnnn");
       var starthr =  int.parse(task["start_time"].split(':')[0]);
       if(task['start_time'].contains('PM')) { starthr += 12; }      //24 hr clock
       task['startHour'] = starthr.toString();
-      task['day'] = (8 - ((DateTime.parse(task['duedate']).weekday - DateTime.now().weekday).abs())).toString();
       task['name'] = task['heading'];
+      //calculating the day of task (the respective column number as to be shown on calendar) ... days 1->5
+      var diff = (DateTime.parse(task['duedate']).weekday - DateTime.now().weekday).abs();
+      if (diff > 4) { task['day'] = (8 - diff).toString(); }
+      else          { task['day'] = (diff + 1).toString(); } 
+      // print(DateTime.parse(task['duedate']).weekday);
+      // print(DateTime.now().weekday);
     }
     
     return upcomingTasks;
