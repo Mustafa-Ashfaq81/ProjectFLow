@@ -199,7 +199,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                     const SizedBox(height: 20),
                     _buildDuedateProjectTeam(),
                     const SizedBox(height: 20),
-                    _buildProgressIndicatorWithText(),
+                    _buildProgressBarAndDeleteButton(),
                     const SizedBox(height: 15),
                     _buildSectionTitle('Project Notes'),
                     const SizedBox(height: 5),
@@ -455,7 +455,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     );
   }
 
-  Widget _buildProgressIndicatorWithText() {
+  Widget _buildProgressBarAndDeleteButton() {
     // Customizable values
     // double progress = 0.6; // 60%
     Color progressColor = progress < 0.5 ? Colors.red : Colors.green; // Color of the progress indicator

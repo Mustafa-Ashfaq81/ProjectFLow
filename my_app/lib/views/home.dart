@@ -14,7 +14,7 @@ import '../utils/cache_util.dart';
 
 // enum data type for settings
 
-enum MenuAction { settings }
+// enum MenuAction { settings }
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -119,30 +119,41 @@ class _HomePageState extends State<HomePage> {
           foregroundColor: Colors.white,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
-            PopupMenuButton<MenuAction>(
-              onSelected: (value) async {
-                switch (value) {
-                  case MenuAction.settings:
-                    Navigator.of(context).push(MaterialPageRoute(
+             IconButton(
+            icon: Icon(Icons.settings, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
                             SettingsPage(username: username)));
-                    break;
-                }
-              },
-              itemBuilder: (context) {
-                return [
-                  // const PopupMenuItem<MenuAction>(
-                  //   value: MenuAction.logout,
-                  //   child: Text('Log out'),
-                  // ),
-                  const PopupMenuItem<MenuAction>(
-                    value: MenuAction.settings,
-                    child: Text('Settings'),
-                  ),
-                ];
-              },
-            )
+            },
+            padding: EdgeInsets.only(right: 10), // Adjust padding to move icon slightly to left
+           ),
           ],
+          // actions: [
+            // PopupMenuButton<MenuAction>(
+            //   onSelected: (value) async {
+            //     switch (value) {
+            //       case MenuAction.settings:
+            //         Navigator.of(context).push(MaterialPageRoute(
+            //             builder: (context) =>
+            //                 SettingsPage(username: username)));
+            //         break;
+            //     }
+            //   },
+            //   itemBuilder: (context) {
+            //     return [
+            //       // const PopupMenuItem<MenuAction>(
+            //       //   value: MenuAction.logout,
+            //       //   child: Text('Log out'),
+            //       // ),
+            //       const PopupMenuItem<MenuAction>(
+            //         value: MenuAction.settings,
+            //         child: Text('Settings'),
+            //       ),
+            //     ];
+            //   },
+            // )
+          // ],
           backgroundColor: Colors.black,
         ),
       ),
