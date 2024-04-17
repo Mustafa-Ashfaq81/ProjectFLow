@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/components/footer.dart';
+import 'package:my_app/views/tasks/completedtask.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/views/loading.dart';
 import 'package:my_app/utils/cache_util.dart';
@@ -210,13 +211,23 @@ class _AllTasksPageState extends State<AllTasksPage> {
             ),
             onTap: () async{
               Map<String, dynamic> task =await getTaskbyHeading(notes[index]['heading'], username);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      TaskDetailsPage(username: username, task: task),
-                ),
-              );
+              if(notes[index]['status'] == 'completed'){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          CompletedTaskPage(username: username, task: task),
+                    ),
+                  );
+              } else{
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          TaskDetailsPage(username: username, task: task),
+                    ),
+                  );
+              }
             },
           ),
         );
