@@ -74,7 +74,7 @@ class _ColabPageState extends State<ColabPage> {
     provider.setRoomIds(ids);
     
     _socket = IO.io(
-      'http://localhost:3000',
+      'https://idea-enhancer-server-old-shadow-8927.fly.dev',
       IO.OptionBuilder().setTransports(['websocket']).setQuery(
           {'username': widget.username, 'rooms':allrooms}).build(),
     );

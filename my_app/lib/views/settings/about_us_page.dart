@@ -63,7 +63,7 @@ class AboutUsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Idea Enhancer App',
+              'ProjectFlow App',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -81,7 +81,7 @@ class AboutUsPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'At Idea Enhancer App, our mission is to empower individuals and teams to unleash their creative potential and bring their ideas to life. We strive to provide a user-friendly platform that fosters collaboration, innovation, and productivity.',
+              'At ProjectFlow, our mission is to empower individuals and teams to unleash their creative potential and bring their ideas to life. We strive to provide a user-friendly platform that fosters collaboration, innovation, and productivity.',
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 16),
@@ -95,7 +95,7 @@ class AboutUsPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Founded in 2024, Idea Enhancer App was born out of a passion for innovation and a desire to make idea management accessible to everyone. Our team of experienced developers and designers came together to create a powerful yet intuitive app that simplifies the process of capturing, organizing, and executing ideas.',
+              'Founded in 2024, ProjectFlow was born out of a passion for innovation and a desire to make idea management accessible to everyone. Our team of experienced developers and designers came together to create a powerful yet intuitive app that simplifies the process of capturing, organizing, and executing ideas.',
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 16),
@@ -172,7 +172,7 @@ class AboutUsPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Email: info@ideaenhancerapp.com\nPhone: +92 3056781234 \nAddress: 123 Innovation Street, City, Country',
+              'Email: info@projectflow.com\nPhone: +92 3056781234 \nAddress: 123 Innovation Street, City, Country',
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 16),

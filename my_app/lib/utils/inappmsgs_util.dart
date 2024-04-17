@@ -12,8 +12,7 @@ In this context, a snackbar is a lightweight message that briefly informs users 
 
 // Displays an error message using the Fluttertoast plugin
 
-void showerrormsg({required String message}) 
-{
+void showerrormsg({required String message}) {
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
@@ -27,9 +26,7 @@ void showerrormsg({required String message})
 
 /// Displays a general information message using Fluttertoast.
 
-
-void showmsg({required String message}) 
-{
+void showmsg({required String message}) {
   Fluttertoast.showToast(
       msg: " ✓ $message",
       toastLength: Toast.LENGTH_SHORT,
@@ -41,16 +38,14 @@ void showmsg({required String message})
       fontSize: 16.0);
 }
 
-
-// Displays a custom error message 
-void showCustomError(String message,BuildContext context) 
-{
+// Displays a custom error message
+void showCustomError(String message, BuildContext context) {
   final snackBar = SnackBar(
     content: Text(message),
     backgroundColor: Colors.redAccent,
     action: SnackBarAction(
       label: 'Dismiss',
-      onPressed: (){},
+      onPressed: () {},
     ),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);

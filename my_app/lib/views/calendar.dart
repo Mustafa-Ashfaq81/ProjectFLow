@@ -337,7 +337,7 @@ class CalendarPageState extends State<CalendarPage>
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ),

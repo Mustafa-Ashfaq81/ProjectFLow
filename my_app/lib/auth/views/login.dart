@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/auth/views/register.dart';
+import '../../utils/inappmsgs_util.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
 // import 'package:my_app/models/taskmodel.dart';
@@ -204,7 +205,7 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
                           borderRadius: BorderRadius.circular(16),
                           color: Colors.grey[200]),
                       child:
-                          Image.asset("pictures/google-icon.png", height: 40)),
+                          Image.asset("pictures/google1.png", height: 40)),
                 ),
               ],
             ),
@@ -244,9 +245,7 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
 
     if (email.isEmpty || password.isEmpty) 
     {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please fill in all fields")),
-      );
+      showCustomError("Please fill in all the fields", context);
       return;
     }
 

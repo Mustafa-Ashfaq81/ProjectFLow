@@ -249,7 +249,6 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
 
     // Empty field checks
     if (email.isEmpty || password.isEmpty || pass.isEmpty || name.isEmpty) {
-      // showerrormsg(message: "Please fill in all fields");
       showCustomError("Please fill in all the fields", context);
       return;
     }

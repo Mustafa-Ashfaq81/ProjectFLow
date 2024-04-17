@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, avoid_print
+// ignore_for_file: prefer_const_constructors, prefer_final_fields, avoid_print, sort_child_properties_last
 
 import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';
@@ -7,9 +7,6 @@ import 'package:my_app/audio/native_audio_player.dart';
 import '../utils/file_util.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-
-
-// Define a StatefulWidget for the Alarm Page
 class AlarmPage extends StatefulWidget {
   const AlarmPage({Key? key}) : super(key: key);
 
@@ -17,24 +14,20 @@ class AlarmPage extends StatefulWidget {
   State<AlarmPage> createState() => _AlarmPageState();
 }
 
-// Define the state for the Alarm Page
 class _AlarmPageState extends State<AlarmPage> {
   DateTime? _selectedAlarmTime;
   AlarmSettings? alarmSettings;
   bool _isAlarmRinging = false;
 
-    // Initialize FlutterLocalNotificationsPlugin
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
- // Perform initialization tasks when the state is initialized
   @override
   void initState() {
     super.initState();
     initializeNotifications();
   }
 
-  // Initialize local notifications
   Future<void> initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
@@ -48,29 +41,24 @@ class _AlarmPageState extends State<AlarmPage> {
     );
   }
 
-  // Handle notification response
   void onDidReceiveNotificationResponse(
       NotificationResponse notificationResponse) async {
     final String? payload = notificationResponse.payload;
     if (payload == 'stop_alarm') {
       await NativeAudioPlayer.stopAudio();
       await Alarm.stop(alarmSettings!.id);
-      await flutterLocalNotificationsPlugin
-          .cancel(notificationResponse.id!); // Cancel the notification
+      await flutterLocalNotificationsPlugin.cancel(notificationResponse.id!);
     }
   }
 
-
-
-
-  // Play the alarm sound and schedule the alarm
   Future<void> playAlarmSound() async {
     if (_selectedAlarmTime == null) {
-      print("No alarm time selected");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select an alarm time')),
+      );
       return;
     }
 
-    // Define alarm settings
     alarmSettings = AlarmSettings(
       id: 42,
       dateTime: _selectedAlarmTime!,
@@ -79,31 +67,23 @@ class _AlarmPageState extends State<AlarmPage> {
       vibrate: true,
       volume: 0.8,
       fadeDuration: 3.0,
-      notificationTitle: 'Alarm Title',
-      notificationBody: 'Alarm Body',
+      notificationTitle: 'Alarm',
+      notificationBody: 'Wake up!',
       enableNotificationOnKill: true,
     );
 
     try {
-      // Copy the asset to a temporary file
-      debugPrint("Copying asset to temporary file");
       final tempFile = await copyAssetToTemporaryFile('audios/alarm.mp3');
-      debugPrint("Asset copied to: ${tempFile.path}");
-
-      // Update the AlarmSettings to use the temporary file path
       final updatedAlarmSettings = alarmSettings!.copyWith(
         assetAudioPath: tempFile.path,
       );
 
-      // Set the alarm with the updated AlarmSettings
       await Alarm.set(alarmSettings: updatedAlarmSettings);
-      debugPrint("Alarm set successfully");
 
       setState(() {
         _isAlarmRinging = true;
       });
 
-      // Create a notification channel
       const channelId = 'alarm_channel';
       const channelName = 'Alarm Channel';
       const channelDescription = 'Channel for alarm notifications';
@@ -119,10 +99,8 @@ class _AlarmPageState extends State<AlarmPage> {
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(notificationChannel);
-      debugPrint("Notification channel created");
 
-      // Create a notification with a "Stop Alarm" action button
-      const notificationId = 42; // Use a unique notification ID
+      const notificationId = 42;
       const notificationTitle = 'Alarm';
       const notificationBody = 'Tap to stop the alarm';
 
@@ -153,14 +131,13 @@ class _AlarmPageState extends State<AlarmPage> {
         platformChannelSpecifics,
         payload: 'stop_alarm',
       );
-      debugPrint("Notification shown");
     } catch (e) {
-      debugPrint("Error setting alarm: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error setting alarm: $e')),
+      );
     }
   }
 
-
-    // Select the alarm time
   Future<void> _selectAlarmTime(BuildContext context) async {
     final TimeOfDay? selectedTime = await showTimePicker(
       context: context,
@@ -180,14 +157,11 @@ class _AlarmPageState extends State<AlarmPage> {
     }
   }
 
-
-  // stop alarm function
   Future<void> stopAlarm() async {
     if (alarmSettings != null) {
-      await NativeAudioPlayer.stopAudio(); // Stop the sound
-      await Alarm.stop(alarmSettings!.id); // Cancel the scheduled alarm
-      await flutterLocalNotificationsPlugin
-          .cancel(alarmSettings!.id); // Optionally cancel the notification
+      await NativeAudioPlayer.stopAudio();
+      await Alarm.stop(alarmSettings!.id);
+      await flutterLocalNotificationsPlugin.cancel(alarmSettings!.id);
 
       setState(() {
         _isAlarmRinging = false;
@@ -196,34 +170,78 @@ class _AlarmPageState extends State<AlarmPage> {
   }
 
   @override
-
-
-  
-  // Build the UI for the Alarm Page
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter Alarm Clock Example'),
+          title: Text('Alarm Clock'),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
-        body: Center(
+        body: Padding(
+          padding: EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              TextButton(
-                onPressed: () => _selectAlarmTime(context),
-                child:
-                    Text('Select Alarm Time', style: TextStyle(fontSize: 20)),
+              Text(
+                'Select Alarm Time',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
-              TextButton(
-                onPressed: playAlarmSound,
-                child: Text('Set Alarm', style: TextStyle(fontSize: 20)),
+              SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () => _selectAlarmTime(context),
+                  child: Text(
+                    _selectedAlarmTime != null
+                        ? '${_selectedAlarmTime!.hour.toString().padLeft(2, '0')}:${_selectedAlarmTime!.minute.toString().padLeft(2, '0')}'
+                        : 'Select Time',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
               ),
-              // Conditionally display the stop button based on the alarm state
+              SizedBox(height: 32),
+              Center(
+                child: ElevatedButton(
+                  onPressed: playAlarmSound,
+                  child: Text('Set Alarm', style: TextStyle(fontSize: 20)),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
               if (_isAlarmRinging)
-                TextButton(
-                  onPressed: stopAlarm,
-                  child: Text('Stop Alarm', style: TextStyle(fontSize: 20)),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: stopAlarm,
+                    child: Text('Stop Alarm', style: TextStyle(fontSize: 20)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
                 ),
             ],
           ),

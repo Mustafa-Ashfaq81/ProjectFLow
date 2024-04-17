@@ -29,12 +29,12 @@ class PrivacyPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Privacy Policy for IdeaEnhancer App',
+              'Privacy Policy for ProjectFlow',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             Text(
-              'At IdeaEnhancerApp, accessible at ideaenhancerapp.com, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by IdeaEnhancerApp and how we use it.',
+              'At ProjectFlow, accessible at projectflow.com, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by ProjectFlow and how we use it.',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
@@ -119,7 +119,7 @@ class PrivacyPage extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at privacy@ideaenhancerapp.com.',
+              'If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at privacy@projectflow.com.',
               style: TextStyle(fontSize: 16),
             ),
           ],
