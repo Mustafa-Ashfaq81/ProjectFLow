@@ -611,22 +611,22 @@ class _TaskPageState extends State<TaskDetailsPage> {
 
   Widget _buildTaskMenu(String username) {
     // Assuming your tasks are fetched or defined here
-    final List<String> tasks =
-        subtasks.map((item) => item['subheading'] as String).toList();
+    // final List<String> tasks =
+    //     subtasks.map((item) => item['subheading'] as String).toList();
 
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: tasks.length,
+      itemCount: subtasks.length,
       itemBuilder: (context, index) {
         return Card(
           margin: const EdgeInsets.all(5.0),
           color: Colors.orangeAccent,
           child: ListTile(
             title: Text(
-              tasks[index],
+              subtasks[index]['subheading'],
               style: const TextStyle(color: Colors.black),
             ),
-            trailing: const Icon(Icons.edit, color: Colors.blue),
+            leading: (subtasks[index]['progress'] == 'completed') ? const Icon(Icons.done) : const Icon(Icons.edit, color: Colors.blue),
             onTap: () async {
               await Navigator.push(
                 context,
