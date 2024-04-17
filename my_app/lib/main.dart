@@ -22,6 +22,7 @@ import 'package:my_app/views/calendar.dart';
 import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/views/tasks/completedtask.dart';
+import 'package:my_app/views/tasks/completedSubtask.dart';
 import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
@@ -124,6 +125,9 @@ class MyApp extends StatelessWidget {  // This widget is the root of our applica
             '/completedtask': (context) => const CompletedTaskPage(
               username: "abz",
               task:{},
+            ),
+            '/completedsubtask': (context) => const CompletedSubtaskPage(
+              subtask: {},
             ),
            '/subtasks': (context) => const SubTaskPage(
               username: "abz",
