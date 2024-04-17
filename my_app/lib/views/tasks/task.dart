@@ -112,7 +112,6 @@ class _TaskPageState extends State<TaskDetailsPage> {
     } else {  //default 0 progress if NO subtasks 
       progress = 0.0;
     }
-    // print("subtasks ... $subtasks");
   }
 
   void _saveProjectDetails() async {

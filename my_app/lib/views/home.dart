@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                         child: TextField(
                           controller: querycontroller,
                           decoration: InputDecoration(
-                            hintText: 'Search Task',
+                            hintText: 'Search Task By Heading',
                             hintStyle: const TextStyle(
                               fontFamily: 'Inter',
                               color: Color(0xFF000000),

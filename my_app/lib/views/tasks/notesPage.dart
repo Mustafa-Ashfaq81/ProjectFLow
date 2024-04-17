@@ -208,12 +208,13 @@ class _AllTasksPageState extends State<AllTasksPage> {
                   fontSize: 14.0, // Reduced font size for description
                   color: Colors.white),
             ),
-            onTap: () {
+            onTap: () async{
+              Map<String, dynamic> task =await getTaskbyHeading(notes[index]['heading'], username);
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      TaskDetailsPage(username: username, task: notes[index]),
+                      TaskDetailsPage(username: username, task: task),
                 ),
               );
             },
