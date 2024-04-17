@@ -50,13 +50,13 @@ class _CompletedTaskPageState extends State<CompletedTaskPage>
   AppBar _buildAppBar() {
     return AppBar(
       elevation: 0,
-      backgroundColor: Theme.of(context).primaryColor,
-      title: const Text(
+      backgroundColor: Colors.black,
+      title: Center( child: Text(
         'Completed Project Details',
-        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-      ),
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      )),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.of(context).pop(),
       ),
     );
