@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
-import 'package:my_app/views/loadingscreens/loadingtask.dart';
+import 'package:my_app/views/loading.dart';
 
 class CompletedTaskPage extends StatefulWidget {
   final String username;

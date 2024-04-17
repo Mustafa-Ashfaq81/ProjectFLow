@@ -4,7 +4,7 @@ import 'package:my_app/components/search.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/tasks/task.dart';
-import 'package:my_app/views/loadingscreens/loadingalltasks.dart';
+import 'package:my_app/views/loading.dart';
 import 'package:my_app/utils/cache_util.dart';
 // import 'package:my_app/controllers/taskstatus.dart';
 
@@ -66,7 +66,7 @@ class _AllTasksPageState extends State<AllTasksPage> {
           future: atload(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoadingAllTasks(); // Show loading page while fetching data
+              return const LoadingTask(); // Show loading page while fetching data
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {

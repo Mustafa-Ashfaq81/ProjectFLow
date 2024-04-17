@@ -92,8 +92,6 @@ class CalendarPageState extends State<CalendarPage>
       var diff = (DateTime.parse(task['duedate']).weekday - DateTime.now().weekday).abs();
       if (diff > 4) { task['day'] = (8 - diff).toString(); }
       else          { task['day'] = (diff + 1).toString(); } 
-      // print(DateTime.parse(task['duedate']).weekday);
-      // print(DateTime.now().weekday);
     }
     
     return upcomingTasks;
@@ -350,7 +348,7 @@ class CalendarPageState extends State<CalendarPage>
   String _getDayOfWeek(int index) 
   {
       final adjustedWeekDay =
-        (_startDate.add(Duration(days: index)).weekday) % 7; //.weekday - 1
+        (_startDate.add(Duration(days: index)).weekday) % 7; 
 
     switch (adjustedWeekDay) 
     {

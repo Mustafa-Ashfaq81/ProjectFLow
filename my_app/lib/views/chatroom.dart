@@ -58,8 +58,6 @@ class _ChatScreenState extends State<ChatPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // _provider = Provider.of<MessageProvider>(context, listen: false); 
-    // _provider.setRoomId(widget.id);
   }
 
   @override
@@ -87,7 +85,6 @@ class _ChatScreenState extends State<ChatPage> {
                 padding: const EdgeInsets.all(16),
                 itemBuilder: (ctx, index) {
                   final message = provider.getMessages(widget.id)[index];
-                  // final message = provider.messages[index];
                    return  message.room != widget.id ? Wrap() : Wrap(      
                     alignment: message.sender == widget.username
                         ? WrapAlignment.end

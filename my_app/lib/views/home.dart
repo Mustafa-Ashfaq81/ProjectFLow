@@ -12,10 +12,6 @@ import 'package:my_app/views/settings/settings.dart';
 import 'package:my_app/views/tasks/task.dart';
 import '../utils/cache_util.dart';
 
-// enum data type for settings
-
-// enum MenuAction { settings }
-
 class HomePage extends StatefulWidget {
   final String username;
 
@@ -309,7 +305,7 @@ class _HomePageState extends State<HomePage> {
                   size: 15, // Adjust the size as needed
                 ),
               ),
-        // Bottom navigation bar
+        // Footer
       bottomNavigationBar: Footer(index: idx, username: username),
     );
    }
