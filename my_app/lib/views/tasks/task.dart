@@ -410,7 +410,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                 ),
                 const SizedBox(width: 110),
                 _buildIconContainer(icon: Icons.group),
-                const SizedBox(width: 10),
+                const SizedBox(width: 5),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
