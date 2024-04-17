@@ -258,6 +258,7 @@ class _ImageSetterState extends State<ImageSetter>
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.black,
+            centerTitle: true,
             iconTheme: IconThemeData(color: Colors.white),
           ),
           body: Center(
