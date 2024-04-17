@@ -218,7 +218,13 @@ The App uses **Firebase database** to efficiently manage its functionality as it
 
 <hr>
 
-![Alt Collaborators page screen](/my_app/Screenshots/Collab.png "Collaborators Page")
+![Alt Calendar page screen](/my_app/Screenshots/LoadTimeDisplay.png "LoadTimeDisplay")
+
+   This is the load time display page, which is shown when some thing is loading.
+
+<hr>
+
+![Alt Collaborators page screen](/my_app/Screenshots/Collabs.png "Collaborators Page")
 
    This is the Collaborators page. It likely allows users to manage collaborators or team members for a project or task. Users may be able to add, remove, or edit collaborators' access and permissions.
 
