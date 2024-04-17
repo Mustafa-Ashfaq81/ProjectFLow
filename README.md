@@ -224,23 +224,57 @@ The App uses **Firebase database** to efficiently manage its functionality as it
 
 <hr>
 
-![Alt Settings page screen](/my_app/Screenshots/Settings.png "Settings Page")
+![Alt Settings page screen](/my_app/Screenshots/SettingPage.png "Settings Page")
 
    This is the Settings page. Users can access and modify various settings related to their account or the application itself. This page may include options for account management, notification preferences, theme customization, etc.
 
 <hr>
 
-![Alt TaskDetails page screen](/my_app/Screenshots/TaskDetails.png "TaskDetails page")
+![Alt TaskDetails page screen](/my_app/Screenshots/OngoingProjectPage.png "OngoingTasks page")
 
-   This is the TaskDetails page. It likely displays detailed information about a specific task. Users may view task title, description, due date, priority, status, and any associated subtasks or notes.
-
-<hr>
-
-![Alt SubTaskDetails page screen](/my_app/Screenshots/SubTaskDetails.png "SubTaskDetails Page")
-
- This is the SubTaskDetails page. It likely provides detailed information about a specific subtask associated with a main task. Users may view subtask title, description, due date, priority, and status within the context of the parent task.
+   This is the TaskDetails page. It likely displays detailed information about a specific ongoing task. Users may view task title, description, due date, priority, status, and any associated subtasks or notes.
 
 <hr>
 
+![Alt TaskDetails page screen](/my_app/Screenshots/CompletedProjectPage.png "Completed Tasks page")
+
+   This is the TaskDetails page. It likely displays detailed information about a specific Completed task. Users may view all the details associated to that task or project.
+
+<hr>
+
+![Alt TaskDetails page screen](/my_app/Screenshots/AboutPage.png "About page")
+
+   This is the about page. It likely displays the information regarding the application.
+
+<hr>
+
+![Alt TaskDetails page screen](/my_app/Screenshots/AccountSettingPage.png "Account setting page")
+
+   This is the sub page with in setting page and display the option to change the account credentials.
+
+<hr>
+
+![Alt TaskDetails page screen](/my_app/Screenshots/Myimage.png "Image review")
+
+   This is the image setting page. It display the option to view or change the image profile.
+
+<hr>
+
+![Alt TaskDetails page screen](/my_app/Screenshots/CustomerSupportPage.png "Customer Support page page")
+
+   It is customer support page, it gives the user the option to chat with the managing team to ask queries.
+
+<hr>
+
+![Alt TaskDetails page screen](/my_app/Screenshots/ConfirmationPopUpDisplay.png "Confirmation Pop Up page")
+
+   This is the confirmation pop up page, which gets displayed when the user wants to enhance the ideas through chatgpt.
+
+<hr>
+
+![Alt TaskDetails page screen](/my_app/Screenshots/CalenderAPI.png "Calender API page")
+
+ This is the calender API page. It is used to set the date and time for due dates etc.
+<hr>
 
 

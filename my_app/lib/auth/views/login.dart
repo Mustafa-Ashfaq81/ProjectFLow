@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/auth/views/register.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
-import 'package:my_app/models/taskmodel.dart';
+// import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
 import 'package:my_app/utils/cache_util.dart';
 
@@ -332,7 +332,8 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
         }
         username = newUsername;
       }
-      List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
+      // List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
+      List<Map<String, dynamic>> mappedtasks = [];
       try 
       {
         createUser(UserModel(username: username, email: gmail, tasks: mappedtasks));
