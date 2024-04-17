@@ -17,12 +17,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 Widget fetchTasks(String status, String username) 
-{
+{                                        // Return a FutureBuilder to handle asynchronous data retrieval
   return FutureBuilder<QuerySnapshot>(
-    future: FirebaseFirestore.instance.collection('users').get(),
+    future: FirebaseFirestore.instance.collection('users').get(),      // Fetch data from Firestore collection
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) 
-      {
+      {                          // Display a loading indicator if data is still loading
         return const Center(
           child: CircularProgressIndicator(),
         );
@@ -33,7 +33,7 @@ Widget fetchTasks(String status, String username)
       } 
       else 
       {
-        List<Object> tasks = snapshot.data!.docs
+        List<Object> tasks = snapshot.data!.docs                     // Process the retrieved data
             .where((doc) => doc['username'] == username)
             .map((doc) {
           final dynamic tsk = doc['tasks'];
@@ -48,15 +48,15 @@ Widget fetchTasks(String status, String username)
           return '';
         }).toList();
 
-        List<Map<String, dynamic>> headings = [];
+        List<Map<String, dynamic>> headings = [];                       // Initialize a list to store task headings and descriptions
         for (var item in tasks) 
-        {
+        {                                                   // Iterate through tasks
           List<dynamic> itemList = item as List<dynamic>;
 
           for (var nestedItem in itemList) 
           {
             Map<String, dynamic> itemMap = nestedItem as Map<String, dynamic>;
-            if (itemMap['status'] == status) 
+            if (itemMap['status'] == status)                              // Check if the task status matches the specified status
             {
               headings.add(
               {
@@ -65,7 +65,7 @@ Widget fetchTasks(String status, String username)
               });
             }
           }
-        }
+        }                                              // Check the status to determine the view to display
         if (status == "completed") 
         {
           return completedIdeasView(context, headings, username);

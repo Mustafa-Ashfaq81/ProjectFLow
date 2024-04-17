@@ -7,6 +7,9 @@ import 'package:my_app/audio/native_audio_player.dart';
 import '../utils/file_util.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+
+
+// Define a StatefulWidget for the Alarm Page
 class AlarmPage extends StatefulWidget {
   const AlarmPage({Key? key}) : super(key: key);
 
@@ -14,20 +17,24 @@ class AlarmPage extends StatefulWidget {
   State<AlarmPage> createState() => _AlarmPageState();
 }
 
+// Define the state for the Alarm Page
 class _AlarmPageState extends State<AlarmPage> {
   DateTime? _selectedAlarmTime;
   AlarmSettings? alarmSettings;
   bool _isAlarmRinging = false;
 
+    // Initialize FlutterLocalNotificationsPlugin
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+ // Perform initialization tasks when the state is initialized
   @override
   void initState() {
     super.initState();
     initializeNotifications();
   }
 
+  // Initialize local notifications
   Future<void> initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
@@ -41,6 +48,7 @@ class _AlarmPageState extends State<AlarmPage> {
     );
   }
 
+  // Handle notification response
   void onDidReceiveNotificationResponse(
       NotificationResponse notificationResponse) async {
     final String? payload = notificationResponse.payload;
@@ -62,6 +70,7 @@ class _AlarmPageState extends State<AlarmPage> {
       return;
     }
 
+    // Define alarm settings
     alarmSettings = AlarmSettings(
       id: 42,
       dateTime: _selectedAlarmTime!,
@@ -150,6 +159,8 @@ class _AlarmPageState extends State<AlarmPage> {
     }
   }
 
+
+    // Select the alarm time
   Future<void> _selectAlarmTime(BuildContext context) async {
     final TimeOfDay? selectedTime = await showTimePicker(
       context: context,
@@ -169,6 +180,8 @@ class _AlarmPageState extends State<AlarmPage> {
     }
   }
 
+
+  // stop alarm function
   Future<void> stopAlarm() async {
     if (alarmSettings != null) {
       await NativeAudioPlayer.stopAudio(); // Stop the sound
@@ -183,6 +196,10 @@ class _AlarmPageState extends State<AlarmPage> {
   }
 
   @override
+
+
+  
+  // Build the UI for the Alarm Page
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
