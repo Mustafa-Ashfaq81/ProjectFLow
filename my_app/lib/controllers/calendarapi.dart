@@ -17,7 +17,14 @@ class CalendarClient
 {
   static const _scopes = const [CalendarApi.calendarScope];
 
-  // Requires OAuth2 consent from the user: Industry Standard Authorization Protocol
+   /*
+   * Inserts an event into Google Calendar.
+   * Requires OAuth2 consent from the user. Industry Standard Authorization Protocol
+   * [title] The title of the event.
+   * [startTime] The start time of the event in the format 'HH:mm'.
+   * [endTime] The end time of the event in the format 'HH:mm'.
+   */
+
 
   Future<void> insert(String title, String startTime, String endTime) async 
   {
@@ -49,6 +56,7 @@ class CalendarClient
       DateTime? endDateTime = parseDateTime(endTime);
 
       EventDateTime end = EventDateTime(); 
+      
       end.timeZone = "GMT+05:00";
       end.dateTime = endDateTime;
       event.end = end;
@@ -72,6 +80,12 @@ class CalendarClient
       print('Authorization failed: $e');
     });
   }
+
+  /*
+   * Deletes an event from Google Calendar.
+   * [calendarId] The ID of the calendar containing the event.
+   * [eventId] The ID of the event to be deleted.
+   */
 
   Future<void> delete(String calendarId, String eventId) async 
   {
@@ -97,6 +111,11 @@ class CalendarClient
     });
   }
 
+  /*
+   * Retrieves events from Google Calendar.
+   * Returns a list of events.
+   */
+
   Future<List<Event>> getEvents() async 
   {
     var clientID = ClientId("1073810950980-50c8312c67hehvrllgnttp6hf3ltodlp.apps.googleusercontent.com", "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");
@@ -115,7 +134,13 @@ class CalendarClient
     }
   }
 
-  DateTime? parseDateTime(String timeString) // [timeString] The string containing the time information.
+  /*
+   * Parses a string to DateTime.
+   * [timeString] The string containing the time information.
+   * Returns a DateTime object or null if parsing fails.
+   */
+
+  DateTime? parseDateTime(String timeString)
   {
     try 
     {
