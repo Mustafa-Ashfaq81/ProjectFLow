@@ -6,7 +6,7 @@ import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
-import 'package:my_app/models/taskmodel.dart';
+// import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/utils/cache_util.dart';
 import 'package:my_app/utils/inappmsgs_util.dart';
 
@@ -297,7 +297,8 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
         if (user != null) 
         {
           print("User is successfully created");
-          List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
+          // List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
+          List<Map<String, dynamic>> mappedtasks = [];
           try 
           {
             createUser(
