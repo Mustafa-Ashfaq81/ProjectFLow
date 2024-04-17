@@ -16,9 +16,10 @@ list of subtasks from a given task heading and description.
 Future<List<Map<String,dynamic>>> gptapicall(String taskheading, String taskdesc) async
 {
 
-    const String apiKey = "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";
-    const String deadline = "15th May 2024";
-    final String prompt = """
+    const String apiKey = "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";    // GPT API Key
+    const String deadline = "15th May 2024";    // Deadline
+       // Prompt to be sent to the CHATGPT
+    final String prompt = """   
         Think of yourself as a creative problem solver as well as an efficient project manager. 
         I will be sending you an idea which has an heading and a description and a deadline 
         (it will probably be a general overview of a project I want to do before some deadline), 
@@ -51,12 +52,12 @@ Future<List<Map<String,dynamic>>> gptapicall(String taskheading, String taskdesc
         ]
       })
     );
-    try{
-      if (response.statusCode == 200)
+    try{    
+      if (response.statusCode == 200)    // if the response if OK then
        {
           final resp = response.body;
           final Map<String, dynamic> res = jsonDecode(resp);
-          final String result = res['choices'][0]['message']["content"];
+          final String result = res['choices'][0]['message']["content"];    // extract the result result from the content
           dynamic data = jsonDecode(result);
           if (data is List) 
           {  

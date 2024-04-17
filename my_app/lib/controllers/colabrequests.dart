@@ -14,6 +14,9 @@ A request is sent when a new project is created and the user wants to collaborat
 */
 
 
+
+// Retrieves collaboration requests for a given username from a Fire snapshot
+
 List<Map<String, dynamic>> getRequests(
     String username, QuerySnapshot snapshot) 
     {
@@ -27,6 +30,7 @@ List<Map<String, dynamic>> getRequests(
   return reqs;
 }
 
+// Retrieves collaboration requests if any are pending for a user
 Future<List<Map<String, dynamic>>> get_ifany_requests(
     String username, List<String> otherusers) async {
   List<Map<String, dynamic>> reqtasks = [];
@@ -43,6 +47,7 @@ Future<List<Map<String, dynamic>>> get_ifany_requests(
   return reqtasks;
 }
 
+// Accepts a collaboration request
 Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String username) async {
 
   var updatedtask = await getSpecificTask(task);
@@ -76,6 +81,8 @@ Future<void> acceptreq(BuildContext context,Map<String, dynamic> task, String us
   }
 }
 
+
+// Rejects a collaboration request
 Future<void> rejectreq(BuildContext context,Map<String, dynamic> task, String username) async 
 {
   try 
@@ -89,6 +96,8 @@ Future<void> rejectreq(BuildContext context,Map<String, dynamic> task, String us
   }
 }
 
+
+// Updates collaboration data in the Fire database
 Future<void> updateColabinDatabase(String username, Map<String,dynamic> task) async
 {
   try
