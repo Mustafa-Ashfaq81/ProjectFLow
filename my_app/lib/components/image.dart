@@ -253,32 +253,23 @@ class _ImageSetterState extends State<ImageSetter>
       MaterialPageRoute(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: Text('View Image'),
-          ),
-          
-          body: Center(
-            child: FutureBuilder(
-              future: _getImageFuture(),
-              builder: (context, AsyncSnapshot<Uint8List> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } 
-                else if (snapshot.hasError) 
-                {
-                  // If there's an error, display the default image
-                  return Image.asset("pictures/profile.png",
-                      fit: BoxFit.contain);
-                } else if (snapshot.hasData) 
-                {
-                  return Image.memory(snapshot.data!, fit: BoxFit.contain);
-                } 
-                else 
-                {
-                  return Image.asset("pictures/profile.png",
-                      fit: BoxFit.contain);
-                }
-              },
+            title: Text(
+              'View Image',
+              style: TextStyle(color: Colors.white),
             ),
+            backgroundColor: Colors.black,
+            iconTheme: IconThemeData(color: Colors.white),
+          ),
+          body: Center(
+            child: imageUrl.isEmpty
+                ? Image.asset(
+                    'pictures/profile.png',
+                    fit: BoxFit.contain,
+                  )
+                : Image.network(
+                    imageUrl,
+                    fit: BoxFit.contain,
+                  ),
           ),
         ),
       ),
