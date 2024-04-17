@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AccountSettingsPage extends StatefulWidget {
   final String username;
 
+   // Constructor for AccountSettingsPage
   const AccountSettingsPage({Key? key, required this.username})
       : super(key: key);
 
@@ -40,7 +41,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
   }
 
-
+  
+  // Function to check if user is signed in with Google
   Future<void> checkGoogleSignIn() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -56,6 +58,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
   }
 
+
+ // Function to get user's email address
   Future<void> getUserEmail() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -75,6 +79,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     super.dispose();
   }
 
+
+ // Function to launch Google Account Settings page
   Future<void> _launchGoogleAccountSettings() async {
     const url = 'https://myaccount.google.com/';
     if (await canLaunch(url)) {
@@ -215,6 +221,9 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     );
   }
 
+
+ // Widget for section titles
+
   Widget _buildSectionTitle(String title) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Text(
@@ -224,6 +233,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         ),
       );
 
+
+  // Widget for building text fields
   Widget _buildTextField({
     required TextEditingController controller,
     required String labelText,
@@ -249,6 +260,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     );
   }
 
+  // Function to check if input is valid
   bool checkifvalidinput() {
     if (_passwordController.text != "" ||
         _confirmPasswordController.text != "") {

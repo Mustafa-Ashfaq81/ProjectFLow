@@ -182,6 +182,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+// Widget to build clickable settings item
+
   Widget _buildClickableSettingsItem({
     required IconData icon,
     required String title,
@@ -223,6 +225,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
+// Widget for bottom logout popu
 class BottomLogoutPopup extends StatelessWidget {
   final VoidCallback onClose;
 

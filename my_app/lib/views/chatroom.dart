@@ -13,6 +13,7 @@ class ChatPage extends StatefulWidget {
   final String id;
   final IO.Socket socket;
   final MessageProvider provider;
+   // Constructor for ChatPage
   const ChatPage({Key? key, required this.username, required this.room, required this.socket, required this.id, required this.provider}) : super(key: key);
 
   @override
@@ -24,7 +25,7 @@ class _ChatScreenState extends State<ChatPage> {
   late IO.Socket _socket;
   final TextEditingController _messageInputController = TextEditingController();
 
-  void _sendMessage() {
+  void _sendMessage() {           // Method to send a message
     final thismsg = {
       'message': _messageInputController.text.trim(),
       'sender': widget.username,
