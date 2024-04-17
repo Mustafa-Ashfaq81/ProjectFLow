@@ -33,6 +33,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController querycontroller = TextEditingController();
 
+  // Widgets for displaying completed tasks, in-progress tasks, and profile picture
+
   Widget completedtasks = const Text("loading-at-init-state");
   Widget inprogresstasks = const Text("loading-at-init-state");
   Widget profilepic = const Text("loading-at-init-state");
@@ -47,8 +49,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     username = widget.username;
   }
+
+  // Function to load data asynchronously when the widget is built
   
   Future<void> atload() async {
+
+    // Fetch cached data for ongoing and completed projects, and task headings
     List<Map<String, dynamic>>? cachedOngoingProjects =
         CacheUtil.getData('ongoingProjects_$username');
 
@@ -59,6 +65,8 @@ class _HomePageState extends State<HomePage> {
         CacheUtil.getData('headings_$username');
 
 
+ // Check if completed projects data is cached
+
     if (cachedCompletedProjects != null) {
       completedtasks = completedIdeasView(context,cachedCompletedProjects,username);
     } else {
@@ -66,6 +74,9 @@ class _HomePageState extends State<HomePage> {
       completedtasks = fetchTasks("completed", username);
       CacheUtil.cacheData('completedProjects_$username', completedtasks);
     }
+
+
+// Check if ongoing projects data is cached
 
     if (cachedOngoingProjects != null)  {
       inprogresstasks = inprogressIdeasView(context,cachedOngoingProjects,username);
@@ -75,6 +86,8 @@ class _HomePageState extends State<HomePage> {
       CacheUtil.cacheData('ongoingProjects_$username', inprogresstasks);
     }
 
+
+ // Check if task headings data is cached
     if(cachedHeadings != null){
       headings = cachedHeadings;
     } else {
@@ -94,6 +107,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Build the widget asynchronously to load data
      return FutureBuilder(
           future: atload(),
           builder: (context, snapshot) {
@@ -102,6 +116,9 @@ class _HomePageState extends State<HomePage> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else { 
+
+              // Build the home page with fetched data
+
               return Scaffold(
                 appBar: PreferredSize(
                   preferredSize: Size.fromHeight(kToolbarHeight),
@@ -119,6 +136,8 @@ class _HomePageState extends State<HomePage> {
           foregroundColor: Colors.white,
           iconTheme: const IconThemeData(color: Colors.white),
           actions: [
+
+            // Settings icon leading to settings page
              IconButton(
             icon: Icon(Icons.settings, color: Colors.white),
             onPressed: () {
@@ -137,6 +156,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+             // Welcome message and profile picture
             Padding(
                       padding: const EdgeInsets.only(left: 30.0, top: 0.0),
                       child: Row(
@@ -153,6 +173,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
+                     // Username display
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 30.0,
@@ -167,6 +188,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
             const SizedBox(height: 20),
+            // Search bar for tasks
             Padding(
               padding: const EdgeInsets.only(
                 right: 30.0,
@@ -176,6 +198,7 @@ class _HomePageState extends State<HomePage> {
               ),
               child: GestureDetector(
                 onTap: () {
+                   // Show search delegate to search tasks
                   Future<String?> selectedTask = showSearch(
                     context: context,
                     delegate:
@@ -235,6 +258,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            // Section for ongoing projects
             Center(
              child: Padding(
               padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -249,6 +273,7 @@ class _HomePageState extends State<HomePage> {
              ),
             ),
             inprogresstasks,
+             // Section for completed projects
             Center(
              child: Padding(
               padding:EdgeInsets.symmetric(vertical: 20.0),
@@ -268,6 +293,7 @@ class _HomePageState extends State<HomePage> {
         ),
         
       ),
+       // Floating action button for adding new tasks
       floatingActionButton: FloatingActionButton(
                 onPressed: () {
                    Navigator.pushReplacement(
@@ -277,12 +303,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                   );
                 },
-                backgroundColor: Colors.blue,
+                backgroundColor: Color.fromARGB(255, 41, 157, 252),
                 child: Icon(
                   Icons.add,
                   size: 15, // Adjust the size as needed
                 ),
               ),
+        // Bottom navigation bar
       bottomNavigationBar: Footer(index: idx, username: username),
     );
    }
