@@ -196,7 +196,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                               _oldPasswordController.text,
                               _passwordController.text,
                               emailChanged,
-                              passwordChanged);
+                              passwordChanged,
+                              context);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -285,25 +286,29 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     );
 
     if (!emailRegex.hasMatch(_emailController.text)) {
-      showerrormsg(message: "Please enter a valid email address");
+      // showerrormsg(message: "Please enter a valid email address");
+      showCustomError("Please enter a valid email address", context);
       return false;
     }
 
     if (passwordChanged) {
       if (_oldPasswordController.text.isEmpty) {
-        showerrormsg(message: "Please enter your old password");
+        // showerrormsg(message: "Please enter your old password");
+        showCustomError("Please enter your old password", context);
         return false;
       }
 
       if (!passwordRegex.hasMatch(_passwordController.text)) {
-        showerrormsg(
-            message:
-                "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
+        // showerrormsg(
+        //     message:
+        //         "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
+        showCustomError("Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.", context);
         return false;
       }
 
       if (_confirmPasswordController.text != _passwordController.text) {
-        showerrormsg(message: "Passwords do not match \u{1F6A8}");
+        // showerrormsg(message: "Passwords do not match \u{1F6A8}");
+         showCustomError("Passwords do not match \u{1F6A8}", context);
         return false;
       }
     }

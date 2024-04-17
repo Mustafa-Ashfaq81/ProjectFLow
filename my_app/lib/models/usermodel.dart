@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:my_app/common/toast.dart';
 
 /*
@@ -125,12 +126,13 @@ void deleteUserData(String username) async
 }
 
 
-Future<String> updateUsername(String original_username,name) async   // wont be used most probably as changing username would mean changing a lot of things
+Future<String> updateUsername(String original_username,name, BuildContext context) async   // wont be used most probably as changing username would mean changing a lot of things
 { 
   var allusernames = await getallUsers();
   if (allusernames.contains(name) == true) 
   {
-    showerrormsg(message: "This username has been taken already");
+    // showerrormsg(message: "This username has been taken already");
+    showCustomError("This username has been taken already", context);
     return original_username;
   } 
 
@@ -149,7 +151,8 @@ Future<void> updateUserInfo(
     String oldPassword,
     String newPassword,
     bool emailChanged,
-    bool passwordChanged) async 
+    bool passwordChanged,
+    BuildContext context) async 
 {
   if (emailChanged) 
   {
@@ -172,9 +175,10 @@ Future<void> updateUserInfo(
     catch (e) 
     {
       print("got error updating EMAIL ...  $e");
-      showerrormsg(
-          message:
-              "MUST verify on new email address before updating the email");
+      // showerrormsg(
+      //     message:
+      //         "MUST verify on new email address before updating the email");
+      showCustomError( "MUST verify on new email address before updating the email", context);
     }
   }
 
@@ -199,11 +203,13 @@ Future<void> updateUserInfo(
         print("got error updating password ...  $e");
         if (e is FirebaseAuthException && e.code == 'wrong-password') 
         {
-          showerrormsg(message: "The old password is incorrect");
+          // showerrormsg(message: "The old password is incorrect");
+          showCustomError("The old password is incorrect", context);
         } 
         else 
         {
-          showerrormsg(message: "Please ensure you are entering the correct password");
+          // showerrormsg(message: "Please ensure you are entering the correct password");
+          showCustomError("Please ensure you are entering the correct password", context);
         }
       }
     }

@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../common/toast.dart';
 import 'package:my_app/utils/cache_util.dart';
@@ -10,7 +11,7 @@ class FirebaseAuthService  // Manages authentication operations with Firebase.
 {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<User?> registeracc(String email, String password) async 
+  Future<User?> registeracc(String email, String password, BuildContext context) async 
   {
     try 
     {
@@ -19,15 +20,15 @@ class FirebaseAuthService  // Manages authentication operations with Firebase.
       return credential.user;
     } on FirebaseAuthException catch (e) 
     {
-      showerrormsg(message: "${e.message}");
-      // showerrormsg is a built-in function defined in toast.dart. It prints errors in large red text boxes
+      // showerrormsg(message: "${e.message}");
+      showCustomError("${e.message}", context);
     }
     return null;
   }
 
   // If login is successful, it caches notes data and collaboration requests for the [username].
 
-  Future<User?> loginacc(String email, String password, String username) async 
+  Future<User?> loginacc(String email, String password, String username, BuildContext context) async 
   {
     try 
     {
@@ -41,13 +42,14 @@ class FirebaseAuthService  // Manages authentication operations with Firebase.
       return credential.user;
     } on FirebaseAuthException catch (e) 
     {
-      showerrormsg(message: "${e.message}");
+      showCustomError("${e.message}", context);
+      // showerrormsg(message: "${e.message}");
     }
 
     return null;
   }
 
-  Future<User?> logout() async 
+  Future<User?> logout( BuildContext context) async 
   {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) 
@@ -56,12 +58,13 @@ class FirebaseAuthService  // Manages authentication operations with Firebase.
     } 
     else 
     {
-      showerrormsg(message: " user is not logged in ");
+      // showerrormsg(message: " user is not logged in ");
+      showCustomError("User is not logged in", context);
     }
     return null;
   }
 
-    Future<UserCredential?> signInWithGoogle() async 
+    Future<UserCredential?> signInWithGoogle( BuildContext context) async 
     { // Returns [UserCredential] if the sign-in is successful; otherwise, null.
 
     try 
@@ -92,7 +95,8 @@ class FirebaseAuthService  // Manages authentication operations with Firebase.
       return userCredential;
     } on FirebaseAuthException catch (e) 
     {
-      showerrormsg(message: e.message.toString());
+      // showerrormsg(message: e.message.toString());
+      showCustomError("${e.message.toString()}", context);
     }
     return null; 
   }

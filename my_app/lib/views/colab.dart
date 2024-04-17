@@ -82,7 +82,8 @@ class _ColabPageState extends State<ColabPage> {
     _socket.onDisconnect((data) => print('Connection terminated'));
     _socket.onConnectError((data) { 
     print('Connect Error: $data');
-    showerrormsg(message: "Connection Error: The server probably isn't working as of now");
+    // showerrormsg(message: "Connection Error: The server probably isn't working as of now");
+    showCustomError("Connection Error: The server isn't active as of now", context);
     _socket.disconnect();
     _socket.dispose();
     // Navigator.push(

@@ -69,12 +69,12 @@ Future<List<Map<String,dynamic>>> gptapicall(String taskheading, String taskdesc
       } 
       else 
       {
-          showerrormsg(message: response.body);  
+          showerrormsg(message: response.body);   //never reached this point
       }
     } 
     catch(e)
     {
-        showerrormsg(message: e.toString());
+        showerrormsg(message: e.toString());    //never reached this point
     }
     print("An Error Occured in the API Call");
     return [];

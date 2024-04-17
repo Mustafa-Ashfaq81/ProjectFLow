@@ -231,6 +231,37 @@ Future<void> completeSubtask(String username, String heading,  String subtaskhea
 
 } 
 
+Future<bool> isCompleted( String username, String heading) async
+{  
+  final doc = await getDoc(username); 
+  try {
+    List<dynamic> tasks = doc.data()['tasks'] ?? [];
+    for (int i = 0; i < tasks.length; i++) 
+    {
+      if (tasks[i] is Map<String, dynamic> && tasks[i]['heading'] == heading) 
+      {
+       for (int j=0; j<tasks[i]['subtasks'].length; j++)
+       {
+            if(tasks[i]['subtasks'][j]['progress'] != 'completed')
+            { 
+              return false;
+            }
+       }
+        tasks[i]['status'] = 'completed';
+        await doc.reference.update({'tasks': tasks});
+        return true;
+      }
+    }
+  } catch (e) 
+  {
+    print("got er completing task $e");
+  }
+  print("un-reachable-point");
+  return true;
+
+
+}
+
 Future<Map<String, dynamic>> getTaskbyHeading(String taskheading, String username) async
 {
   final doc = await getDoc(username); 

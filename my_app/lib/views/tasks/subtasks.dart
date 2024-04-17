@@ -3,6 +3,7 @@ import 'package:my_app/common/deletedialog.dart';
 import 'package:my_app/common/completedialog.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/tasks/task.dart';
+import 'package:my_app/views/tasks/completedtask.dart';
 
 class SubTaskPage extends StatefulWidget {
   final String username;
@@ -24,6 +25,7 @@ class _SubtaskPageState extends State<SubTaskPage> {
   final int subtaskIndex;
   late TextEditingController _headingController;
   late TextEditingController _descriptionController;
+  final FocusNode _descriptionFocus = FocusNode();
   _SubtaskPageState({required this.username, required this.subtaskIndex,required this.subtasks, required this.taskheading });
    
   @override
@@ -39,11 +41,18 @@ class _SubtaskPageState extends State<SubTaskPage> {
   void dispose() {
     _headingController.dispose();
     _descriptionController.dispose();
+    _descriptionFocus.dispose();
     super.dispose();
   }
 
   void _saveTask() async{
     // Update the subtask's title,description in the global list and pop back to the previous screen
+     ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Saving your subtask details ... '),
+        duration: Duration(seconds: 2),
+      ),
+    );
     await editSubTask(username,_headingController.text, _descriptionController.text,widget.subtasks[subtaskIndex]['subheading'],taskheading);
     setState(() {
       widget.subtasks[subtaskIndex]['subheading'] = _headingController.text;
@@ -55,24 +64,51 @@ class _SubtaskPageState extends State<SubTaskPage> {
 
   void _deleteTask() async{
     // Remove the task from the global list
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Deleting this subtask ... '),
+        duration: Duration(seconds: 2),
+      ),
+    );
     await deleteSubTask(username, taskheading, widget.subtasks[subtaskIndex]['subheading']);
     setState(() {
       subtasks.removeAt(widget.subtaskIndex); 
-      //uncomment this after implementing backend functions to edit,remove subtasks ... 
     });
-    Navigator.of(context).pop(); // Go back to the previous screen with the list updated
+    Map<String, dynamic> thisTask = await getTaskbyHeading(taskheading, username);
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TaskDetailsPage(username: username, task: thisTask),
+        ),
+    );
   }
 
   void _completeSubTask() async{
     // Remove the task from the global list
-    await completeSubtask(username, taskheading, widget.subtasks[subtaskIndex]['subheading']);
-     Map<String, dynamic> thisTask = await getTaskbyHeading(taskheading, username);
-     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TaskDetailsPage(username: username, task: thisTask),
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Marking this subtask as completed ... '),
+        duration: Duration(seconds: 2),
       ),
     );
+    await completeSubtask(username, taskheading, widget.subtasks[subtaskIndex]['subheading']);
+    final isCompletedTask = await isCompleted(username,taskheading);
+    Map<String, dynamic> thisTask = await getTaskbyHeading(taskheading, username);
+    if(isCompletedTask){
+       Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CompletedTaskPage(username: username, task: thisTask),
+          ),
+        );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TaskDetailsPage(username: username, task: thisTask),
+        ),
+      );
+    }
   }
 
   @override
@@ -112,26 +148,45 @@ class _SubtaskPageState extends State<SubTaskPage> {
         ),
       ),
       const SizedBox(height: 20),
-       TextField(
-        controller: _descriptionController,
-        decoration: const InputDecoration(
-          labelText: 'Subtask Description',
-        ),
+      //  TextField(
+      //   controller: _descriptionController,
+      //   decoration: const InputDecoration(
+      //     labelText: 'Subtask Description',
+      //   ),
+      // ),
+      Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Color(0xFFFFE6C9), // Beige color for the box
+            borderRadius: BorderRadius.circular(12.0),
+            border: Border.all(color: Colors.brown[200]!), // Border color
+          ),
+          child: TextField(
+            controller: _descriptionController,
+            focusNode: _descriptionFocus,
+            decoration: InputDecoration(
+              hintText: 'Enter subtask description here',
+              border: InputBorder.none, // Hide the default border of the TextField
+            ),
+            style:
+                TextStyle(fontSize: 16.0, color: Colors.brown[800]), // Text color
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) {
+              _descriptionFocus.unfocus();
+            },
+          ),
       ),
       const SizedBox(height: 20),
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ElevatedButton.icon(
-            onPressed: ()  { showDeleteConfirmationDialog(context,_deleteTask); },
-            style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  Color.fromARGB(255, 255, 215, 100),
-            ),
-            icon: const Icon(Icons.delete, color: Colors.red),
-            label: const Text('Delete Subtask',
-                style: TextStyle(color: Colors.black)),
-          ),
+          IconButton(
+          icon: const Icon(Icons.delete),
+          color: Colors.red,
+          onPressed: () { showDeleteConfirmationDialog(context,_deleteTask); },
+         ),
           const SizedBox(width: 105),
           ElevatedButton(
             onPressed: _saveTask,
@@ -155,8 +210,8 @@ class _SubtaskPageState extends State<SubTaskPage> {
                   Color.fromARGB(255, 255, 215, 100),
             ),
             icon: const Icon(Icons.done, color: Color.fromARGB(255, 0, 88, 3)),
-            label: const Text('Mark as Completed',
-                style: TextStyle(color: Colors.black)),
+            label: const Center ( child : Text('Mark as Completed',
+                style: TextStyle(color: Colors.black))),
           ),
         ]
       )

@@ -19,7 +19,7 @@ void showerrormsg({required String message})
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 5,
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.redAccent,
       webBgColor: "linear-gradient(to right, #85240D, #821B05)",
       textColor: const Color(0xfffefbfb),
       fontSize: 16.0);
@@ -50,10 +50,7 @@ void showCustomError(String message,BuildContext context)
     backgroundColor: Colors.redAccent,
     action: SnackBarAction(
       label: 'Dismiss',
-      onPressed: () 
-      {
-        // Some code to undo the change if needed.
-      },
+      onPressed: (){},
     ),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);

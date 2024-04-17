@@ -111,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
                     try {
-                      await _auth.logout();
+                      await _auth.logout(context);
                     } catch (e) {
                       print("not a normal account $e");
                       await _auth.signOutFromGoogle();

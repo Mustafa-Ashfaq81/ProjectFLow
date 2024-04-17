@@ -249,29 +249,34 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
 
     // Empty field checks
     if (email.isEmpty || password.isEmpty || pass.isEmpty || name.isEmpty) {
-      showerrormsg(message: "Please fill in all fields");
+      // showerrormsg(message: "Please fill in all fields");
+      showCustomError("Please fill in all the fields", context);
       return;
     }
 
     // Email format validation
     if (!emailRegex.hasMatch(email)) // Check if email follows standard email pattern.
     {
-      showerrormsg(message: "Please enter a valid email address");
+      // showerrormsg(message: "Please enter a valid email address");
+      showCustomError("Please enter a valid email address", context);
       return;
     }
 
     // Password complexity validation
     if (!passwordRegex.hasMatch(password)) {
-      showerrormsg(
-          message:
-              "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
+      // showerrormsg(
+      //     message:
+      //         "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
+      showCustomError("Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.", context);
+      
       return;
     }
 
     // Password match validation
     if (password != pass) 
     {
-      showerrormsg(message: "Passwords do not match \u{1F6A8}");
+      // showerrormsg(message: "Passwords do not match \u{1F6A8}");
+      showCustomError("Passwords do not match \u{1F6A8}", context);
       return;
     } 
     else 
@@ -283,11 +288,12 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
       var allusernames = await getallUsers();
       if (allusernames.contains(name) == true) 
       {
-        showerrormsg(message: 'username already taken \u{1F6A8}');
+        // showerrormsg(message: 'username already taken \u{1F6A8}');
+        showCustomError('username already taken \u{1F6A8}', context);
       } 
       else 
       {
-        User? user = await _auth.registeracc(email, password);
+        User? user = await _auth.registeracc(email, password,context);
         if (user != null) 
         {
           print("User is successfully created");

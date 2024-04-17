@@ -191,7 +191,7 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
               children: [
                 GestureDetector(
                   onTap: () async {
-                    final usercred = await _auth.signInWithGoogle();
+                    final usercred = await _auth.signInWithGoogle(context);
                     if (usercred != null) 
                     {
                      await _loginGmail(usercred);
@@ -258,7 +258,6 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
     try 
     {
       String user = "";
-        print("User is successfully logging in");
         await FirebaseFirestore.instance
             .collection('users')
             .where('email', isEqualTo: email)
@@ -270,10 +269,11 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
             user = doc['username'];
           }
       });
-      User? useracc = await _auth.loginacc(email, password,user);
+      User? useracc = await _auth.loginacc(email, password,user,context);
 
       if (useracc != null) 
       {
+        print("User is successfully logging in");
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

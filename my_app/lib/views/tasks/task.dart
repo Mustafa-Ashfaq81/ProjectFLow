@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state
+// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, const_with_non_constant_argument
 
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
@@ -30,11 +30,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
   List<Map<String, dynamic>> teamMembers = [];
   List<dynamic> subtasks = [];
   late double progress;
+  var taskdetailschanged = false;
+  late String duedatestring;
+
   late TextEditingController _projectHeadingController;
   late TextEditingController _projectDescriptionController;
   final FocusNode _headingFocus = FocusNode();
   final FocusNode _descriptionFocus = FocusNode();
-  var taskdetailschanged = false;
   final CalendarClient calendarClient = CalendarClient();
 
   @override
@@ -49,6 +51,43 @@ class _TaskPageState extends State<TaskDetailsPage> {
     _projectDescriptionController = TextEditingController(
       text: mytask['description'],
     );
+    if(mytask['duedate']!=""){
+      DateTime date = DateTime.parse(mytask['duedate']);
+      String monthname = getMonth(date.month);
+      duedatestring =  "${date.day} ${monthname}";
+    } else { duedatestring = ""; }
+  }
+
+  String getMonth(int month) {
+     switch (month) 
+    {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'May';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Aug';
+      case 9:
+        return 'Sept';
+      case 10:
+        return 'Oct';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Dec';
+      default:
+        return 'ERROR';
+    }
   }
 
   @override
@@ -358,7 +397,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
               children: [
                 _buildIconContainer(icon: Icons.calendar_month),
                 const SizedBox(width: 10),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -367,7 +406,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text('20th Sept'),
+                    Text(duedatestring),
                   ],
                 ),
                 const SizedBox(width: 110),

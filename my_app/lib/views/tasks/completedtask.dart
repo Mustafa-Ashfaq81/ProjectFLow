@@ -18,6 +18,7 @@ class _CompletedTaskPageState extends State<CompletedTaskPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  List<dynamic> subtasks = [];
 
   @override
   void initState() {
@@ -40,6 +41,10 @@ class _CompletedTaskPageState extends State<CompletedTaskPage>
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  Future<void> atload() async {
+    subtasks = await getSubTasks(widget.username, widget.task['heading']);
   }
 
   AppBar _buildAppBar() {
@@ -108,18 +113,30 @@ class _CompletedTaskPageState extends State<CompletedTaskPage>
 
   Widget _buildSubtasks() {
     // Dummy data and example builder. Implement your actual subtask logic here.
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: ListTile(
-            title: Text('Subtask ${index + 1}'),
-            // subtitle: Text('Detail of Subtask ${index + 1}'),
-          ),
-        );
-      },
+    return FutureBuilder(
+        future: atload(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingTask(); // Show loading page while fetching data
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+              if(subtasks.isEmpty) {return const Center(child: Text("No subtasks have been made for this task"));}
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: subtasks.length,
+                itemBuilder: (context, index) {
+                  return FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: ListTile(
+                      title: Text('Subtask: ${subtasks[index]['subheading']}'),
+                      subtitle: Text('${subtasks[index]['content']}'),
+                    ),
+                  );
+                },
+              );
+            }
+        }
     );
   }
 }
