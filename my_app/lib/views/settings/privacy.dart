@@ -17,6 +17,7 @@ class PrivacyPage extends StatelessWidget {
           'Privacy Policy',
           style: TextStyle(color: Colors.white),
         ),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
