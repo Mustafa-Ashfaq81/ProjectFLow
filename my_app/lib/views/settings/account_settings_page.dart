@@ -93,6 +93,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           'Account Settings',
           style: TextStyle(color: Colors.white),
         ),
+        centerTitle: true, 
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -139,17 +140,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 : Container(),
             isGmailLogin
                 ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Column(
                       children: [
                         Text(
                           'You are logged in with your Google account. To change your email, password, or username, please visit your Google account settings.',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16,
+                            fontSize: 18,
                           ),
                         ),
-                        SizedBox(height: 16.0),
+                        SizedBox(height: 50.0),
                         ElevatedButton(
                           onPressed: () {
                             _launchGoogleAccountSettings();
@@ -164,8 +165,14 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                           ),
                           child: Text(
                             'Open Google Account Settings',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                            style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
+                        ),
+                        SizedBox(height: 50.0),
+                        Image.asset(
+                          'pictures/google1.png',
+                          width: 100,
+                          height: 100,
                         ),
                       ],
                     ),

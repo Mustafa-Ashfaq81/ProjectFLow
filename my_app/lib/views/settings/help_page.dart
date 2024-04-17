@@ -19,10 +19,9 @@ class HelpPage extends StatelessWidget {
           'Help',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -179,14 +178,6 @@ class HelpPage extends StatelessWidget {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => _showMindMateChat(context),
-      //   backgroundColor: Colors.blue,
-      //   child: Icon(
-      //     Icons.chat,
-      //     size: 18, // Adjust the size as needed
-      //   ),
-      // ),
       bottomNavigationBar: Footer(index: 0, username: username),
     );
   }

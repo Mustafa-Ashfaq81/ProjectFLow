@@ -83,6 +83,7 @@ flutter:
   assets:
     - .env
     - pictures/profile.png
+    - pictures/google.png
     - pictures/adeen.png
     - pictures/essa.png
     - pictures/mehdi.png

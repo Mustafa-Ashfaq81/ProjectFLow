@@ -32,10 +32,10 @@ class _SettingsPageState extends State<SettingsPage> {
           'Settings',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+
           ),
         ),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -72,7 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         Text(
                           widget.username,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
                             color: Colors.black,
                           ),
                         ),
@@ -86,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
               _buildClickableSettingsItem(
                 icon: Icons.account_circle,
                 title: 'Account',
-                subtitle: 'Privacy, security, change email or password',
+                subtitle: 'Security, change email or password',
                 titleSize: 16,
                 subtitleSize: 12,
                 onTap: () {
@@ -100,24 +100,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              // const SizedBox(height: 20),
-              // _buildClickableSettingsItem(
-              //   icon: Icons.notifications,
-              //   title: 'Notifications',
-              //   subtitle: 'Message, group & call tones',
-              //   titleSize: 16,
-              //   subtitleSize: 12,
-              //   onTap: () {
-              //     // Navigate to notifications settings page
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) =>
-              //             NotificationsSettingsPage(username: widget.username),
-              //       ),
-              //     );
-              //   },
-              // ),
               const SizedBox(height: 20),
               _buildClickableSettingsItem(
                 icon: Icons.logout,
@@ -137,9 +119,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil("/", (_) => false);
                   }
-                  // setState(() {
-                  //   _logoutClicked = true;
-                  // });
                 },
               ),
               const SizedBox(height: 20),

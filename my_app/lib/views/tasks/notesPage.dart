@@ -161,7 +161,7 @@ class _AllTasksPageState extends State<AllTasksPage> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.search),
+                      icon: const Icon(Icons.search, color: Colors.black),
                       color: Colors.black45,
                       onPressed: null,
                     ),

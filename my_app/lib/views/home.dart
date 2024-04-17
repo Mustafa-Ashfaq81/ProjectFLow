@@ -126,34 +126,9 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) =>
                             SettingsPage(username: username)));
             },
-            padding: EdgeInsets.only(right: 10), // Adjust padding to move icon slightly to left
+            padding: EdgeInsets.only(right: 10), 
            ),
           ],
-          // actions: [
-            // PopupMenuButton<MenuAction>(
-            //   onSelected: (value) async {
-            //     switch (value) {
-            //       case MenuAction.settings:
-            //         Navigator.of(context).push(MaterialPageRoute(
-            //             builder: (context) =>
-            //                 SettingsPage(username: username)));
-            //         break;
-            //     }
-            //   },
-            //   itemBuilder: (context) {
-            //     return [
-            //       // const PopupMenuItem<MenuAction>(
-            //       //   value: MenuAction.logout,
-            //       //   child: Text('Log out'),
-            //       // ),
-            //       const PopupMenuItem<MenuAction>(
-            //         value: MenuAction.settings,
-            //         child: Text('Settings'),
-            //       ),
-            //     ];
-            //   },
-            // )
-          // ],
           backgroundColor: Colors.black,
         ),
       ),
@@ -163,32 +138,34 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 30.0, top: 0.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Welcome back!',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      padding: const EdgeInsets.only(left: 30.0, top: 0.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Welcome back!',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          profilepic,
+                        ],
+                      ),
                     ),
-                  ),
-                  profilepic,
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30.0, top: 0.0),
-              child: Text(
-                username,
-                style: const TextStyle(
-                  fontFamily: 'PilotExtended',
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 30.0,
+                          top: 0.0), // Adjust top value to reduce space
+                      child: Text(
+                        username,
+                        style: const TextStyle(
+                          fontFamily: 'PilotExtended',
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(
@@ -246,8 +223,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.search),
-                        color: Colors.black45,
+                          icon: const Icon(Icons.search,
+                                    color: Colors
+                                        .black), // Set the color property here
+
+                        color: Colors.black,
                         onPressed: null,
                       ),
                     ],

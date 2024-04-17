@@ -255,6 +255,7 @@ class _ImageSetterState extends State<ImageSetter>
           appBar: AppBar(
             title: Text('View Image'),
           ),
+          
           body: Center(
             child: FutureBuilder(
               future: _getImageFuture(),
