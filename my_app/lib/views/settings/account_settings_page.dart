@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/models/usermodel.dart';
-import 'package:my_app/common/toast.dart';
+import 'package:my_app/utils/inappmsgs_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AccountSettingsPage extends StatefulWidget {

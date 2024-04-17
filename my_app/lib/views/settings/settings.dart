@@ -8,7 +8,7 @@ import 'package:my_app/views/settings/help_page.dart';
 import 'package:my_app/views/settings/about_us_page.dart';
 import 'package:my_app/components/image.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
-import 'package:my_app/common/logoutdialog.dart';
+import 'package:my_app/utils/dialogs/logoutdialog.dart';
 
 class SettingsPage extends StatefulWidget {
   final String username;

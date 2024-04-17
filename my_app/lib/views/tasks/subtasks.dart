@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/common/deletedialog.dart';
-import 'package:my_app/common/completedialog.dart';
+import 'package:my_app/utils/dialogs/deletedialog.dart';
+import 'package:my_app/utils/dialogs/completedialog.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/tasks/task.dart';
 import 'package:my_app/views/tasks/completedtask.dart';

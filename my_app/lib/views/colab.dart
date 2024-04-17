@@ -9,7 +9,7 @@ import 'package:my_app/views/chatroom.dart';
 import 'package:provider/provider.dart';
 import 'package:my_app/components/msgprovider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:my_app/common/toast.dart';
+import 'package:my_app/utils/inappmsgs_util.dart';
 
 
 class ColabPage extends StatefulWidget {

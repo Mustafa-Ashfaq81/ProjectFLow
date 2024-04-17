@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
-import 'package:my_app/common/deletedialog.dart';
+import 'package:my_app/utils/dialogs/deletedialog.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/controllers/gptapi.dart';
 import 'package:my_app/views/loading.dart';
-import '../../common/toast.dart';
+import '../../utils/inappmsgs_util.dart';
 import 'package:my_app/utils/cache_util.dart'; // Ensure this is correctly imported
 import 'package:my_app/controllers/calendarapi.dart';
 
