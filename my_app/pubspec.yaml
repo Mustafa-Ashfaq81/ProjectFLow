@@ -80,12 +80,6 @@ flutter:
       fonts:
       - asset: fonts/Inter-VariableFont_slnt,wght.ttf
 
-flutter_icons:
-  image_path: "pictures/my_app_logo.png" 
-  android: true
-
-
-
   assets:
     - .env
     - pictures/profile.png
