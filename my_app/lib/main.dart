@@ -26,13 +26,9 @@ import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
 
-
-Future main() async {
+Future initialize() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // .env file declared in our project directory for connection to the firebase database
-
-  await dotenv.load(); // Load the environment variables
+  await dotenv.load();
   String apiKey = dotenv.env['API_KEY']!;
   String messagingSenderId = dotenv.env['MSG_SENDER_ID']!;
   String projectId = dotenv.env['PROJECT_ID']!;
@@ -46,18 +42,25 @@ Future main() async {
       projectId: projectId,
     ),
   );
+}
+
+Future main() async {
+  await initialize();
 
   if (!kIsWeb) {
     //android
     await Alarm.init(showDebugLogs: true);
   }
 
-  runApp(const MyApp());
+  runApp(const MyApp(
+    initialRoute: '/splash',
+  ));
 }
 
 class MyApp extends StatelessWidget {
+  final String initialRoute;
   // This widget is the root of our application.
-  const MyApp({super.key});
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +80,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Urbanist',
         ),
 
-        initialRoute: '/splash',
+        initialRoute: initialRoute,
         // Project routes for the different screens
         routes: {
           '/': (context) => const StartPage(),
