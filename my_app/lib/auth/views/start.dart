@@ -1,10 +1,10 @@
-
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
 import 'package:my_app/controllers/alarmapi.dart';
+import 'package:my_app/repositories/auth/app.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
@@ -34,7 +34,10 @@ class StartPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    MaterialPageRoute(
+                        builder: (context) => LoginPage(
+                              authRepository: AuthRepository(),
+                            )),
                   );
                 },
                 child: const Text('Login'),

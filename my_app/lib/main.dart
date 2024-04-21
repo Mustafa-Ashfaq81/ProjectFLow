@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:my_app/repositories/auth/app.dart';
 import 'package:provider/provider.dart';
 
 import 'package:my_app/components/image.dart';
@@ -85,7 +86,9 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => const StartPage(),
           '/splash': (context) => SplashScreen(),
-          '/login': (context) => const LoginPage(),
+          '/login': (context) => LoginPage(
+                authRepository: AuthRepository(),
+              ),
           '/register': (context) => const RegisterPage(),
           '/home': (context) => const HomePage(
                 username: "abz",

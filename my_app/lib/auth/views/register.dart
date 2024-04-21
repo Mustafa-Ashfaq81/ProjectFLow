@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
+import 'package:my_app/repositories/auth/app.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
 // import 'package:my_app/models/taskmodel.dart';
@@ -14,18 +15,18 @@ import 'package:my_app/utils/inappmsgs_util.dart';
 // using FirebaseAuth. It provides UI for username, email, and password inputs and
 // handles their validation and submission.
 
-class RegisterPage extends StatefulWidget // A stateful widget that provides a user registration interface
-{ 
-
+class RegisterPage
+    extends StatefulWidget // A stateful widget that provides a user registration interface
+{
   const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage>  // State class for `RegisterPage` that handles user input and registration logic
-{ 
-
+class _RegisterPageState extends State<
+    RegisterPage> // State class for `RegisterPage` that handles user input and registration logic
+{
   final FirebaseAuthService _auth = FirebaseAuthService();
 
   final TextEditingController _emailController = TextEditingController();
@@ -40,7 +41,8 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
   bool isSigningUp = false;
 
   @override
-  void dispose()  // Dispose controllers to free up resources when the widget is removed from the tree.
+  void
+      dispose() // Dispose controllers to free up resources when the widget is removed from the tree.
   {
     _emailController.dispose();
     _passwordController.dispose();
@@ -50,16 +52,18 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
   }
 
   @override
-  Widget build(BuildContext context)  // Constructs the user interface for the registration page.
+  Widget build(
+      BuildContext
+          context) // Constructs the user interface for the registration page.
   {
     return Scaffold(
       appBar: AppBar(
         title: const Center(
             child: Text(
           'Register',
-          textAlign: TextAlign.center, 
+          textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.white, 
+            color: Colors.white,
           ),
         )),
         automaticallyImplyLeading: false,
@@ -212,7 +216,9 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
+                              builder: (context) => LoginPage(
+                                    authRepository: AuthRepository(),
+                                  )),
                         );
                       },
                       child: const Text(
@@ -230,7 +236,8 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
     );
   }
 
-  void _register() async  // Handles the user registration process by validating inputs and creating a new user account
+  void
+      _register() async // Handles the user registration process by validating inputs and creating a new user account
   {
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -254,7 +261,8 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
     }
 
     // Email format validation
-    if (!emailRegex.hasMatch(email)) // Check if email follows standard email pattern.
+    if (!emailRegex
+        .hasMatch(email)) // Check if email follows standard email pattern.
     {
       // showerrormsg(message: "Please enter a valid email address");
       showCustomError("Please enter a valid email address", context);
@@ -266,48 +274,41 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
       // showerrormsg(
       //     message:
       //         "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
-      showCustomError("Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.", context);
-      
+      showCustomError(
+          "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
+          context);
+
       return;
     }
 
     // Password match validation
-    if (password != pass) 
-    {
+    if (password != pass) {
       // showerrormsg(message: "Passwords do not match \u{1F6A8}");
       showCustomError("Passwords do not match \u{1F6A8}", context);
       return;
-    } 
-    else 
-    {
-      setState(() 
-      {
-        isSigningUp = true; // Indicate that the registration process has started.
+    } else {
+      setState(() {
+        isSigningUp =
+            true; // Indicate that the registration process has started.
       });
       var allusernames = await getallUsers();
-      if (allusernames.contains(name) == true) 
-      {
+      if (allusernames.contains(name) == true) {
         // showerrormsg(message: 'username already taken \u{1F6A8}');
         showCustomError('username already taken \u{1F6A8}', context);
-      } 
-      else 
-      {
-        User? user = await _auth.registeracc(email, password,context);
-        if (user != null) 
-        {
+      } else {
+        User? user = await _auth.registeracc(email, password, context);
+        if (user != null) {
           print("User is successfully created");
           // List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
           List<Map<String, dynamic>> mappedtasks = [];
-          try 
-          {
+          try {
             createUser(
                 UserModel(username: name, email: email, tasks: mappedtasks));
             await TaskService().fetchAndCacheNotesData(name);
             await TaskService().fetchAndCacheColabRequests(name);
-          } 
-          catch (e) 
-          {
-            print("An Error Occured While Creating the User Model. Error: ---> $e");
+          } catch (e) {
+            print(
+                "An Error Occured While Creating the User Model. Error: ---> $e");
           }
           Navigator.pushReplacement(
               context,
@@ -316,15 +317,13 @@ class _RegisterPageState extends State<RegisterPage>  // State class for `Regist
                   username: name,
                 ),
               ));
-        } 
-        else 
-        {
+        } else {
           print(" some error occurred ... has been TOASTED");
         }
       }
-      setState(() 
-      {
-        isSigningUp = false; // Indicate that the registration process has started.
+      setState(() {
+        isSigningUp =
+            false; // Indicate that the registration process has started.
       });
     }
   }
