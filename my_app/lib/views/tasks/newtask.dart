@@ -527,11 +527,11 @@ class _NewTaskPageState extends State<NewTaskPage> {
                     "There must be a start time for an end time and vice versa",
                     context);
               } else {
-                // DateTime comparisonDate = DateTime.parse(_dateController.text);
-                // DateTime today = DateTime.now();
-                // bool isAfter = today.isAfter(comparisonDate);
-                // if (!isAfter)
-                // {
+                DateTime comparisonDate = DateTime.parse(_dateController.text);
+                DateTime today = DateTime.now();
+                bool isAfter = today.isAfter(comparisonDate);
+                if (!isAfter)
+                {
                 final is_suitable_time = isSuitableTime(start, end);
                 if (is_suitable_time == false) {
                   showCustomError(
@@ -559,13 +559,13 @@ class _NewTaskPageState extends State<NewTaskPage> {
                         _isAlarmEnabled);
                   }
                 }
-                // }
-                // else
-                // {
-                //   showCustomError(
-                //       "Deadline of Project selected should be atleast tomorrow",
-                //       context);
-                // }
+                }
+                else
+                {
+                  showCustomError(
+                      "Deadline of Project selected should be atleast tomorrow",
+                      context);
+                }
               }
             }
           } else {
