@@ -2,18 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
-import 'package:my_app/views/settings/account_settings_page.dart';
-// import 'package:my_app/views/settings/notifications_settings_page.dart';
-import 'package:my_app/views/settings/help_page.dart';
-import 'package:my_app/views/settings/about_us_page.dart';
 import 'package:my_app/components/image.dart';
-import 'package:my_app/auth/controllers/authservice.dart';
+import 'package:my_app/repositories/auth/base.dart';
 import 'package:my_app/utils/dialogs/logoutdialog.dart';
+import 'package:my_app/views/settings/about_us_page.dart';
+import 'package:my_app/views/settings/account_settings_page.dart';
+import 'package:my_app/views/settings/help_page.dart';
 
 class SettingsPage extends StatefulWidget {
+  final BaseAuthRepository authRepository;
   final String username;
 
-  const SettingsPage({Key? key, required this.username}) : super(key: key);
+  const SettingsPage(
+      {Key? key, required this.username, required this.authRepository})
+      : super(key: key);
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -21,7 +23,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _logoutClicked = false;
-  final FirebaseAuthService _auth = FirebaseAuthService();
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
           'Settings',
           style: TextStyle(
             color: Colors.white,
-
           ),
         ),
         centerTitle: true,
@@ -111,10 +112,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
                     try {
-                      await _auth.logout(context);
+                      if (context.mounted) {
+                        await widget.authRepository.logout(context);
+                      }
                     } catch (e) {
                       print("not a normal account $e");
-                      await _auth.signOutFromGoogle();
+                      await widget.authRepository.signOutFromGoogle();
                     }
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil("/", (_) => false);

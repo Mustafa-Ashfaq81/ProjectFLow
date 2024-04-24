@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:my_app/repositories/auth/app.dart';
 import 'package:my_app/repositories/auth/base.dart';
 
@@ -12,4 +13,17 @@ class MockedAuthRepository implements BaseAuthRepository {
 
   @override
   register() {}
+  
+  @override
+  loginWithGoogle(BuildContext context) {
+    throw UnimplementedError();
+  }
+
+  @override
+  logout(BuildContext context) {}
+
+  @override
+  signOutFromGoogle() {
+    throw UnimplementedError();
+  }
 }

@@ -55,12 +55,14 @@ dependencies:
   fl_chart: ^0.67.0
   animations: ^2.0.11
   flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.4.9
   #my dependencies ---------------------------------------------------------------------
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  mockito: ^5.4.4
 
 flutter:
   uses-material-design: true

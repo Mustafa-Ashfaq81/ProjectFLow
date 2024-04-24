@@ -17,15 +17,15 @@ class ColabPage extends StatefulWidget {
   const ColabPage({Key? key, required this.username}) : super(key: key);
 
   @override
-  _ColabPageState createState() => _ColabPageState();
+  ColabPageState createState() => ColabPageState();
 }
 
-class _ColabPageState extends State<ColabPage> {
+class ColabPageState extends State<ColabPage> {
   final int idx = 4;
   List<Map<String, dynamic>> colabRequests = [];
   List<Map<String, dynamic>> rooms = [];
   String allrooms = '';
-  IO.Socket _socket = IO.io('dummy_url'); //to avoid some errors
+  IO.Socket _socket = IO.io('dummy_url'); 
   late MessageProvider provider;
 
   @override
@@ -108,7 +108,8 @@ class _ColabPageState extends State<ColabPage> {
                 appBar: AppBar(
                   centerTitle: true,
                   automaticallyImplyLeading: false,
-                  title: Text('Colab Page', style: TextStyle(color: Colors.white)),
+                  title: const Text('Colab Page',
+                      style: TextStyle(color: Colors.white)),
                   backgroundColor: Colors.black,
                 ),
                 body: colabRequests.isEmpty
@@ -116,7 +117,9 @@ class _ColabPageState extends State<ColabPage> {
                       scrollDirection: Axis.vertical,
                       child: Column( 
                         children :[
-                          Center(child: Text("No requests for collaboration yet"), ) ,
+                          const Center(
+                            child: Text("No requests for collaboration yet"),
+                          ),
                            _Chatrooms() ,
                         ]
                       ),
@@ -124,7 +127,7 @@ class _ColabPageState extends State<ColabPage> {
                         scrollDirection: Axis.vertical,
                         child: Column(
                           children: [ 
-                            Center(child:Text("Pending requests")) ,
+                          const Center(child: Text("Pending requests")),
                             Column(children: colabRequests.map((request) {
                               return ListTile(
                                 title: Text(request['task'].toString(),

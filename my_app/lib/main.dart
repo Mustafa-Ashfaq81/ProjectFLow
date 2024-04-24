@@ -1,31 +1,28 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:my_app/repositories/auth/app.dart';
-import 'package:provider/provider.dart';
-
-import 'package:my_app/components/image.dart';
-import 'package:my_app/components/msgprovider.dart';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:alarm/alarm.dart';
-
-import 'package:my_app/auth/views/splashscreen.dart';
-import 'package:my_app/auth/views/start.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_app/auth/views/login.dart';
 import 'package:my_app/auth/views/register.dart';
-import 'package:my_app/views/home.dart';
-import 'package:my_app/views/colab.dart';
+import 'package:my_app/auth/views/splashscreen.dart';
+import 'package:my_app/auth/views/start.dart';
+import 'package:my_app/components/image.dart';
+import 'package:my_app/components/msgprovider.dart';
+import 'package:my_app/repositories/auth/app.dart';
 // import 'package:my_app/views/chatroom.dart';
 import 'package:my_app/views/calendar.dart';
+import 'package:my_app/views/colab.dart';
+import 'package:my_app/views/home.dart';
 import 'package:my_app/views/settings/settings.dart';
-import 'package:my_app/views/tasks/task.dart';
-import 'package:my_app/views/tasks/completedtask.dart';
 import 'package:my_app/views/tasks/completedSubtask.dart';
+import 'package:my_app/views/tasks/completedtask.dart';
 import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/views/tasks/notesPage.dart';
 import 'package:my_app/views/tasks/subtasks.dart';
+import 'package:my_app/views/tasks/task.dart';
+import 'package:provider/provider.dart';
 
 Future initialize() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -99,8 +96,9 @@ class MyApp extends StatelessWidget {
           '/calendar': (context) => const CalendarPage(
                 username: "abz",
               ),
-          '/settings': (context) => const SettingsPage(
+          '/settings': (context) => SettingsPage(
                 username: "abz",
+                authRepository: AuthRepository(),
               ),
           '/alltasks': (context) => const AllTasksPage(
                 username: "abz",

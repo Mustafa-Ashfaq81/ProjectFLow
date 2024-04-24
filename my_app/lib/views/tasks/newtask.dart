@@ -216,6 +216,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                   }
                   return null;
                 },
+                key: "project-details-field",
               ),
               const SizedBox(height: 20),
               _buildSectionTitle('Project Details'),
@@ -282,6 +283,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
     int? maxLines,
     required TextEditingController controller,
     required String? Function(String?) validator,
+    String? key,
   }) {
     return Container(
       width: 400.0,
@@ -292,6 +294,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
         border: Border.all(color: Colors.grey, width: 1.0),
       ),
       child: TextFormField(
+        key: Key(key ?? ""),
         controller: controller,
         maxLength: maxLines == 1 ? 50 : 500,
         keyboardType:

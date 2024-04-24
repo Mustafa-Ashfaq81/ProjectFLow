@@ -5,7 +5,6 @@ import 'package:my_app/auth/views/register.dart';
 import 'package:my_app/repositories/auth/app.dart';
 import 'package:my_app/repositories/auth/base.dart';
 import 'package:my_app/views/home.dart';
-
 import '../../utils/inappmsgs_util.dart';
 
 class LoginPage extends StatefulWidget {
@@ -181,10 +180,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    // final usercred = await _auth.signInWithGoogle(context);
-                    // if (usercred != null) {
-                    //   await _loginGmail(usercred);
-                    // }
+                    await widget.authRepository.loginWithGoogle(context);
                   },
                   child: Container(
                       padding: const EdgeInsets.all(20),
@@ -253,6 +249,8 @@ class _LoginPageState extends State<LoginPage> {
             ));
       }
     } catch (e) {
+      print("ERROR OCCURED");
+      print(e);
       if (e is AuthException) {
         String errorMessage = e.message;
         ScaffoldMessenger.of(context).showSnackBar(

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppUser {
   final String email;
   final String username;
@@ -17,7 +19,15 @@ class BaseAuthRepository {
     throw UnimplementedError();
   }
 
+  loginWithGoogle(BuildContext context) async {
+    throw UnimplementedError();
+  }
+
   register() {
     throw UnimplementedError();
   }
+
+  logout(BuildContext context) async {}
+
+  signOutFromGoogle() {}
 }

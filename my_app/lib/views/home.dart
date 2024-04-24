@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously, unnecessary_cast, prefer_const_constructors, sort_child_properties_last, unused_element, prefer_interpolation_to_compose_strings
 
 import 'package:flutter/material.dart';
+import 'package:my_app/repositories/auth/mock.dart';
 import 'package:my_app/views/tasks/newtask.dart';
 import 'package:my_app/controllers/taskstatus.dart';
 import 'package:my_app/components/footer.dart';
@@ -139,7 +140,10 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            SettingsPage(username: username)));
+                            SettingsPage(
+                                  username: username,
+                                  authRepository: MockedAuthRepository(),
+                                )));
             },
             padding: EdgeInsets.only(right: 10), 
            ),

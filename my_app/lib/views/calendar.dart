@@ -21,6 +21,7 @@ class CalendarPage extends StatefulWidget
 }
 
 
+
 String _getTaskColor(String taskName) 
 {
   final colors = [
@@ -53,6 +54,9 @@ class CalendarPageState extends State<CalendarPage>
     username = widget.username;
   }
 
+
+
+
   Future<void> atload() async 
   {
     List<Map<String, dynamic>>? cachedDeadlines =
@@ -68,6 +72,8 @@ class CalendarPageState extends State<CalendarPage>
     }
       deadlines = filterUpcomingTasks(deadlines, _startDate, _endDate);
       print("filtered deadlines $deadlines");
+      
+      
 
   }
 //  upcomingTasks
@@ -159,6 +165,7 @@ class CalendarPageState extends State<CalendarPage>
           else 
           {
             return Scaffold(
+                key: Key("calendar-page"),
               appBar: AppBar(
                 title: const Center(child: const Text('Calendar')),
                 backgroundColor: const Color(0xFFFFE6C9),
