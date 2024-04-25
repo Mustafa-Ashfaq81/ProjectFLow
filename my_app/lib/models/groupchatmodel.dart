@@ -97,7 +97,7 @@ Future<List<Map<String,dynamic>>> fetchroomsforuser(String username) async
   {
     print("err fetching rooms for user $e");
   }
-  print(rooms);
+  // print(rooms);
   List<String> headings = await getTaskHeadings(username);
   final finalrooms = <Map<String, dynamic>>[]; 
   for(var room in rooms){
