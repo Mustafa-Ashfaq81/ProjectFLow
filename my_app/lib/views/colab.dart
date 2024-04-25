@@ -125,13 +125,15 @@ class _ColabPageState extends State<ColabPage> {
                         child: Column(
                           children: [ 
                             Center(child:Text("Pending requests")) ,
+                            const SizedBox(height: 8),
                             Column(children: colabRequests.map((request) {
-                              return ListTile(
-                                title: Text(request['task'].toString(),
-                                   style: TextStyle(color: Colors.black)),
-                                subtitle: Text("From: ${request['sender']}",
+                              return Row(
+                                children:  [
+                                const SizedBox(width: 10),
+                                 Text("From: ${request['sender']}",
                                   style: TextStyle(color: const Color.fromARGB(255, 95, 92, 92))),
-                                  trailing: Row(
+                                  const SizedBox(width: 10),
+                                   Row(
                                     mainAxisSize: MainAxisSize.min, // Ensure buttons fit within ListTile
                                     children: [
                                       ElevatedButton(
@@ -144,7 +146,7 @@ class _ColabPageState extends State<ColabPage> {
                                                 builder: (context) => ColabPage(username: widget.username),
                                             ));
                                           },
-                                          child: const Text("Accept request"),
+                                          child: const Text("Accept"),
                                       ),
                                       const SizedBox(width: 10),
                                       ElevatedButton(
@@ -157,10 +159,11 @@ class _ColabPageState extends State<ColabPage> {
                                                 builder: (context) => ColabPage(username: widget.username),
                                             ));
                                           },
-                                          child: const Text("Decline request"),
+                                          child: const Text("Decline"),
                                       ),
                                     ]
                                   ),
+                                ]
                             );
                           }).toList(),
                         ), 
