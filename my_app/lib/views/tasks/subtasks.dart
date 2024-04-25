@@ -62,7 +62,7 @@ class _SubtaskPageState extends State<SubTaskPage> {
   }
 
 
-  void _deleteTask() async{
+  Future<void> _deleteTask() async{
     // Remove the task from the global list
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -185,7 +185,10 @@ class _SubtaskPageState extends State<SubTaskPage> {
           IconButton(
           icon: const Icon(Icons.delete),
           color: Colors.red,
-          onPressed: () { showDeleteConfirmationDialog(context,_deleteTask); },
+          onPressed: () async { 
+            Map<String, dynamic> thisTask = await getTaskbyHeading(taskheading, username);
+            showDeleteConfirmationDialog(context,_deleteTask,username,thisTask); 
+          },
          ),
           const SizedBox(width: 105),
           ElevatedButton(

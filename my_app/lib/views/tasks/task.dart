@@ -114,7 +114,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     }
   }
 
-  void _saveProjectDetails() async {
+  Future<void> _saveProjectDetails() async {
     // Here we would typically save the data to a database or some other storage.
     // For demonstration, we're just printing the values to the console.
     String headingg = _projectHeadingController.text;
@@ -146,7 +146,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
     }
   }
 
-  void deleteProject(Function onCompletion) async {
+  Future<void> deleteProject(Function onCompletion) async {
     String headingg = _projectHeadingController.text;
 
     // Delete the task from the local app data
@@ -259,8 +259,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
-          onPressed: () {
-            _saveProjectDetails();
+          onPressed: () async {
+            await _saveProjectDetails();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -536,6 +536,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
               showDeleteConfirmationDialog(
                 context,
                 () => deleteProject(onDeletionComplete),
+                username,
+                null
               );
           },
         )
@@ -591,7 +593,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
   Future<void> _enhanceProject() async {
-    _saveProjectDetails();
+    await _saveProjectDetails();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Sending call to OpenAi servers, this may take a few seconds ... '),
