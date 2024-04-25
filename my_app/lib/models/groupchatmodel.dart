@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, avoid_print, unnecessary_cast
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:my_app/models/taskmodel.dart';
 /*
 
 A model to represent the structure of a group chat, including members and their roles
@@ -97,5 +97,15 @@ Future<List<Map<String,dynamic>>> fetchroomsforuser(String username) async
   {
     print("err fetching rooms for user $e");
   }
-  return rooms;
+  print(rooms);
+  List<String> headings = await getTaskHeadings(username);
+  final finalrooms = <Map<String, dynamic>>[]; 
+  for(var room in rooms){
+    for (var heading in headings){
+      if(room['heading'] == heading) { 
+        finalrooms.add(room);
+       }
+    }
+  }
+  return finalrooms;
 }
