@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-
+import 'package:my_app/config/config.dart'; 
 
 class AboutUsPage extends StatelessWidget {
   final String username;
@@ -16,12 +15,12 @@ class AboutUsPage extends StatelessWidget {
       {
         'name': 'Adeen Ali Khan',
         'image': 'pictures/adeen.png',
-        'linkedin': 'https://www.linkedin.com/in/adeenalikhan29/',
+        'linkedin': AppConfig.linkedinURLs['Adeen Ali Khan']!,
       },
       {
         'name': 'Essa Shahid Arshad',
         'image': 'pictures/essa.png',
-        'linkedin': 'https://www.linkedin.com/in/essaarshad/',
+        'linkedin': AppConfig.linkedinURLs['Essa Shahid Arshad']!,
       },
       {
         'name': 'Muhammad Hurraira Anwer',
@@ -30,12 +29,12 @@ class AboutUsPage extends StatelessWidget {
       {
         'name': 'Muhammad Mehdi Changezi',
         'image': 'pictures/mehdi.png',
-        'linkedin': 'https://www.linkedin.com/in/muhammad-mehdi-07a716255/',
+        'linkedin': AppConfig.linkedinURLs['Muhammad Mehdi Changezi']!,
       },
       {
         'name': 'Mustafa Ashfaq',
         'image': 'pictures/mustafa.png',
-        'linkedin': 'https://www.linkedin.com/in/mustafa-ashfaq-225608202/',
+        'linkedin': AppConfig.linkedinURLs['Mustafa Ashfaq']!,
       },
     ];
 

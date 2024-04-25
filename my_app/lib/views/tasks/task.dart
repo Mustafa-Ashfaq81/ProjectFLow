@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, const_with_non_constant_argument
+// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, const_with_non_constant_argument, prefer_is_empty, unnecessary_brace_in_string_interps
 
 import 'package:flutter/material.dart';
 import 'package:my_app/models/taskmodel.dart';
@@ -51,16 +51,17 @@ class _TaskPageState extends State<TaskDetailsPage> {
     _projectDescriptionController = TextEditingController(
       text: mytask['description'],
     );
-    if(mytask['duedate']!=""){
+    if (mytask['duedate'] != "") {
       DateTime date = DateTime.parse(mytask['duedate']);
       String monthname = getMonth(date.month);
-      duedatestring =  "${date.day} ${monthname}";
-    } else { duedatestring = ""; }
+      duedatestring = "${date.day} ${monthname}";
+    } else {
+      duedatestring = "";
+    }
   }
 
   String getMonth(int month) {
-     switch (month) 
-    {
+    switch (month) {
       case 1:
         return 'Jan';
       case 2:
@@ -102,14 +103,17 @@ class _TaskPageState extends State<TaskDetailsPage> {
   Future<void> atload() async {
     subtasks = await getSubTasks(username, mytask['heading']);
     //fetching progress of task
-    if (subtasks.length>0) {
+    if (subtasks.length > 0) {
       int completedCount = 0;
       int totalCount = subtasks.length;
       for (var subtask in subtasks) {
-        if (subtask['progress'] == 'completed') { completedCount++; }
+        if (subtask['progress'] == 'completed') {
+          completedCount++;
+        }
       }
-      progress =  totalCount == 0 ? 0.0 : completedCount / totalCount;
-    } else {  //default 0 progress if NO subtasks 
+      progress = totalCount == 0 ? 0.0 : completedCount / totalCount;
+    } else {
+      //default 0 progress if NO subtasks
       progress = 0.0;
     }
   }
@@ -255,17 +259,17 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildSaveButton(BuildContext context) {
-    return  Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: () async {
             await _saveProjectDetails();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(username: username),
-                  ));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(username: username),
+                ));
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 255, 215, 100),
@@ -278,13 +282,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
               Text('Save Project', style: TextStyle(color: Colors.black)),
             ],
           ),
-        ), 
+        ),
       ],
     );
   }
 
   Widget _buildSubtasks(String username) {
-    //show diff views dep on if subtasks are available
+    //show diff views if subtasks are available
 
     if (subtasks.isEmpty) {
       return Padding(
@@ -372,7 +376,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
         focusNode: _descriptionFocus,
         decoration: InputDecoration(
           hintText: 'Enter project description here',
-          border: InputBorder.none, // Hide the default border of the TextField
+          border: InputBorder
+              .none, // For Hiding the default border of the TextField
         ),
         style:
             TextStyle(fontSize: 16.0, color: Colors.brown[800]), // Text color
@@ -430,8 +435,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildTeamMemberAvatars() {
-    double size = 10; // Adjust size as needed
-    double overlap = 2; // Adjust overlap as needed
+    double size = 10;
+    double overlap = 2;
     double personSize = 15;
 
     return Stack(
@@ -446,7 +451,7 @@ class _TaskPageState extends State<TaskDetailsPage> {
         ),
         // Second avatar
         Positioned(
-          left: size - overlap, // Adjust the position for overlap
+          left: size - overlap,
           child: CircleAvatar(
             radius: size,
             backgroundColor: Colors.green,
@@ -455,14 +460,13 @@ class _TaskPageState extends State<TaskDetailsPage> {
         ),
         // Third avatar
         Positioned(
-          left: 2 * (size - overlap), // Adjust the position for overlap
+          left: 2 * (size - overlap),
           child: CircleAvatar(
             radius: size,
             backgroundColor: Colors.red,
             child: Icon(Icons.person, color: Colors.white, size: personSize),
           ),
         ),
-        // Add more Positioned CircleAvatar widgets as needed
       ],
     );
   }
@@ -496,7 +500,9 @@ class _TaskPageState extends State<TaskDetailsPage> {
   Widget _buildProgressBarAndDeleteButton() {
     // Customizable values
     // double progress = 0.6; // 60%
-    Color progressColor = progress < 0.5 ? Colors.red : Colors.green; // Color of the progress indicator
+    Color progressColor = progress < 0.5
+        ? Colors.red
+        : Colors.green; // Color of the progress indicator
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -533,15 +539,10 @@ class _TaskPageState extends State<TaskDetailsPage> {
           icon: const Icon(Icons.delete),
           color: Colors.red,
           onPressed: () {
-              showDeleteConfirmationDialog(
-                context,
-                () => deleteProject(onDeletionComplete),
-                username,
-                null
-              );
+            showDeleteConfirmationDialog(context,
+                () => deleteProject(onDeletionComplete), username, null);
           },
         )
-
       ],
     );
   }
@@ -551,7 +552,6 @@ class _TaskPageState extends State<TaskDetailsPage> {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
-      // bottomNavigationBar: _buildFooterButton(),
     );
   }
 
@@ -596,7 +596,8 @@ class _TaskPageState extends State<TaskDetailsPage> {
     await _saveProjectDetails();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Sending call to OpenAi servers, this may take a few seconds ... '),
+        content: Text(
+            'Sending call to OpenAi servers, this may take a few seconds ... '),
         duration: Duration(seconds: 5),
       ),
     );
@@ -612,10 +613,6 @@ class _TaskPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildTaskMenu(String username) {
-    // Assuming your tasks are fetched or defined here
-    // final List<String> tasks =
-    //     subtasks.map((item) => item['subheading'] as String).toList();
-
     return ListView.builder(
       shrinkWrap: true,
       itemCount: subtasks.length,
@@ -628,7 +625,9 @@ class _TaskPageState extends State<TaskDetailsPage> {
               subtasks[index]['subheading'],
               style: const TextStyle(color: Colors.black),
             ),
-            leading: (subtasks[index]['progress'] == 'completed') ? const Icon(Icons.done) : const Icon(Icons.edit, color: Colors.blue),
+            leading: (subtasks[index]['progress'] == 'completed')
+                ? const Icon(Icons.done)
+                : const Icon(Icons.edit, color: Colors.blue),
             onTap: () async {
               await Navigator.push(
                 context,

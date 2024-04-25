@@ -6,11 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/models/usermodel.dart';
 import 'package:my_app/utils/inappmsgs_util.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:my_app/config/config.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   final String username;
 
-   // Constructor for AccountSettingsPage
+  // Constructor for AccountSettingsPage
   const AccountSettingsPage({Key? key, required this.username})
       : super(key: key);
 
@@ -38,10 +39,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     _confirmPasswordController = TextEditingController();
     checkGoogleSignIn();
     getUserEmail();
-
   }
 
-  
   // Function to check if user is signed in with Google
   Future<void> checkGoogleSignIn() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -58,8 +57,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
   }
 
-
- // Function to get user's email address
+  // Function to get user's email address
   Future<void> getUserEmail() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -79,10 +77,9 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     super.dispose();
   }
 
-
- // Function to launch Google Account Settings page
+  // Function to launch Google Account Settings page
   Future<void> _launchGoogleAccountSettings() async {
-    const url = 'https://myaccount.google.com/';
+    const url = AppConfig.googleAccountSettingsURL;
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -99,7 +96,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           'Account Settings',
           style: TextStyle(color: Colors.white),
         ),
-        centerTitle: true, 
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -222,8 +219,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     );
   }
 
-
- // Widget for section titles
+  // Widget for section titles
 
   Widget _buildSectionTitle(String title) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -233,7 +229,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),
         ),
       );
-
 
   // Widget for building text fields
   Widget _buildTextField({
@@ -272,7 +267,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
     if (passwordChanged == false && emailChanged == false) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Can only update profile info if something has changed'),
+        content: Text('The profile info can only be updated if something has changed'),
         duration: Duration(seconds: 2),
       ));
       return false;
@@ -286,29 +281,25 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     );
 
     if (!emailRegex.hasMatch(_emailController.text)) {
-      // showerrormsg(message: "Please enter a valid email address");
       showCustomError("Please enter a valid email address", context);
       return false;
     }
 
     if (passwordChanged) {
       if (_oldPasswordController.text.isEmpty) {
-        // showerrormsg(message: "Please enter your old password");
         showCustomError("Please enter your old password", context);
         return false;
       }
 
       if (!passwordRegex.hasMatch(_passwordController.text)) {
-        // showerrormsg(
-        //     message:
-        //         "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
-        showCustomError("Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.", context);
+        showCustomError(
+            "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
+            context);
         return false;
       }
 
       if (_confirmPasswordController.text != _passwordController.text) {
-        // showerrormsg(message: "Passwords do not match \u{1F6A8}");
-         showCustomError("Passwords do not match \u{1F6A8}", context);
+        showCustomError("Passwords do not match \u{1F6A8}", context);
         return false;
       }
     }

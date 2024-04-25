@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, avoid_print, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, prefer_final_fields, avoid_print, sort_child_properties_last, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';

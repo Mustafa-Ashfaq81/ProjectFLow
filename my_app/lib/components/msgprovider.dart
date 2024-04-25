@@ -9,8 +9,7 @@ Each message is associated with a sender, the room where it was sent, and the ti
 
 */
 
-class Message 
-{
+class Message {
   final String message;
   final String sender;
   final String room;
@@ -35,9 +34,7 @@ class Message
   
   */
 
-
-  factory Message.fromJson(Map<String, dynamic> message) 
-  {
+  factory Message.fromJson(Map<String, dynamic> message) {
     return Message(
       message: message['message'],
       sender: message['sender'],
@@ -49,59 +46,45 @@ class Message
 
 // Maintains a list of messages and rooms, allowing for adding new messages and fetching messages per room
 
-class MessageProvider extends ChangeNotifier 
-{
+class MessageProvider extends ChangeNotifier {
   final List<Map<String, dynamic>> _messages = [];
 
-  setRoomIds(List<String> ids) 
-  {
-    for (var id in ids) 
-    {
+  setRoomIds(List<String> ids) {
+    for (var id in ids) {
       List<Message> empty = [];
       _messages.add({'id': id, 'messages': empty});
     }
   }
 
-  getMessages(String id)    // Retrieves messages for a specific room by its identifier.
+  getMessages(
+      String id) // Retrieves messages for a specific room by its identifier.
   {
-    for (var room_msg in _messages) 
-    {
-      if (room_msg['id'] == id) 
-      {
+    for (var room_msg in _messages) {
+      if (room_msg['id'] == id) {
         return room_msg["messages"];
       }
     }
   }
 
-  addNewMessage(Message message, String id) 
-  {
-    try 
-    {
-      for (var room_msg in _messages) 
-      {
-        if (room_msg['id'] == id) 
-        {
+  addNewMessage(Message message, String id) {
+    try {
+      for (var room_msg in _messages) {
+        if (room_msg['id'] == id) {
           final room_msgs = room_msg["messages"] as List<Message>;
-          if (room_msgs.isEmpty) 
-          {
+          if (room_msgs.isEmpty) {
             room_msgs.add(message);
             room_msg['messages'] = room_msgs;
-          } 
-          else 
-          {
+          } else {
             final lastmsg = room_msgs.last;
             if (lastmsg.sentAt != message.sentAt &&
-                lastmsg.message != message.message) 
-            {
+                lastmsg.message != message.message) {
               room_msgs.add(message);
               room_msg['messages'] = room_msgs;
             }
           }
         }
       }
-    } 
-    catch (e) 
-    {
+    } catch (e) {
       print("ignore_this_exception_for_now $e");
     }
     notifyListeners();

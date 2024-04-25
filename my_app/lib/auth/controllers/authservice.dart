@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, no_leading_underscores_for_local_identifiers, implementation_imports
+// ignore_for_file: avoid_print, no_leading_underscores_for_local_identifiers, implementation_imports, use_build_context_synchronously, unnecessary_string_interpolations
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -7,20 +7,17 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_app/utils/cache_util.dart';
 import 'package:my_app/utils/inappmsgs_util.dart';
 
-class FirebaseAuthService  // Manages authentication operations with Firebase.
+class FirebaseAuthService // Manages authentication operations with Firebase.
 {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<User?> registeracc(String email, String password, BuildContext context) async 
-  {
-    try 
-    {
+  Future<User?> registeracc(
+      String email, String password, BuildContext context) async {
+    try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       return credential.user;
-    } on FirebaseAuthException catch (e) 
-    {
-      // showerrormsg(message: "${e.message}");
+    } on FirebaseAuthException catch (e) {
       showCustomError("${e.message}", context);
     }
     return null;
@@ -28,61 +25,54 @@ class FirebaseAuthService  // Manages authentication operations with Firebase.
 
   // If login is successful, it caches notes data and collaboration requests for the [username].
 
-  Future<User?> loginacc(String email, String password, String username, BuildContext context) async 
-  {
-    try 
-    {
+  Future<User?> loginacc(String email, String password, String username,
+      BuildContext context) async {
+    try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      if (credential.user != null) 
-      {
+      if (credential.user != null) {
         await TaskService().fetchAndCacheNotesData(username);
         await TaskService().fetchAndCacheColabRequests(username);
       }
       return credential.user;
-    } on FirebaseAuthException catch (e) 
-    {
+    } on FirebaseAuthException catch (e) {
       showCustomError("${e.message}", context);
-      // showerrormsg(message: "${e.message}");
     }
 
     return null;
   }
 
-  Future<User?> logout( BuildContext context) async 
-  {
+  Future<User?> logout(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null) 
-    {
+    if (user != null) {
       await FirebaseAuth.instance.signOut();
-    } 
-    else 
-    {
-      // showerrormsg(message: " user is not logged in ");
+    } else {
       showCustomError("User is not logged in", context);
     }
     return null;
   }
 
-    Future<UserCredential?> signInWithGoogle( BuildContext context) async 
-    { // Returns [UserCredential] if the sign-in is successful; otherwise, null.
+  Future<UserCredential?> signInWithGoogle(BuildContext context) async {
+    // Returns [UserCredential] if the sign-in is successful; otherwise, null.
 
-    try 
-    {
+    try {
       final GoogleSignInAccount? googleUser;
 
-      if (kIsWeb)   // Handle Google sign-in for web using a specified client ID.
+      if (kIsWeb) // Handle Google sign-in for web using a specified client ID.
       {
         googleUser = await GoogleSignIn(
-          clientId: "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com").signIn();
-      } 
-      else
-      {  //Android
-         googleUser = await GoogleSignIn().signIn();   // Default Google sign-in flow for Android.
+                clientId:
+                    "12273615091-8aa1ois5l7b31tmirhcp6p7lihgmh1hk.apps.googleusercontent.com")
+            .signIn();
+      } else {
+        //Android
+        googleUser = await GoogleSignIn()
+            .signIn(); // Default Google sign-in flow for Android.
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth =  await googleUser?.authentication;
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -90,21 +80,19 @@ class FirebaseAuthService  // Manages authentication operations with Firebase.
         idToken: googleAuth?.idToken,
       );
 
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
       return userCredential;
-    } on FirebaseAuthException catch (e) 
-    {
+    } on FirebaseAuthException catch (e) {
       // showerrormsg(message: e.message.toString());
       showCustomError("${e.message.toString()}", context);
     }
-    return null; 
+    return null;
   }
 
-  Future<void> signOutFromGoogle() async 
-  {
+  Future<void> signOutFromGoogle() async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     await _googleSignIn.signOut();
   }
-
 }

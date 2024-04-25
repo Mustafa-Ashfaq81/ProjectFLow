@@ -7,15 +7,15 @@ import 'package:my_app/auth/views/register.dart';
 import '../../utils/inappmsgs_util.dart';
 import 'package:my_app/views/home.dart';
 import 'package:my_app/models/usermodel.dart';
-// import 'package:my_app/models/taskmodel.dart';
 import 'package:my_app/auth/controllers/authservice.dart';
 import 'package:my_app/utils/cache_util.dart';
 
 // This file contains the LoginPage widget which handles user authentication
 // via Firebase for our note-taking application. It supports simple email/password as well as Google sign-in methods.
 
+class LoginPage extends StatefulWidget
 
-class LoginPage extends StatefulWidget  /// A stateful widget that provides a login interface for the application.
+/// A stateful widget that provides a login interface for the application.
 {
   const LoginPage({super.key});
 
@@ -23,7 +23,8 @@ class LoginPage extends StatefulWidget  /// A stateful widget that provides a lo
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that handles the login logic and user input.
+class _LoginPageState extends State<
+    LoginPage> // State for `LoginPage` that handles the login logic and user input.
 {
   final FirebaseAuthService _auth = FirebaseAuthService();
   final TextEditingController _emailController = TextEditingController();
@@ -33,15 +34,17 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
   var isLoggingIn = false;
 
   @override
-  void dispose()  // Clean up controllers when the widget is disposed.
+  void dispose() // Clean up controllers when the widget is disposed.
   {
     _emailController.dispose();
     _passwordController.dispose();
-    super.dispose(); 
+    super.dispose();
   }
 
   @override
-  Widget build(BuildContext context)  // Builds the login interface with email and password fields, a login button, and a Google sign-in option.
+  Widget build(
+      BuildContext
+          context) // Builds the login interface with email and password fields, a login button, and a Google sign-in option.
   {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -49,14 +52,14 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
         title: Center(
           child: Text(
             'Login',
-            textAlign: TextAlign.center, 
+            textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white, 
+              color: Colors.white,
             ),
           ),
         ),
         automaticallyImplyLeading: false, // Disable automatic back button
-        backgroundColor: Colors.black, 
+        backgroundColor: Colors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -66,8 +69,7 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
             Row(
               children: [
                 InkWell(
-                  onTap: () 
-                  {
+                  onTap: () {
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -98,7 +100,6 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
               ],
             ),
             const SizedBox(height: 5),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -157,10 +158,12 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
                         vertical: 15, horizontal: 30),
                     minimumSize: const Size(200, 50),
                   ),
-                  child: isLoggingIn ? CircularProgressIndicator() :const Text(
-                    'Login',
-                    style: TextStyle(fontSize: 18),
-                  ),
+                  child: isLoggingIn
+                      ? CircularProgressIndicator()
+                      : const Text(
+                          'Login',
+                          style: TextStyle(fontSize: 18),
+                        ),
                 )
               ],
             ),
@@ -193,9 +196,8 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
                 GestureDetector(
                   onTap: () async {
                     final usercred = await _auth.signInWithGoogle(context);
-                    if (usercred != null) 
-                    {
-                     await _loginGmail(usercred);
+                    if (usercred != null) {
+                      await _loginGmail(usercred);
                     }
                   },
                   child: Container(
@@ -204,8 +206,7 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
                           border: Border.all(color: Colors.white),
                           borderRadius: BorderRadius.circular(16),
                           color: Colors.grey[200]),
-                      child:
-                          Image.asset("pictures/google1.png", height: 40)),
+                      child: Image.asset("pictures/google1.png", height: 40)),
                 ),
               ],
             ),
@@ -238,40 +239,36 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
     );
   }
 
-  void _login() async  /// Initiates the login process using the entered email and password.
+  void _login() async
+
+  /// Initiates the login process using the entered email and password.
   {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) 
-    {
+    if (email.isEmpty || password.isEmpty) {
       showCustomError("Please fill in all the fields", context);
       return;
     }
 
-    setState(() 
-    {
+    setState(() {
       isLoggingIn = true;
     });
 
-    try 
-    {
+    try {
       String user = "";
-        await FirebaseFirestore.instance
-            .collection('users')
-            .where('email', isEqualTo: email)
-            .get()
-            .then((QuerySnapshot querySnapshot) 
-            {
-          for (var doc in querySnapshot.docs) 
-          {
-            user = doc['username'];
-          }
+      await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          user = doc['username'];
+        }
       });
-      User? useracc = await _auth.loginacc(email, password,user,context);
+      User? useracc = await _auth.loginacc(email, password, user, context);
 
-      if (useracc != null) 
-      {
+      if (useracc != null) {
         print("User is successfully logging in");
         Navigator.pushReplacement(
             context,
@@ -281,11 +278,10 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
               ),
             ));
       }
-    } on FirebaseAuthException catch (e)    // Handle different Firebase authentication errors.
+    } on FirebaseAuthException catch (e) // Handle different Firebase authentication errors.
     {
       String message;
-      switch (e.code) 
-      {
+      switch (e.code) {
         case "user-not-found":
           message = "No user found for that email.";
           break;
@@ -307,50 +303,51 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
       );
     }
 
-    setState(() 
-    {
+    setState(() {
       isLoggingIn = false;
     });
   }
-  
-  Future<void> _loginGmail(UserCredential usercred) async  //if the user is not created, we create that user in db else we just login using the method
-  { 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging in with Gmail ... '),duration: Duration(seconds: 3),));
+
+  Future<void> _loginGmail(
+      UserCredential
+          usercred) async //if the user is not created, we create that user in db else we just login using the method
+  {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Logging in with Gmail ... '),
+      duration: Duration(seconds: 3),
+    ));
     var username = usercred.user!.displayName;
     final gmail = usercred.user!.email;
     List<String> allemails = await getallEmails();
     if (allemails.contains(gmail) == false) {
       var allusernames = await getallUsers();
-      if (allusernames.contains(username) == true) 
-      {
-        int suffix = 1; // To ensure username remains unique, we append a suffix to it if it already exists.
+      if (allusernames.contains(username) == true) {
+        int suffix =
+            1; // To ensure username remains unique, we append a suffix to it if it already exists.
         String newUsername = username!;
-        while (allusernames.contains(newUsername)) 
-        {
+        while (allusernames.contains(newUsername)) {
           newUsername = '$username!_${suffix++}';
         }
         username = newUsername;
       }
       // List<Map<String, dynamic>>? mappedtasks = maptasks(get_random_task());
       List<Map<String, dynamic>> mappedtasks = [];
-      try 
-      {
-        createUser(UserModel(username: username, email: gmail, tasks: mappedtasks));
+      try {
+        createUser(
+            UserModel(username: username, email: gmail, tasks: mappedtasks));
         await TaskService().fetchAndCacheNotesData(username!);
         await TaskService().fetchAndCacheColabRequests(username);
-      } catch (e) 
-      {
+      } catch (e) {
         print("Error Occured! While Creating user model. Error: ---> $e");
       }
-    } 
-    else 
-    {   final userCollection = FirebaseFirestore.instance.collection("users");
-        final snapshot =
+    } else {
+      final userCollection = FirebaseFirestore.instance.collection("users");
+      final snapshot =
           await userCollection.where('email', isEqualTo: gmail).get();
-        final doc = snapshot.docs.first; 
-        username = doc.data()['username'];
-        await TaskService().fetchAndCacheNotesData(username!);
-        await TaskService().fetchAndCacheColabRequests(username);
+      final doc = snapshot.docs.first;
+      username = doc.data()['username'];
+      await TaskService().fetchAndCacheNotesData(username!);
+      await TaskService().fetchAndCacheColabRequests(username);
     }
     Navigator.pushReplacement(
         context,
@@ -358,6 +355,6 @@ class _LoginPageState extends State<LoginPage>  // State for `LoginPage` that ha
           builder: (context) => HomePage(
             username: username!,
           ),
-    ));
+        ));
   }
 }

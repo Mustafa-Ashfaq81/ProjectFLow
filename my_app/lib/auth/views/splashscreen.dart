@@ -3,13 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/auth/views/start.dart';
 import 'package:flame_splash_screen/flame_splash_screen.dart';
+import 'package:my_app/config/config.dart';
 
 // This file implements the SplashScreen widget using the FlameSplashScreen library
 // to display an animated splash screen as the app loads.
 
-
-
-class SplashScreen extends StatefulWidget  // A stateful widget that displays an animated splash screen using FlameSplashScreen.
+class SplashScreen
+    extends StatefulWidget // A stateful widget that displays an animated splash screen using FlameSplashScreen.
 {
   const SplashScreen({super.key});
 
@@ -17,12 +17,14 @@ class SplashScreen extends StatefulWidget  // A stateful widget that displays an
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>  // State for the SplashScreen widget. Manages the lifecycle of the splash animation.
+class _SplashScreenState extends State<
+    SplashScreen> // State for the SplashScreen widget. Manages the lifecycle of the splash animation.
 {
   late FlameSplashController controller;
 
   @override
-  void initState()  // Initialize the splash screen controller with custom durations for animation phases
+  void
+      initState() // Initialize the splash screen controller with custom durations for animation phases
   {
     super.initState();
     controller = FlameSplashController(
@@ -34,20 +36,23 @@ class _SplashScreenState extends State<SplashScreen>  // State for the SplashScr
   }
 
   @override
-  void dispose() // Clean up the controller when the widget is disposed to avoid memory leaks
+  void
+      dispose() // Clean up the controller when the widget is disposed to avoid memory leaks
   {
     controller.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) /// This Widget Builds the splash screen UI with a logo and a custom message.
+  Widget build(BuildContext context)
+
+  /// This Widget Builds the splash screen UI with a logo and a custom message.
   {
     return Scaffold(
       body: FlameSplashScreen(
         theme: FlameSplashTheme(
           logoBuilder: (context) => Image.asset(
-            'pictures/my_app_logo1.png',
+            AppConfig.appLogo,
             width: 200,
             height: 200,
           ),
@@ -55,8 +60,7 @@ class _SplashScreenState extends State<SplashScreen>  // State for the SplashScr
             color: Colors.black,
           ),
         ),
-        showBefore: (BuildContext context) 
-        {
+        showBefore: (BuildContext context) {
           return const Text(
             "Where Ideas Turn Into Reality",
             style: TextStyle(
@@ -66,7 +70,8 @@ class _SplashScreenState extends State<SplashScreen>  // State for the SplashScr
             ),
           );
         },
-        onFinish: (context) => Navigator.pushReplacement( // Transition to the StartPage once the splash animation completes
+        onFinish: (context) => Navigator.pushReplacement(
+          // Transition to the StartPage once the splash animation completes
           context,
           MaterialPageRoute(builder: (context) => const StartPage()),
         ),

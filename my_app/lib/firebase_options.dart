@@ -63,8 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '12273615091',
     projectId: 'ideaenhancerapp',
     storageBucket: 'ideaenhancerapp.appspot.com',
-    androidClientId: '12273615091-otnldh67r8kbm5q3tdpcnc7askjq8ps7.apps.googleusercontent.com',
-    iosClientId: '12273615091-98mp6u2iuqii5sohda2imbek48gr0aeq.apps.googleusercontent.com',
+    androidClientId:
+        '12273615091-otnldh67r8kbm5q3tdpcnc7askjq8ps7.apps.googleusercontent.com',
+    iosClientId:
+        '12273615091-98mp6u2iuqii5sohda2imbek48gr0aeq.apps.googleusercontent.com',
     iosBundleId: 'com.example.myApp',
   );
 }

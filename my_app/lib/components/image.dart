@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, avoid_single_cascade_in_expression_statements, library_private_types_in_public_api, prefer_const_constructors
+// ignore_for_file: avoid_print, avoid_single_cascade_in_expression_statements, library_private_types_in_public_api, prefer_const_constructors, unused_element
 
 import 'dart:io';
 import 'dart:typed_data';
@@ -9,7 +9,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 
 class ImageCodeException implements Exception {
   final String message;
@@ -32,8 +31,7 @@ class ImageCodeException implements Exception {
 
 const bool kIsWeb = bool.fromEnvironment('dart.library.js_util');
 
-class ImageSetter extends StatefulWidget 
-{
+class ImageSetter extends StatefulWidget {
   final String username;
   const ImageSetter({Key? key, required this.username}) : super(key: key);
 
@@ -41,15 +39,13 @@ class ImageSetter extends StatefulWidget
   _ImageSetterState createState() => _ImageSetterState();
 }
 
-class _ImageSetterState extends State<ImageSetter> 
-{
+class _ImageSetterState extends State<ImageSetter> {
   late FirebaseStorage _storage;
   String imageUrl = '';
   bool isLoading = false;
 
   @override
-  void initState() 
-  {
+  void initState() {
     super.initState();
     initializeStorage();
   }
@@ -61,21 +57,17 @@ class _ImageSetterState extends State<ImageSetter>
 
   */
 
-  Future<void> initializeStorage() async 
-  {
+  Future<void> initializeStorage() async {
     await dotenv.load();
     String imageBucket = dotenv.env['IMAGE_BUCKET']!;
     _storage = FirebaseStorage.instanceFor(bucket: imageBucket);
     loadSavedImageUrl();
   }
 
-  Future<Uint8List> _getImageFuture() async 
-  {
-    try 
-    {
+  Future<Uint8List> _getImageFuture() async {
+    try {
       final response = await http.get(Uri.parse(imageUrl));
-      if (response.statusCode == 200) 
-      {
+      if (response.statusCode == 200) {
         final Uint8List bodyBytes = response.bodyBytes;
         // We can add a simple check for the PNG file header as an example
         // PNG files start with 0x89 0x50 0x4E 0x47 0x0D 0x0A 0x1A 0x0A
@@ -87,23 +79,16 @@ class _ImageSetterState extends State<ImageSetter>
             bodyBytes[4] == 0x0D &&
             bodyBytes[5] == 0x0A &&
             bodyBytes[6] == 0x1A &&
-            bodyBytes[7] == 0x0A) 
-            {
+            bodyBytes[7] == 0x0A) {
           return bodyBytes;
-        } 
-        else 
-        {
+        } else {
           throw ImageCodeException('Unsupported image format.');
         }
-      } 
-      else 
-      {
+      } else {
         throw ImageCodeException(
             'Failed to load image: Server returned status code ${response.statusCode}');
       }
-    } 
-    catch (e) 
-    {
+    } catch (e) {
       throw ImageCodeException('Failed to load image: $e');
     }
   }
@@ -115,10 +100,8 @@ class _ImageSetterState extends State<ImageSetter>
 
   */
 
-  void _startUpload(XFile selectedImage) async 
-  {
-    setState(() 
-    {
+  void _startUpload(XFile selectedImage) async {
+    setState(() {
       isLoading = true;
     });
 
@@ -137,16 +120,12 @@ class _ImageSetterState extends State<ImageSetter>
       imageUrl = await snapshot.ref.getDownloadURL();
       await SharedPreferences.getInstance()
         ..setString('image_${widget.username}', imageUrl);
-      setState(() 
-      {
+      setState(() {
         isLoading = false;
       });
-    } 
-    catch (e) 
-    {
+    } catch (e) {
       print("[ImageSetter] StartUpload: Uploading error $e");
-      setState(() 
-      {
+      setState(() {
         isLoading = false;
       });
     }
@@ -165,37 +144,29 @@ class _ImageSetterState extends State<ImageSetter>
     }
   }
 
-  
-
-
-  Future<void> loadSavedImageUrl() async 
-  {
+  Future<void> loadSavedImageUrl() async {
     final prefs = await SharedPreferences.getInstance();
     final savedUrl = prefs.getString('image_${widget.username}');
-    if (savedUrl != null && savedUrl.isNotEmpty) 
-    {
+    if (savedUrl != null && savedUrl.isNotEmpty) {
       setState(() => imageUrl = savedUrl);
     }
   }
 
-  Widget buildImage() 
-  {
+  Widget buildImage() {
     bool hasImage = imageUrl.isNotEmpty;
     return GestureDetector(
-      onTap: () 
-      {
-        showModalBottomSheet(   // Includes a clickable image that opens a modal to view or change the image
+      onTap: () {
+        showModalBottomSheet(
+          // Includes a clickable image that opens a modal to view or change the image
           context: context,
-          builder: (BuildContext context) 
-          {
+          builder: (BuildContext context) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
                   leading: Icon(Icons.visibility),
                   title: Text('View Image'),
-                  onTap: () 
-                  {
+                  onTap: () {
                     Navigator.pop(context);
                     _viewImage();
                   },
@@ -203,8 +174,7 @@ class _ImageSetterState extends State<ImageSetter>
                 ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('Change Image'),
-                  onTap: () 
-                  {
+                  onTap: () {
                     Navigator.pop(context);
                     _pickImage();
                   },
@@ -277,10 +247,8 @@ class _ImageSetterState extends State<ImageSetter>
     );
   }
 
-
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return buildImage();
   }
 }

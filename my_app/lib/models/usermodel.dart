@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, non_constant_identifier_names
+// ignore_for_file: avoid_print, non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -131,7 +131,6 @@ Future<String> updateUsername(String original_username,name, BuildContext contex
   var allusernames = await getallUsers();
   if (allusernames.contains(name) == true) 
   {
-    // showerrormsg(message: "This username has been taken already");
     showCustomError("This username has been taken already", context);
     return original_username;
   } 
@@ -175,9 +174,6 @@ Future<void> updateUserInfo(
     catch (e) 
     {
       print("got error updating EMAIL ...  $e");
-      // showerrormsg(
-      //     message:
-      //         "MUST verify on new email address before updating the email");
       showCustomError( "MUST verify on new email address before updating the email", context);
     }
   }
@@ -203,12 +199,10 @@ Future<void> updateUserInfo(
         print("got error updating password ...  $e");
         if (e is FirebaseAuthException && e.code == 'wrong-password') 
         {
-          // showerrormsg(message: "The old password is incorrect");
           showCustomError("The old password is incorrect", context);
         } 
         else 
         {
-          // showerrormsg(message: "Please ensure you are entering the correct password");
           showCustomError("Please ensure you are entering the correct password", context);
         }
       }

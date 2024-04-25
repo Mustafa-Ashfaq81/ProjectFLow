@@ -9,8 +9,8 @@ This dialog provides an additional layer of confirmation to prevent accidental d
 
 */
 
-
-void showDeleteConfirmationDialog(BuildContext context, Function deleteTask, String username, dynamic thisTask) {
+void showDeleteConfirmationDialog(BuildContext context, Function deleteTask,
+    String username, dynamic thisTask) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -27,19 +27,20 @@ void showDeleteConfirmationDialog(BuildContext context, Function deleteTask, Str
               // Delete the task and pop back to the previous screen
               await deleteTask();
               // Navigator.of(context).pop();
-              if(thisTask == null){
+              if (thisTask == null) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => HomePage(username: username),
-                ));
+                    ));
               } else {
-                 Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TaskDetailsPage(username: username, task: thisTask),
-                    ),
-                  );
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        TaskDetailsPage(username: username, task: thisTask),
+                  ),
+                );
               }
             },
             child: const Text("Delete"),

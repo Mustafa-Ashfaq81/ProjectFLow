@@ -1,10 +1,10 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_declarations, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
 import 'package:my_app/views/settings/privacy.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'package:kommunicate_flutter/kommunicate_flutter.dart';
+import 'package:my_app/config/config.dart';
 
 class HelpPage extends StatelessWidget {
   final String username;
@@ -58,7 +58,6 @@ class HelpPage extends StatelessWidget {
               answer:
                   'To mark a task as completed, simply tap on the checkbox next to the task in your task list. The task will be moved to the "Completed" section.',
             ),
-            // const SizedBox(height: 5),
             const Text(
               'Contact Support',
               style: TextStyle(
@@ -100,8 +99,7 @@ class HelpPage extends StatelessWidget {
                 const Spacer(),
                 InkWell(
                   onTap: () async {
-                    final String phoneNumber = '03077772929';
-                    final String url = 'https://wa.me/$phoneNumber';
+                    final String url = AppConfig.whatsappNumberURL;
                     try {
                       if (await canLaunch(url)) {
                         await launch(url);
@@ -133,7 +131,6 @@ class HelpPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-
             const Text(
               'Privacy Policy',
               style: TextStyle(

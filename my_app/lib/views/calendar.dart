@@ -11,8 +11,7 @@ const double hourWidth = 40;
 DateTime _startDate = DateTime.now();
 DateTime _endDate = DateTime.now().add(Duration(days: 5));
 
-class CalendarPage extends StatefulWidget 
-{
+class CalendarPage extends StatefulWidget {
   final String username;
   const CalendarPage({Key? key, required this.username}) : super(key: key);
 
@@ -20,9 +19,7 @@ class CalendarPage extends StatefulWidget
   CalendarPageState createState() => CalendarPageState();
 }
 
-
-String _getTaskColor(String taskName) 
-{
+String _getTaskColor(String taskName) {
   final colors = [
     const Color(0xFFF09999),
     const Color(0xFF91BFEA),
@@ -40,35 +37,28 @@ String _getTaskColor(String taskName)
   return color.value.toRadixString(16).padLeft(8, '0');
 }
 
-class CalendarPageState extends State<CalendarPage> 
-{
+class CalendarPageState extends State<CalendarPage> {
   late final String username;
   final int idx = 3;
   List<Map<String, dynamic>> deadlines = [];
 
   @override
-  void initState() 
-  {
+  void initState() {
     super.initState();
     username = widget.username;
   }
 
-  Future<void> atload() async 
-  {
+  Future<void> atload() async {
     List<Map<String, dynamic>>? cachedDeadlines =
         CacheUtil.getData('deadlines_$username');
-    if (cachedDeadlines != null) 
-    {
+    if (cachedDeadlines != null) {
       deadlines = cachedDeadlines;
-    } 
-    else 
-    {
+    } else {
       deadlines = await getdeadlines(username);
       CacheUtil.cacheData('deadlines_$username', deadlines);
     }
-      deadlines = filterUpcomingTasks(deadlines, _startDate, _endDate);
-      print("filtered deadlines $deadlines");
-
+    deadlines = filterUpcomingTasks(deadlines, _startDate, _endDate);
+    print("filtered deadlines $deadlines");
   }
 //  upcomingTasks
 
@@ -80,24 +70,31 @@ class CalendarPageState extends State<CalendarPage>
           dueDate.isBefore(endDate.add(Duration(days: 1)));
     }).toList();
 
-    for(int i=0; i<upcomingTasks.length; i++)
-    {
+    for (int i = 0; i < upcomingTasks.length; i++) {
       var task = upcomingTasks[i];
-      task['duration'] = calculateDuration(task["start_time"], task["end_time"]).toString();
-      var starthr =  int.parse(task["start_time"].split(':')[0]);
-      if(task['start_time'].contains('PM')) { starthr += 12; }      //24 hr clock
+      task['duration'] =
+          calculateDuration(task["start_time"], task["end_time"]).toString();
+      var starthr = int.parse(task["start_time"].split(':')[0]);
+      if (task['start_time'].contains('PM')) {
+        starthr += 12;
+      } //24 hr clock
       task['startHour'] = starthr.toString();
       task['name'] = task['heading'];
       //calculating the day of task (the respective column number as to be shown on calendar) ... days 1->5
-      var diff = (DateTime.parse(task['duedate']).weekday - DateTime.now().weekday).abs();
-      if (diff > 4) { task['day'] = (8 - diff).toString(); }
-      else          { task['day'] = (diff + 1).toString(); } 
+      var diff =
+          (DateTime.parse(task['duedate']).weekday - DateTime.now().weekday)
+              .abs();
+      if (diff > 4) {
+        task['day'] = (8 - diff).toString();
+      } else {
+        task['day'] = (diff + 1).toString();
+      }
     }
-    
-    return upcomingTasks;
- }
 
- void _selectDateRange() async {
+    return upcomingTasks;
+  }
+
+  void _selectDateRange() async {
     final DateTimeRange? selectedRange = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2010),
@@ -114,100 +111,92 @@ class CalendarPageState extends State<CalendarPage>
     }
   }
 
- int calculateDuration(String startTime, String endTime) 
- {
-  final startHour = int.parse(startTime.split(':')[0]);
-  final startMinute = int.parse(startTime.split(':')[1].split(' ')[0]);
-  final isStartPM = startTime.contains('PM');
+  int calculateDuration(String startTime, String endTime) {
+    final startHour = int.parse(startTime.split(':')[0]);
+    final startMinute = int.parse(startTime.split(':')[1].split(' ')[0]);
+    final isStartPM = startTime.contains('PM');
 
-  final endHour = int.parse(endTime.split(':')[0]);
-  final endMinute = int.parse(endTime.split(':')[1].split(' ')[0]);
-  final isEndPM = endTime.contains('PM');
+    final endHour = int.parse(endTime.split(':')[0]);
+    final endMinute = int.parse(endTime.split(':')[1].split(' ')[0]);
+    final isEndPM = endTime.contains('PM');
 
-  // Adjust for 12-hour clock and handle PM cases
-  final adjustedStartHour = isStartPM ? (startHour == 12 ? 12 : startHour + 12) : startHour;
-  final adjustedEndHour = isEndPM ? (endHour == 12 ? 12 : endHour + 12) : endHour;
+    // Adjust for 12-hour clock and handle PM cases
+    final adjustedStartHour =
+        isStartPM ? (startHour == 12 ? 12 : startHour + 12) : startHour;
+    final adjustedEndHour =
+        isEndPM ? (endHour == 12 ? 12 : endHour + 12) : endHour;
 
-  // Calculate total minutes considering possible day rollover
-  int totalMinutes = (adjustedEndHour * 60 + endMinute) - (adjustedStartHour * 60 + startMinute);
-  if (totalMinutes < 0) 
-  {
-    totalMinutes += 24 * 60; // Add 24 hours (1440 minutes) to account for rollover
+    // Calculate total minutes considering possible day rollover
+    int totalMinutes = (adjustedEndHour * 60 + endMinute) -
+        (adjustedStartHour * 60 + startMinute);
+    if (totalMinutes < 0) {
+      totalMinutes +=
+          24 * 60; // Add 24 hours (1440 minutes) to account for rollover
+    }
+    double hours = totalMinutes / 60.0;
+    return hours.ceil();
   }
-  double hours = totalMinutes / 60.0;
-  return hours.ceil();
-}
-
 
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return FutureBuilder(
         future: atload(),
-        builder: (context, snapshot) 
-        {
-          if (snapshot.connectionState == ConnectionState.waiting) 
-          {
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             ); // Show loading page while fetching data
-          } 
-          else if (snapshot.hasError) 
-          {
+          } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
-          } 
-          else 
-          {
+          } else {
             return Scaffold(
-              appBar: AppBar(
-                title: const Center(child: const Text('Calendar')),
-                backgroundColor: const Color(0xFFFFE6C9),
-                automaticallyImplyLeading: false,
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildDateRow(),
-                    deadlines.isEmpty
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 16.0, horizontal: 40.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  // Allow the text to expand horizontally
-                                  child: Text(
-                                    "Your next 5 days are free of tasks and subtasks. This opens up a window for creativity, relaxation, or catching up on things you've been putting off.",
-                                    textAlign: TextAlign
-                                        .center, // Center align the text
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                appBar: AppBar(
+                  title: const Center(child: const Text('Calendar')),
+                  backgroundColor: const Color(0xFFFFE6C9),
+                  automaticallyImplyLeading: false,
+                ),
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildDateRow(),
+                      deadlines.isEmpty
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 40.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    // Allow the text to expand horizontally
+                                    child: Text(
+                                      "Your next 5 days are free of tasks and subtasks. This opens up a window for creativity, relaxation, or catching up on things you've been putting off.",
+                                      textAlign: TextAlign
+                                          .center, // Center align the text
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                ),
+                                ],
+                              ),
+                            )
+                          : Stack(
+                              children: [
+                                _buildTimeGrid(),
+                                ..._buildTasks(context),
                               ],
                             ),
-                          )
-                        : Stack(
-                            children: [
-                              _buildTimeGrid(),
-                              ..._buildTasks(context),
-                            ],
-                          ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              bottomNavigationBar: Footer(index: idx, username: username),
-              floatingActionButton: FloatingActionButton(
-            onPressed: _selectDateRange,
-            child: Icon(Icons.date_range),
-              )
-            );
+                bottomNavigationBar: Footer(index: idx, username: username),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: _selectDateRange,
+                  child: Icon(Icons.date_range),
+                ));
           }
         });
   }
 
-  Widget _buildDateRow() 
-  {
+  Widget _buildDateRow() {
     return Container(
       color: Colors.black,
       height: 100,
@@ -243,8 +232,7 @@ class CalendarPageState extends State<CalendarPage>
     );
   }
 
-  Widget _buildTimeGrid() 
-  {
+  Widget _buildTimeGrid() {
     return SizedBox(
       width: double.infinity,
       child: Row(
@@ -282,22 +270,19 @@ class CalendarPageState extends State<CalendarPage>
     );
   }
 
-  List<Widget> _buildTasks(BuildContext context) 
-  {
+  List<Widget> _buildTasks(BuildContext context) {
     final List<Map<String, dynamic>> tasks = deadlines;
 
-    return tasks.map((task) 
-    {
+    return tasks.map((task) {
       task['color'] =
           _getTaskColor(task['name']); // Assign color based on task name
       return _buildTaskContainer(task, context);
     }).toList();
   }
 
-  Widget _buildTaskContainer(Map<String, dynamic> task, BuildContext context)
-  {
-    final taskStartIndex =
-        int.parse(task['startHour']); // Normalize start hour to 0-based index // -9 part removed
+  Widget _buildTaskContainer(Map<String, dynamic> task, BuildContext context) {
+    final taskStartIndex = int.parse(task[
+        'startHour']); // Normalize start hour to 0-based index // -9 part removed
     final screenWidth = MediaQuery.of(context).size.width;
     final taskWidth =
         (screenWidth - hourWidth) / daysInWeek; // Width of each task
@@ -317,7 +302,8 @@ class CalendarPageState extends State<CalendarPage>
             left: 5, top: 5, bottom: 5), // Adjusted margin
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Color(int.parse(task['color'], radix: 16)), // Use color directly from task map
+          color: Color(int.parse(task['color'],
+              radix: 16)), // Use color directly from task map
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black54),
           boxShadow: [
@@ -345,13 +331,10 @@ class CalendarPageState extends State<CalendarPage>
     );
   }
 
-  String _getDayOfWeek(int index) 
-  {
-      final adjustedWeekDay =
-        (_startDate.add(Duration(days: index)).weekday) % 7; 
+  String _getDayOfWeek(int index) {
+    final adjustedWeekDay = (_startDate.add(Duration(days: index)).weekday) % 7;
 
-    switch (adjustedWeekDay) 
-    {
+    switch (adjustedWeekDay) {
       case 0:
         return 'Sun';
       case 1:
@@ -371,7 +354,7 @@ class CalendarPageState extends State<CalendarPage>
     }
   }
 
-  String _getDayNumber(int index) { 
+  String _getDayNumber(int index) {
     final day = _startDate.add(Duration(days: index));
     return day.day.toString();
   }

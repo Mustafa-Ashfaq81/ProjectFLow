@@ -24,8 +24,6 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-
-
 class _HomePageState extends State<HomePage> {
   TextEditingController querycontroller = TextEditingController();
 
@@ -47,9 +45,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Function to load data asynchronously when the widget is built
-  
-  Future<void> atload() async {
 
+  Future<void> atload() async {
     // Fetch cached data for ongoing and completed projects, and task headings
     List<Map<String, dynamic>>? cachedOngoingProjects =
         CacheUtil.getData('ongoingProjects_$username');
@@ -57,34 +54,32 @@ class _HomePageState extends State<HomePage> {
     List<Map<String, dynamic>>? cachedCompletedProjects =
         CacheUtil.getData('completedProjects_$username');
 
-    List<String>? cachedHeadings =
-        CacheUtil.getData('headings_$username');
+    List<String>? cachedHeadings = CacheUtil.getData('headings_$username');
 
-
- // Check if completed projects data is cached
+    // Check if completed projects data is cached
 
     if (cachedCompletedProjects != null) {
-      completedtasks = completedIdeasView(context,cachedCompletedProjects,username);
+      completedtasks =
+          completedIdeasView(context, cachedCompletedProjects, username);
     } else {
       print('completed-tasks-cache-null');
       completedtasks = fetchTasks("completed", username);
       CacheUtil.cacheData('completedProjects_$username', completedtasks);
     }
 
-
 // Check if ongoing projects data is cached
 
-    if (cachedOngoingProjects != null)  {
-      inprogresstasks = inprogressIdeasView(context,cachedOngoingProjects,username);
+    if (cachedOngoingProjects != null) {
+      inprogresstasks =
+          inprogressIdeasView(context, cachedOngoingProjects, username);
     } else {
       print('progress-tasks-cache-null');
       inprogresstasks = fetchTasks("progress", username);
       CacheUtil.cacheData('ongoingProjects_$username', inprogresstasks);
     }
 
-
- // Check if task headings data is cached
-    if(cachedHeadings != null){
+    // Check if task headings data is cached
+    if (cachedHeadings != null) {
       headings = cachedHeadings;
     } else {
       print('headings-cache-null');
@@ -93,7 +88,6 @@ class _HomePageState extends State<HomePage> {
     }
     profilepic = ImageSetter(username: username);
   }
-
 
   @override
   void dispose() {
@@ -104,56 +98,56 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // Build the widget asynchronously to load data
-     return FutureBuilder(
-          future: atload(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator()); // Show loading page while fetching data
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else { 
+    return FutureBuilder(
+        future: atload(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child:
+                    CircularProgressIndicator()); // Show loading page while fetching data
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            // Build the home page with fetched data
 
-              // Build the home page with fetched data
-
-              return Scaffold(
-                appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(kToolbarHeight),
-                  child: AppBar(
-                    title: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 50.0),
-                        child: Text(
-                          'My Projects',
-                          style: TextStyle(color: Colors.white),
-                        ),
+            return Scaffold(
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(kToolbarHeight),
+                child: AppBar(
+                  title: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 50.0),
+                      child: Text(
+                        'My Projects',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-          automaticallyImplyLeading: false,
-          foregroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.white),
-          actions: [
-
-            // Settings icon leading to settings page
-             IconButton(
-            icon: Icon(Icons.settings, color: Colors.white),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            SettingsPage(username: username)));
-            },
-            padding: EdgeInsets.only(right: 10), 
-           ),
-          ],
-          backgroundColor: Colors.black,
-        ),
-      ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-             // Welcome message and profile picture
-            Padding(
+                  ),
+                  automaticallyImplyLeading: false,
+                  foregroundColor: Colors.white,
+                  iconTheme: const IconThemeData(color: Colors.white),
+                  actions: [
+                    // Settings icon leading to settings page
+                    IconButton(
+                      icon: Icon(Icons.settings, color: Colors.white),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                SettingsPage(username: username)));
+                      },
+                      padding: EdgeInsets.only(right: 10),
+                    ),
+                  ],
+                  backgroundColor: Colors.black,
+                ),
+              ),
+              body: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Welcome message and profile picture
+                    Padding(
                       padding: const EdgeInsets.only(left: 30.0, top: 0.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                     // Username display
+                    // Username display
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 30.0,
@@ -183,120 +177,119 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-            const SizedBox(height: 20),
-            // Search bar for tasks
-            Padding(
-              padding: const EdgeInsets.only(
-                right: 30.0,
-                top: 20.0,
-                left: 30.0,
-                bottom: 20.0,
-              ),
-              child: GestureDetector(
-                onTap: () {
-                   // Show search delegate to search tasks
-                  Future<String?> selectedTask = showSearch(
-                    context: context,
-                    delegate:
-                        SearchTasks(username: username, headings: headings)
-                            as SearchDelegate<String>,
-                  );
-                  selectedTask.then((taskheading) async {
-                    Map<String, dynamic> task =
-                        await getTaskbyHeading(taskheading!, username);
-                    if (taskheading != "") {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              TaskDetailsPage(username: username, task: task),
-                        ),
-                      );
-                    }
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: querycontroller,
-                          decoration: InputDecoration(
-                            hintText: 'Search Task By Heading',
-                            hintStyle: const TextStyle(
-                              fontFamily: 'Inter',
-                              color: Color(0xFF000000),
-                              fontWeight: FontWeight.w600,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 15,
-                              horizontal: 20,
-                            ),
-                          ),
-                          enabled: false,
-                        ),
+                    const SizedBox(height: 20),
+                    // Search bar for tasks
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 30.0,
+                        top: 20.0,
+                        left: 30.0,
+                        bottom: 20.0,
                       ),
-                      IconButton(
-                          icon: const Icon(Icons.search,
+                      child: GestureDetector(
+                        onTap: () {
+                          // Show search delegate to search tasks
+                          Future<String?> selectedTask = showSearch(
+                            context: context,
+                            delegate: SearchTasks(
+                                username: username,
+                                headings: headings) as SearchDelegate<String>,
+                          );
+                          selectedTask.then((taskheading) async {
+                            Map<String, dynamic> task =
+                                await getTaskbyHeading(taskheading!, username);
+                            if (taskheading != "") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TaskDetailsPage(
+                                      username: username, task: task),
+                                ),
+                              );
+                            }
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFFFFF),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: querycontroller,
+                                  decoration: InputDecoration(
+                                    hintText: 'Search Task By Heading',
+                                    hintStyle: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      color: Color(0xFF000000),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 15,
+                                      horizontal: 20,
+                                    ),
+                                  ),
+                                  enabled: false,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.search,
                                     color: Colors
                                         .black), // Set the color property here
 
-                        color: Colors.black,
-                        onPressed: null,
+                                color: Colors.black,
+                                onPressed: null,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                    // Section for ongoing projects
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: Text(
+                          'Ongoing Projects',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    inprogresstasks,
+                    // Section for completed projects
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: Text(
+                          'Completed Projects',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ScrollableWindow(row: completedtasks),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-            ),
-            // Section for ongoing projects
-            Center(
-             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.0),
-              child: Text(
-                'Ongoing Projects',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-             ),
-            ),
-            inprogresstasks,
-             // Section for completed projects
-            Center(
-             child: Padding(
-              padding:EdgeInsets.symmetric(vertical: 20.0),
-              child: Text(
-                'Completed Projects',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-             ),
-            ),
-            ScrollableWindow(row: completedtasks),
-            const SizedBox(height: 20),
-          ],
-        ),
-        
-      ),
-       // Floating action button for adding new tasks
-      floatingActionButton: FloatingActionButton(
+              // Floating action button for adding new tasks
+              floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                   Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewTaskPage(username: username),
-                      ),
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NewTaskPage(username: username),
+                    ),
                   );
                 },
                 backgroundColor: Color.fromARGB(255, 41, 157, 252),
@@ -305,11 +298,10 @@ class _HomePageState extends State<HomePage> {
                   size: 15, // Adjust the size as needed
                 ),
               ),
-        // Footer
-      bottomNavigationBar: Footer(index: idx, username: username),
-    );
-   }
+              // Footer
+              bottomNavigationBar: Footer(index: idx, username: username),
+            );
+          }
+        });
   }
- );
- }
 }

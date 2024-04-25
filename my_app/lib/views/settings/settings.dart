@@ -1,9 +1,9 @@
-// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, avoid_print
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:my_app/components/footer.dart';
+import 'package:my_app/config/config.dart';
 import 'package:my_app/views/settings/account_settings_page.dart';
-// import 'package:my_app/views/settings/notifications_settings_page.dart';
 import 'package:my_app/views/settings/help_page.dart';
 import 'package:my_app/views/settings/about_us_page.dart';
 import 'package:my_app/components/image.dart';
@@ -32,7 +32,6 @@ class _SettingsPageState extends State<SettingsPage> {
           'Settings',
           style: TextStyle(
             color: Colors.white,
-
           ),
         ),
         centerTitle: true,
@@ -159,7 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 40),
               Center(
                 child: Image.asset(
-                  'pictures/my_app_logo1.png',
+                  AppConfig.appLogo,
                   width: 100,
                   height: 100,
                 ),
@@ -225,7 +224,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-// Widget for bottom logout popu
+// Widget for bottom logout popup
 class BottomLogoutPopup extends StatelessWidget {
   final VoidCallback onClose;
 

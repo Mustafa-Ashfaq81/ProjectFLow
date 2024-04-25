@@ -9,7 +9,6 @@ class LoadingTask extends StatefulWidget {
 }
 
 class _LoadingTaskState extends State<LoadingTask> {
-
   @override
   void initState() {
     super.initState();
@@ -17,6 +16,6 @@ class _LoadingTaskState extends State<LoadingTask> {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child:CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator());
   }
 }

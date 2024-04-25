@@ -88,11 +88,11 @@ class _NewTaskPageState extends State<NewTaskPage> {
         assetAudioPath: tempFile.path,
       );
 
-      // Set the alarm with the updated AlarmSettings
+      // Setting the alarm with the updated AlarmSettings
       await Alarm.set(alarmSettings: updatedAlarmSettings);
       debugPrint("Alarm set successfully");
 
-      // Create a notification channel
+      // Creating a notification channel
       const channelId = 'alarm_channel';
       const channelName = 'Alarm Channel';
       const channelDescription = 'Channel for alarm notifications';
@@ -110,7 +110,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
           ?.createNotificationChannel(notificationChannel);
       debugPrint("Notification channel created");
 
-      // Create a notification with a "Stop Alarm" action button
+      
       const notificationId = 42; // Use a unique notification ID
       const notificationTitle = 'Alarm';
       const notificationBody = 'Tap to stop the alarm';
@@ -185,12 +185,12 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      centerTitle: true, // Aligns the title to the center
+      centerTitle: true, 
       backgroundColor: Colors.black,
       automaticallyImplyLeading: false,
       title: Text(
         'Create New Project',
-        style: TextStyle(color: Colors.white), // Set text color to white
+        style: TextStyle(color: Colors.white), 
       ),
     );
   }
@@ -767,5 +767,4 @@ class _NewTaskPageState extends State<NewTaskPage> {
     return true;
   }
   
-
 }

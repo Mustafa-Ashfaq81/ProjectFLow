@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_const_constructors
+// ignore_for_file: avoid_print, prefer_const_constructors, empty_constructor_bodies
 
 import 'package:flutter/material.dart';
 
@@ -11,19 +11,16 @@ Allows users to quickly find tasks by typing queries which are matched against t
 
 */
 
-class SearchTasks extends SearchDelegate<String> 
-{
+class SearchTasks extends SearchDelegate<String> {
   final String username;
   final List<String> headings;
 
-  SearchTasks({required this.username, required this.headings}) 
-  {
-    // print("headings $headings username $username");
+  SearchTasks({required this.username, required this.headings}) {
+    print("username $username headings $headings");
   }
 
   @override
-  ThemeData appBarTheme(BuildContext context) 
-  {
+  ThemeData appBarTheme(BuildContext context) {
     return super.appBarTheme(context).copyWith(
           textTheme: const TextTheme(
             titleLarge: TextStyle(
@@ -113,9 +110,7 @@ class SearchUsers extends SearchDelegate<String> {
   final String username;
   final List<String> users;
 
-  SearchUsers({required this.username, required this.users}) {
-    // print("username $username other-users $users");
-  }
+  SearchUsers({required this.username, required this.users}) {}
 
   // APP Bar styling below according to our color scheme
 

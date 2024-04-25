@@ -1,3 +1,10 @@
+// ignore_for_file: avoid_print
+
+/*
+This File is regarding the native audio player of the android device
+It is mainly used for our alarm functionality
+*/
+
 import 'package:flutter/services.dart';
 
 class NativeAudioPlayer {
